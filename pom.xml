@@ -52,13 +52,11 @@
             <artifactId>commons-io</artifactId>
             <version>2.6</version>
         </dependency>
-
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
             <version>2.9.2</version>
         </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -78,61 +76,65 @@
             <artifactId>logstash-logback-encoder</artifactId>
             <version>5.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-elasticsearch</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-models</artifactId>
+            <version>2.0.5</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.parser.v3</groupId>
+            <artifactId>swagger-parser-v3</artifactId>
+            <version>2.0.5</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.parser.v3</groupId>
+            <artifactId>swagger-parser-v2-converter</artifactId>
+            <version>2.0.5</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.parser.v3</groupId>
+            <artifactId>swagger-parser-core</artifactId>
+            <version>2.0.5</version>
+        </dependency>
 
-        <!-- BEGIN LOCAL DEPENDENCIES -->
         <dependency>
-            <groupId>no.fdk</groupId>
-            <artifactId>elasticsearch5-client</artifactId>
-            <version>1.3.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>no.fdk</groupId>
-            <artifactId>webutils-spring</artifactId>
-            <version>1.4.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>no.fdk</groupId>
-            <artifactId>html-cleaner</artifactId>
-            <version>1.2.0-SNAPSHOT</version>
+            <groupId>org.elasticsearch.plugin</groupId>
+            <artifactId>transport-netty3-client</artifactId> <!-- spring-data-elasticsearch insists on using both netty4 and netty3 -->
+            <version>5.6.10</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
-            <groupId>no.fdk</groupId>
-            <artifactId>api-cat-bindings</artifactId>
-            <version>1.12.0-SNAPSHOT</version>
+            <groupId>com.github.fge</groupId>
+            <artifactId>json-patch</artifactId>
+            <version>1.9</version>
         </dependency>
         <dependency>
-            <groupId>no.fdk</groupId>
-            <artifactId>api-cat-common</artifactId>
-            <version>1.7.0-SNAPSHOT</version>
+            <groupId>org.springframework.hateoas</groupId>
+            <artifactId>spring-hateoas</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.fdk</groupId>
-            <artifactId>api-cat-converters</artifactId>
-            <version>1.8.0-SNAPSHOT</version>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.10.3</version>
         </dependency>
-        <dependency>
-            <groupId>no.fdk</groupId>
-            <artifactId>registration-api-bindings</artifactId>
-            <version>1.8.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>no.fdk</groupId>
-            <artifactId>publisher-cat-client</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
-        </dependency>
-        <!-- END LOCAL DEPENDENCIES -->
 
         <!-- BEGIN TEST DEPENDENCIES -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.fdk</groupId>
-            <artifactId>test</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
