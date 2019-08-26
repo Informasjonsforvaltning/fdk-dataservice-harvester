@@ -2,14 +2,21 @@
 
 i=0
 
-maven_apps="fdk-api-harvester"
+docker_apps=""
+
+for docker_app in $docker_apps; do
+    i=$((i+1))
+    BUILD_APPS[$i]=$docker_app
+    BUILD_CMD[$i]="( cd $docker_app && ./buildDocker.sh )"
+done
+
+maven_apps="api-cat"
+
 
 for maven_app in $maven_apps; do
     i=$((i+1))
     BUILD_APPS[$i]=$maven_app
-    # BUILD_CMD[$i]="mvn clean install -B -T 2C --projects $maven_app --also-make"
-    #simplified, as there is currently only one app
-    BUILD_CMD[$i]="mvn clean install -B -T 2C"
+    BUILD_CMD[$i]="mvn clean install -B -T 2C --projects applications/$maven_app --also-make"
 done
 
 export BUILD_APPS
