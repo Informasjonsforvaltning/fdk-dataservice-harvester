@@ -16,7 +16,7 @@ import java.util.Optional;
 @Data
 @Builder
 public class Endpoint {
-    static final String[] SOURCE_FIELDS = {"id", "publisher.id", "serviceType", "apiSpecification.servers.url", "deprecationInfoExpirationDate"};
+    static final String[] SOURCE_FIELDS = {"id", "publisher.id", "serviceType", "apiSpecification.servers.url", "apiSpecification.servers.description", "deprecationInfoExpirationDate"};
     @ApiModelProperty("url to the the api-description in API-catalogue")
     String apiRef;
 
@@ -39,25 +39,44 @@ public class Endpoint {
     @ApiModelProperty("Transport method")
     String transportProfile;
 
-    static Endpoint fromElasticHit(SearchHit hit) {
+    @ApiModelProperty("Description")
+    String description;
+
+    static Endpoint fromElasticHit(SearchHit hit, EnvironmentEnum environment) {
         ApiDocument apiDocument = new Gson().fromJson(hit.getSourceAsString(), ApiDocument.class);
 
         String orgNo = Optional.ofNullable(apiDocument.getPublisher()).map(Publisher::getId).orElse(null);
-        String serverUrl = Optional.ofNullable(apiDocument.getApiSpecification())
+        Server server = Optional.ofNullable(apiDocument.getApiSpecification())
             .map(ApiSpecification::getServers)
-            .map(servers -> servers.get(0))
-            .map(Server::getUrl)
+            .flatMap(servers ->
+                servers
+                    .stream()
+                    .filter(item -> filterByEnvironment(item, environment))
+                    .findAny())
             .orElse(null);
+
+        if(server == null) {
+            return null;
+        }
 
         return Endpoint.builder()
             .apiRef("https://fellesdatakatalog.brreg.no/apis/" + apiDocument.getId())
             .orgNo(orgNo)
             .serviceType(apiDocument.getServiceType())
-            .url(serverUrl)
+            .url(server.getUrl())
             .expirationDate(apiDocument.getDeprecationInfoExpirationDate())
             .transportProfile("eOppslag")
+            .description(server.getDescription())
             .build();
     }
 
-
+    private static boolean filterByEnvironment(Server server, EnvironmentEnum environment) {
+        if (environment == EnvironmentEnum.PRODUCTION) {
+            return server.getDescription().toLowerCase().contains("production");
+        } else if (environment == EnvironmentEnum.TEST) {
+            return server.getDescription().toLowerCase().contains("test");
+        } else {
+            return false;
+        }
+    }
 }
