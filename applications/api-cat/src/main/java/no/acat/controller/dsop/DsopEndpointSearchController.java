@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import no.acat.controller.ApiSearchESQueryBuilder;
 import no.acat.service.ElasticsearchService;
+import no.fdk.webutils.exceptions.BadRequestException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -41,13 +42,14 @@ public class DsopEndpointSearchController {
     @ApiImplicitParams({
         @ApiImplicitParam(name = "active", dataType = "string", paramType = "query", value = "Filters active (not expired and not removed)"),
         @ApiImplicitParam(name = "serviceType", dataType = "string", paramType = "query", value = "Filters by service type"),
-        @ApiImplicitParam(name = "orgNos", dataType = "string", paramType = "query", value = "Filters by publisher organisation number. Multiple values separated with commas.")
+        @ApiImplicitParam(name = "orgNos", dataType = "string", paramType = "query", value = "Filters by publisher organisation number. Multiple values separated with commas."),
+        @ApiImplicitParam(name = "environment", dataType = "string", paramType = "query", value = "Filters on environment (\"test\", \"production\"). Multiple values separated with commas.")
     })
     @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
     public EndpointQueryResponse search(
         @ApiParam(hidden = true)
         @RequestParam Map<String, String> params
-    ) {
+    ) throws BadRequestException {
         logger.debug("GET /apis/endpoints?{}", params);
 
         QueryBuilder searchQuery = new ApiSearchESQueryBuilder()
@@ -66,6 +68,12 @@ public class DsopEndpointSearchController {
 
         SearchResponse elasticResponse = searchRequest.execute().actionGet();
 
-        return EndpointQueryResponse.fromElasticResponse(elasticResponse);
+        EnvironmentEnum env = EnvironmentEnum.fromStringValue(params.get("environment"));
+
+        if(env == EnvironmentEnum.UNDEFINED) {
+            throw new BadRequestException();
+        }
+
+        return EndpointQueryResponse.fromElasticResponse(elasticResponse, env);
     }
 }
