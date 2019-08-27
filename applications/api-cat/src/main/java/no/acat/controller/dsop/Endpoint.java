@@ -71,7 +71,9 @@ public class Endpoint {
     }
 
     private static boolean filterByEnvironment(Server server, EnvironmentEnum environment) {
-        if (environment == EnvironmentEnum.PRODUCTION) {
+        if(server == null || server.getDescription() == null) {
+            return false;
+        } else if (environment == EnvironmentEnum.PRODUCTION) {
             return server.getDescription().toLowerCase().contains("production");
         } else if (environment == EnvironmentEnum.TEST) {
             return server.getDescription().toLowerCase().contains("test");
