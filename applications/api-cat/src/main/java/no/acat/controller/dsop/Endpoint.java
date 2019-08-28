@@ -39,8 +39,8 @@ public class Endpoint {
     @ApiModelProperty("Transport method")
     String transportProfile;
 
-    @ApiModelProperty("Description")
-    String description;
+    @ApiModelProperty("The environment the url points to")
+    String environment;
 
     static Endpoint fromElasticHit(SearchHit hit, EnvironmentEnum environment) {
         ApiDocument apiDocument = new Gson().fromJson(hit.getSourceAsString(), ApiDocument.class);
@@ -66,7 +66,7 @@ public class Endpoint {
             .url(server.getUrl())
             .expirationDate(apiDocument.getDeprecationInfoExpirationDate())
             .transportProfile("eOppslag")
-            .description(server.getDescription())
+            .environment(environment.value)
             .build();
     }
 
