@@ -1,9 +1,15 @@
 package no.acat.controller.dsop;
 
 public enum EnvironmentEnum {
-    TEST,
-    PRODUCTION,
-    UNDEFINED;
+    TEST("test"),
+    PRODUCTION("production"),
+    UNDEFINED("undefined");
+
+    public final String value;
+
+    EnvironmentEnum(String value) {
+        this.value = value;
+    }
 
     public static EnvironmentEnum fromStringValue(String value) {
         if(value == null) {
