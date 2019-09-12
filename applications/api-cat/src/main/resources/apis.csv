@@ -21,5 +21,5 @@ Id,OrgNr,OrgName,ApiSpecUrl,ApiDocUrl,NationalComponent,DatasetRefs,ServiceType
 21,837884942,SPAREBANK 1 ØSTFOLD AKERSHUS,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Sparebank1_837884942_Accounts-API.json,,,,Kontoopplysninger
 22,920426530,SPAREBANK 1 ØSTLANDET,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Sparebank1_920426530_Accounts-API.json,,,,Kontoopplysninger
 23,984851006,DNB,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/DNB_984851006_Accounts-API.json,,,,Kontoopplysninger
-23,920058817,"Nordea Bank Abp, filial i Norge",https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Nordea_Bank_Abp_920058817_Accounts-API.json,,,,Kontoopplysninger
-23,998997801,"Komplett Bank AS",https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Komplett_Bank_998997801_Accounts-API.json,,,,Kontoopplysninger
+24,920058817,"Nordea Bank Abp, filial i Norge",https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Nordea_Bank_Abp_920058817_Accounts-API.json,,,,Kontoopplysninger
+25,998997801,"Komplett Bank AS",https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Komplett_Bank_998997801_Accounts-API.json,,,,Kontoopplysninger
