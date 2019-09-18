@@ -16,7 +16,6 @@ public class EndpointQueryResponse {
     long total;
 
     static EndpointQueryResponse fromElasticResponse(SearchResponse elasticResponse, EnvironmentEnum environment) {
-        long total = elasticResponse.getHits().getTotalHits();
         List<Endpoint> endpoints = Arrays
             .stream(elasticResponse.getHits().getHits())
             .map(hit -> Endpoint.fromElasticHit(hit, environment))
@@ -24,7 +23,7 @@ public class EndpointQueryResponse {
             .collect(Collectors.toList());
 
         return EndpointQueryResponse.builder()
-            .total(total)
+            .total(endpoints.size())
             .endpoints(endpoints)
             .build();
     }
