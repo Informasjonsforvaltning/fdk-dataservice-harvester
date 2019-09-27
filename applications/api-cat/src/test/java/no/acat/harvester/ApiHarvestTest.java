@@ -45,7 +45,7 @@ public class ApiHarvestTest {
 
         harvester.harvestAll();
 
-        verify(apiDocumentRepositoryMock, times(25)).createOrReplaceApiDocument(any());
+        verify(apiDocumentRepositoryMock, times(26)).createOrReplaceApiDocument(any());
     }
 
 
@@ -77,7 +77,7 @@ public class ApiHarvestTest {
 
         harvester.harvestAll();
 
-        verify(apiDocumentRepositoryMock, times(24)).createOrReplaceApiDocument(any());
+        verify(apiDocumentRepositoryMock, times(25)).createOrReplaceApiDocument(any());
     }
 
     @Test(expected = RuntimeException.class)
