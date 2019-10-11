@@ -25,3 +25,6 @@ Id,OrgNr,OrgName,ApiSpecUrl,ApiDocUrl,NationalComponent,DatasetRefs,ServiceType
 25,998997801,"Komplett Bank AS",https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Komplett_Bank_998997801_Accounts-API.json,,,,Kontoopplysninger
 26,991455671,"Bank Norwegian AS",https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Bank_Norwegian_AS_991455671_Accounts-API.json,,,,Kontoopplysninger
 27,937905378,"Sparebank 68 grader Nord",https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Sparebank_68_grader_Nord_937905378_Accounts-API.json,,,,Kontoopplysninger
+28,937894538,"Sparebanken Sør",https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Sparebanken_Sor_937894538_Accounts-API.json,,,,Kontoopplysninger
+29,971171324,"Handelsbanken",https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Handelsbanken_971171324_Accounts-API.json,,,,Kontoopplysninger
+30,915287700,"Sbanken",https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Sbanken_915287700_Accounts-API.json,,,,Kontoopplysninger
