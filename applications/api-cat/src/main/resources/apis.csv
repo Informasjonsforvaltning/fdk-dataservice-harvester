@@ -52,7 +52,7 @@ Id,OrgNr,OrgName,ApiSpecUrl,ApiDocUrl,NationalComponent,DatasetRefs,ServiceType
 52,937902174,Hemne Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Hemne_Sparebank_937902174_Accounts-API.json,,,,Kontoopplysninger
 53,937893299,Hjartdal og Gransherad Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Hjartdal_og_Gransherad_Sparebank_937893299_Accounts-API.json,,,,Kontoopplysninger
 54,937896581,Hjelmeland Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Hjelmeland_Sparebank_937896581_Accounts-API.json,,,,Kontoopplysninger
-55,937885822,Høland og Setskog Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Holand_og_Setskog Sparebank_937885822_Accounts-API.json,,,,Kontoopplysninger
+55,937885822,Høland og Setskog Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Holand_og_Setskog_Sparebank_937885822_Accounts-API.json,,,,Kontoopplysninger
 56,937889097,Hønefoss Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Honefoss_Sparebank_937889097_Accounts-API.json,,,,Kontoopplysninger
 57,982719445,Jernbanepersonalets Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Jernbanepersonalets_Sparebank_982719445_Accounts-API.json,,,,Kontoopplysninger
 58,937895976,Jæren Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Jeren_Sparebank_937895976_Accounts-API.json,,,,Kontoopplysninger
