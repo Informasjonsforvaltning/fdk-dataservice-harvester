@@ -39,12 +39,12 @@ Id,OrgNr,OrgName,ApiSpecUrl,ApiDocUrl,NationalComponent,DatasetRefs,ServiceType
 39,937893833,Birkenes Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Birkenes_Sparebank_937893833_Accounts-API.json,,,,Kontoopplysninger
 40,937902085,Bjugn Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Bjugn_Sparebank_937902085_Accounts-API.json,,,,Kontoopplysninger
 41,837886252,Blaker Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Blaker_Sparebank_837886252_Accounts-API.json,,,,Kontoopplysninger
-42,937891601,Drangedal og Tørdal Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Drangedal_og_Tørdal_Sparebank_937891601_Accounts-API.json,,,,Kontoopplysninger
+42,937891601,Drangedal og Tørdal Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Drangedal_og_Tordal_Sparebank_937891601_Accounts-API.json,,,,Kontoopplysninger
 43,937884494,Eidsberg Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Eidsberg_Sparebank_937884494_Accounts-API.json,,,,Kontoopplysninger
 44,937888570,Etnedal Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Etnedal_Sparebank_937888570_Accounts-API.json,,,,Kontoopplysninger
 45,937894171,Evje og Hornnes Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Evje_og_Hornnes Sparebank_937894171_Accounts-API.json,,,,Kontoopplysninger
 46,985750378,Fornebu Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Fornebu_Sparebank_985750378_Accounts-API.json,,,,Kontoopplysninger
-47,937904673,Gildeskål Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Gildeskål_Sparebank_937904673_Accounts-API.json,,,,Kontoopplysninger
+47,937904673,Gildeskål Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Gildeskal_Sparebank_937904673_Accounts-API.json,,,,Kontoopplysninger
 48,937903146,Grong Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Grong_Sparebank_937903146_Accounts-API.json,,,,Kontoopplysninger
 49,937886705,Grue Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Grue_Sparebank_937886705_Accounts-API.json,,,,Kontoopplysninger
 50,837902622,Haltdalen Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Haltdalen_Sparebank_837902622_Accounts-API.json,,,,Kontoopplysninger
@@ -52,13 +52,13 @@ Id,OrgNr,OrgName,ApiSpecUrl,ApiDocUrl,NationalComponent,DatasetRefs,ServiceType
 52,937902174,Hemne Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Hemne_Sparebank_937902174_Accounts-API.json,,,,Kontoopplysninger
 53,937893299,Hjartdal og Gransherad Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Hjartdal_og_Gransherad_Sparebank_937893299_Accounts-API.json,,,,Kontoopplysninger
 54,937896581,Hjelmeland Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Hjelmeland_Sparebank_937896581_Accounts-API.json,,,,Kontoopplysninger
-55,937885822,Høland og Setskog Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Høland_og_Setskog Sparebank_937885822_Accounts-API.json,,,,Kontoopplysninger
-56,937889097,Hønefoss Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Hønefoss_Sparebank_937889097_Accounts-API.json,,,,Kontoopplysninger
+55,937885822,Høland og Setskog Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Holand_og_Setskog Sparebank_937885822_Accounts-API.json,,,,Kontoopplysninger
+56,937889097,Hønefoss Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Honefoss_Sparebank_937889097_Accounts-API.json,,,,Kontoopplysninger
 57,982719445,Jernbanepersonalets Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Jernbanepersonalets_Sparebank_982719445_Accounts-API.json,,,,Kontoopplysninger
-58,937895976,Jæren Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Jæren_Sparebank_937895976_Accounts-API.json,,,,Kontoopplysninger
+58,937895976,Jæren Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Jaren_Sparebank_937895976_Accounts-API.json,,,,Kontoopplysninger
 59,937894805,Kvinesdal Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Kvinesdal_Sparebank_937894805_Accounts-API.json,,,,Kontoopplysninger
 60,937890729,Larvikbanken - Din Personlige Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Larvikbanken_-_Din_Personlige_Sparebank_937890729_Accounts-API.json,,,,Kontoopplysninger
-61,937885911,Lillestrøm Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Lillestrøm_Sparebank_937885911_Accounts-API.json,,,,Kontoopplysninger
+61,937885911,Lillestrøm Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Lillestrom_Sparebank_937885911_Accounts-API.json,,,,Kontoopplysninger
 62,937884672,Marker Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Marker_Sparebank_937884672_Accounts-API.json,,,,Kontoopplysninger
 63,937901291,Melhus Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Melhus_Sparebank_937901291_Accounts-API.json,,,,Kontoopplysninger
 64,937902719,Nidaros Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Nidaros_Sparebank_937902719_Accounts-API.json,,,,Kontoopplysninger
@@ -68,7 +68,7 @@ Id,OrgNr,OrgName,ApiSpecUrl,ApiDocUrl,NationalComponent,DatasetRefs,ServiceType
 68,947278770,Orkla Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Orkla_Sparebank_947278770_Accounts-API.json,,,,Kontoopplysninger
 69,937900953,Rindal Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Rindal_Sparebank_937900953_Accounts-API.json,,,,Kontoopplysninger
 70,937900775,Romsdal Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Romsdal_Sparebank_937900775_Accounts-API.json,,,,Kontoopplysninger
-71,956548888,RørosBanken Røros Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/RørosBanken_Røros_Sparebank_956548888_Accounts-API.json,,,,Kontoopplysninger
+71,956548888,RørosBanken Røros Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/RorosBanken_Roros_Sparebank_956548888_Accounts-API.json,,,,Kontoopplysninger
 72,915691161,Sandnes Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Sandnes_Sparebank_915691161_Accounts-API.json,,,,Kontoopplysninger
 73,937901836,Selbu Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Selbu_Sparebank_937901836_Accounts-API.json,,,,Kontoopplysninger
 74,937891245,Skagerrak Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Skagerrak_Sparebank_937891245_Accounts-API.json,,,,Kontoopplysninger
@@ -78,18 +78,18 @@ Id,OrgNr,OrgName,ApiSpecUrl,ApiDocUrl,NationalComponent,DatasetRefs,ServiceType
 78,937891512,Sparebanken DIN,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Sparebanken_DIN_937891512_Accounts-API.json,,,,Kontoopplysninger
 79,937903979,Sparebanken Narvik,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Sparebanken_Narvik_937903979_Accounts-API.json,,,,Kontoopplysninger
 80,937902352,Stadsbygd Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Stadsbygd_Sparebank_937902352_Accounts-API.json,,,,Kontoopplysninger
-81,937886160,Strømmen Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Strømmen_Sparebank_937886160_Accounts-API.json,,,,Kontoopplysninger
+81,937886160,Strømmen Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Strommen_Sparebank_937886160_Accounts-API.json,,,,Kontoopplysninger
 82,937899963,Sunndal Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Sunndal_Sparebank_937899963_Accounts-API.json,,,,Kontoopplysninger
 83,937900031,Surnadal Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Surnadal_Sparebank_937900031_Accounts-API.json,,,,Kontoopplysninger
 84,937891423,Tinn Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Tinn_Sparebank_937891423_Accounts-API.json,,,,Kontoopplysninger
 85,816793432,Tolga-Os Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Tolga-Os_Sparebank_816793432_Accounts-API.json,,,,Kontoopplysninger
 86,937887787,Totens Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Totens_Sparebank_937887787_Accounts-API.json,,,,Kontoopplysninger
-87,937885377,Trøgstad Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Trøgstad_Sparebank_937885377_Accounts-API.json,,,,Kontoopplysninger
+87,937885377,Trøgstad Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Trogstad_Sparebank_937885377_Accounts-API.json,,,,Kontoopplysninger
 88,937897375,Tysnes Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Tysnes_Sparebank_937897375_Accounts-API.json,,,,Kontoopplysninger
 89,937888759,Valdres Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Valdres_Sparebank_937888759_Accounts-API.json,,,,Kontoopplysninger
 90,937893922,Valle Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Valle_Sparebank_937893922_Accounts-API.json,,,,Kontoopplysninger
 91,817244742,Voss Veksel- og Landmandsbank ASA,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Voss_Veksel-_og_Landmandsbank_ASA_817244742_Accounts-API.json,,,,Kontoopplysninger
-92,937901925,Ørland Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Ørland_Sparebank_937901925_Accounts-API.json,,,,Kontoopplysninger
-93,837900212,Ørskog Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Ørskog_Sparebank_837900212_Accounts-API.json,,,,Kontoopplysninger
-94,937894260,Østre Agder Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Østre_Agder_Sparebank_937894260_Accounts-API.json,,,,Kontoopplysninger
-95,937902441,Åfjord Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Åfjord_Sparebank_937902441_Accounts-API.json,,,,Kontoopplysninger
+92,937901925,Ørland Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Orland_Sparebank_937901925_Accounts-API.json,,,,Kontoopplysninger
+93,837900212,Ørskog Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Orskog_Sparebank_837900212_Accounts-API.json,,,,Kontoopplysninger
+94,937894260,Østre Agder Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Ostre_Agder_Sparebank_937894260_Accounts-API.json,,,,Kontoopplysninger
+95,937902441,Åfjord Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Afjord_Sparebank_937902441_Accounts-API.json,,,,Kontoopplysninger
