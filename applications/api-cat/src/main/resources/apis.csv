@@ -93,3 +93,4 @@ Id,OrgNr,OrgName,ApiSpecUrl,ApiDocUrl,NationalComponent,DatasetRefs,ServiceType
 93,837900212,Ørskog Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Orskog_Sparebank_837900212_Accounts-API.json,,,,Kontoopplysninger
 94,937894260,Østre Agder Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Ostre_Agder_Sparebank_937894260_Accounts-API.json,,,,Kontoopplysninger
 95,937902441,Åfjord Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Afjord_Sparebank_937902441_Accounts-API.json,,,,Kontoopplysninger
+96,917135428,Kredd AS,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Kredd_AS_917135428_Accounts-API.json,,,,Kontoopplysninger
