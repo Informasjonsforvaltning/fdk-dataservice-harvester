@@ -94,3 +94,20 @@ Id,OrgNr,OrgName,ApiSpecUrl,ApiDocUrl,NationalComponent,DatasetRefs,ServiceType
 94,937894260,Østre Agder Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Ostre_Agder_Sparebank_937894260_Accounts-API.json,,,,Kontoopplysninger
 95,937902441,Åfjord Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Afjord_Sparebank_937902441_Accounts-API.json,,,,Kontoopplysninger
 96,917135428,Kredd AS,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Kredd_AS_917135428_Accounts-API.json,,,,Kontoopplysninger
+97,914864445,BN Bank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/BN_Bank_914864445_Accounts-API.json,,,,Kontoopplysninger
+98,937897464,Etne Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Etne_Sparebank_937897464_Accounts-API.json,,,,Kontoopplysninger
+99,937894627,Flekkefjord Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Flekkefjord_Sparebank_937894627_Accounts-API.json,,,,Kontoopplysninger
+100,837895502,Haugesund Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Haugesund_Sparebank_837895502_Accounts-API.json,,,,Kontoopplysninger
+101,937893655,Lillesands Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Lillesands_Sparebank_937893655_Accounts-API.json,,,,Kontoopplysninger
+102,937898614,Luster Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Luster_Sparebank_937898614_Accounts-API.json,,,,Kontoopplysninger
+103,937896670,Skudenes & Aakra Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Skudenes_og_Aakra_Sparebank_937896670_Accounts-API.json,,,,Kontoopplysninger
+104,937894716,Spareskillingsbanken,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Spareskillingsbanken_937894716_Accounts-API.json,,,,Kontoopplysninger
+105,937895054,Søgne og Greipstad Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Sogne_og_Greipstad_Sparebank_937895054_Accounts-API.json,,,,Kontoopplysninger
+106,937897286,Voss Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Voss_Sparebank_937897286_Accounts-API.json,,,,Kontoopplysninger
+107,990323429,Gjensidige Bank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Gjensidige_Bank_990323429_Accounts-API.json,,,,Kontoopplysninger
+108,937904029,Helgeland Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Helgeland_Sparebank_937904029_Accounts-API.json,,,,Kontoopplysninger
+109,980374181,Landkreditt Bank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Landkreditt_Bank_980374181_Accounts-API.json,,,,Kontoopplysninger
+110,911986884,OBOS-banken,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/OBOS-banken_911986884_Accounts-API.json,,,,Kontoopplysninger
+111,937899319,Sparebanken Møre,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Sparebanken_More_937899319_Accounts-API.json,,,,Kontoopplysninger
+112,937888937,Sparebanken Øst,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Sparebanken_Ost_937888937_Accounts-API.json,,,,Kontoopplysninger
+113,832554332,Sparebanken Vest,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Sparebanken_Vest_832554332_Accounts-API.json,,,,Kontoopplysninger
