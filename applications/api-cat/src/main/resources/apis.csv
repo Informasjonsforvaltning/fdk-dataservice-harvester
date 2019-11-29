@@ -111,3 +111,4 @@ Id,OrgNr,OrgName,ApiSpecUrl,ApiDocUrl,NationalComponent,DatasetRefs,ServiceType
 111,937899319,Sparebanken Møre,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Sparebanken_More_937899319_Accounts-API.json,,,,Kontoopplysninger
 112,937888937,Sparebanken Øst,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Sparebanken_Ost_937888937_Accounts-API.json,,,,Kontoopplysninger
 113,832554332,Sparebanken Vest,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Sparebanken_Vest_832554332_Accounts-API.json,,,,Kontoopplysninger
+114,937896859,Fana Sparebank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Fana_Sparebank_937896859_Accounts-API.json,,,,Kontoopplysninger
