@@ -115,3 +115,4 @@ Id,OrgNr,OrgName,ApiSpecUrl,ApiDocUrl,NationalComponent,DatasetRefs,ServiceType
 115,916012683,MyBank ASA,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/MyBank_ASA_916012683_Accounts-API.json,,,,Kontoopplysninger
 116,953299216,Storebrand Bank ASA,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Storebrand_Bank_ASA_953299216_Accounts-API.json,,,,Kontoopplysninger
 117,946670081,Sparebanken Sogn og Fjordane,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Sparebanken_Sogn_og_Fjordane_946670081_Accounts-API.json,,,,Kontoopplysninger
+118,993821837,KLP Banken AS,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/KLP_Banken_AS_993821837_Accounts-API.json,,,,Kontoopplysninger
