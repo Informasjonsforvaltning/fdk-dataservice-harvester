@@ -117,3 +117,5 @@ Id,OrgNr,OrgName,ApiSpecUrl,ApiDocUrl,NationalComponent,DatasetRefs,ServiceType
 117,946670081,Sparebanken Sogn og Fjordane,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Sparebanken_Sogn_og_Fjordane_946670081_Accounts-API.json,,,,Kontoopplysninger
 118,993821837,KLP Banken AS,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/KLP_Banken_AS_993821837_Accounts-API.json,,,,Kontoopplysninger
 119,995610760,Brage Finans AS,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Brage_Finans_AS_995610760_Accounts-API.json,,,,Kontoopplysninger
+120,977074010,Danske Bank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Danske_Bank_977074010_Accounts-API.json,,,,Kontoopplysninger
+121,816914582,Instabank ASA,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Instabank_ASA_816914582_Accounts-API.json,,,,Kontoopplysninger
