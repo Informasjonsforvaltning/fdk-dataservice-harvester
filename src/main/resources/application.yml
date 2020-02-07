@@ -28,3 +28,15 @@ elastic:
   clusterName: elasticsearch
 server:
   port: 8103
+
+---
+#Utv-miljø lokalt på egen PC
+spring:
+  profiles: test
+application:
+  apiRootUrl: ${WIREMOCK_TEST_HOST}/api
+elastic:
+  clusterNodes: ${FDK_ES_CLUSTERNODES}
+  clusterName: ${FDK_ES_CLUSTERNAME}
+server:
+  port: 8080
