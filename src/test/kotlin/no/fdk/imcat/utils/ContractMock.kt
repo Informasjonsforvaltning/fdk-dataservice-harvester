@@ -13,6 +13,15 @@ fun startMockServer() {
                         .withStatus(200))
         )
 
+        mockserver.stubFor(get(urlEqualTo("/api/registration/apis"))
+                .willReturn(okJson(File("src/test/resources/test-apis.json").readText())))
+
+        mockserver.stubFor(get(urlMatching("/api/publishers/([0-9]*)"))
+            .willReturn(okJson(File("src/test/resources/org.json").readText())))
+
+        mockserver.stubFor(get(urlMatching("/api/datasets/byuri(.*)"))
+            .willReturn(okJson("{}")))
+
         mockserver.start()
     }
 }

@@ -1,0 +1,708 @@
+{
+  "_embedded" : {
+    "apiRegistrationPublics" : [ {
+      "datasetUris" : [ "https://data.norge.no/node/2865", "http://brreg.no/catalogs/910244132/datasets/4f20bda3-c500-4d36-a39d-65db09fdb7ca", "https://kartkatalog.geonorge.no/Metadata/uuid/85d3cc07-e209-42fb-9c6f-b03051cd957c", "https://dataut.vegvesen.no/dataset/cac95f44-b82e-4f42-b36d-84b63d0c6d9b" ],
+      "nationalComponent" : true,
+      "isOpenAccess" : true,
+      "isOpenLicense" : true,
+      "isFree" : true,
+      "cost" : "33334444",
+      "usageLimitation" : "Ingen",
+      "performance" : "Ingen",
+      "availability" : "Ingen",
+      "statusCode" : "EXPERIMENTAL",
+      "serviceType" : "Kundeforhold",
+      "id" : "2260e2ed-d17f-4ff7-badf-9bc1eca0cc04",
+      "catalogId" : "910244132",
+      "apiSpecUrl" : "https://raw.githubusercontent.com/brreg/openAPI/master/specs/enhetsregisteret.json",
+      "apiSpecification" : {
+        "info" : {
+          "title" : "Åpne Data fra Enhetsregisteret - API Dokumentasjon",
+          "description" : "Teknisk beskrivelse av REST-tjenestene i Åpne Data fra Enhetsregisteret - Work in progress\n---\n\n## Ordbok\n### Enhetsregisteret\nRegister over grunndata om juridiske personer og andre enheter. Enhetsregisteret tildeler organisasjonsnummer for entydig identifisering av enheter.\n\n### Organisasjonsnummer\nNisifret nummer som entydig identifiserer enheter i Enhetsregisteret.\n\n### Enhet\nEnhet på øverste nivå i registreringsstrukturen i Enhetsregisteret. Eksempelvis enkeltpersonforetak, foreninger, selskap, sameier og andre som er registrert i Enhetsregisteret. Identifiseres med organisasjonsnummer.\n\n### Underenhet\nEnhet på laveste nivå i registreringsstrukturen i Enhetsregisteret. En underenhet kan ikke eksistere alene og har alltid knytning til en hovedenhet. Identifiseres med organisasjonsnummer.\n\n### Organisasjonsform\nOrganisasjonsform er virksomhetens formelle organisering og gir retningslinjer overfor blant annet ansvarsforhold, skatt, revisjonsplikt, rettigheter og plikter.\n\n### Næringskode\n[Næringskoder]: https://www.brreg.no/bedrift/naeringskoder/\n[Næringskoder]  på brreg.no\n\n[Standard for næringsgruppering]: https://www.ssb.no/klass/klassifikasjoner/6\n[Standard for næringsgruppering]\n---\n\n## Versjonering\nDu kan velge major versjon ved å spesifisere HTTP Accept-headeren. Bruk headeren spesifisert i tabellen under. Hvis versjon ikke spesifiseres, vil man få siste versjon.\n<table>\n  <thead>\n    <tr>\n      <th>API</th>\n      <th>Header</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>/</td>\n      <td>application/vnd.enhetsregisteret.v1+json</td>\n    </tr>\n    <tr>\n      <td>/organisasjonsformer</td>\n      <td>application/vnd.enhetsregisteret.organisasjonsform.v1+json</td>\n    </tr>\n  </tbody>\n</table>\n\n\n### Strategi\nVi skal normalt ikke bryte bakoverkompabiliteten med våre brukere. Likevel kan det være nødvendig i enkelte situasjoner, av for eksempel juridiske årsaker eller vedlikehold, å gjøre endringer som medfører et slikt brudd. Vi vil i dette tilfellet versjonere tjenesten slik at nyeste versjon vil være tilgjengelig sammen med forrige versjon.\n\n#### Dersom man ikke benytter versjonering i accept header, vil man få siste versjon.\n\nEldre versjon vil anses som utdatert/deprecated, og vil på sikt bli tatt bort. Ved behov for denne typen endringer vil vi forsøke å gi bruker god tid, og varsle om endringen i forkant. Se punkt om varsling.\n\n### Når innføres ny versjon\nVi vil innføre en ny versjon når vi introduserer en endring som påvirker bakoverkompabiliteten. Mindre endringer og patcher vil ikke medføre versjonsendring i header.\n\n### Når fjernes en versjon\nVi vil legge ut varsel/driftsmeldinger i god tid på følgende steder:\n- [Driftsmeldinger]: https://www.brreg.no/om-oss/driftsmeldinger/\n[Driftsmeldinger]\n- [RSS-feed]: https://www.brreg.no/produkter-og-tjenester/rss-feed/\n[RSS-feed].\n\nEksempel på endring som medfører versjonering:\n\n- Fjerne eller endre navn på et attributt i HTTP-responsen.\n\n- Fjerne eller endre navn på et REST endepunkt.\n\n---\n\n## Endringslogg\n<table>\n  <thead>\n    <tr>\n      <th>Versjon</th>\n      <th>Dato</th>\n      <th>Endring</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>1.1.0</td>\n      <td>14. august 2018</td>\n      <td>Ny tjeneste /oppdateringer/enheter og /oppdateringer/underenheter</td>\n    </tr>\n    <tr>\n      <td>1.0.0</td>\n      <td>6. april 2018</td>\n      <td>Produksjonssetting av ny åpne data tjeneste for Enhetsregisteret</td>\n    </tr>\n  </tbody>\n</table>\n",
+          "contact" : {
+            "name" : "Forenkling og Brukerdialog hos Brønnøysundregistrene",
+            "email" : "opendata@brreg.no"
+          },
+          "license" : {
+            "name" : "Norsk lisens for offentlige data (NLOD)",
+            "url" : "https://data.norge.no/nlod/no/"
+          },
+          "version" : "1.0.0"
+        },
+        "paths" : {
+          "/" : {
+            "get" : {
+              "description" : "Hent alle tjenester"
+            }
+          },
+          "/enheter" : {
+            "get" : {
+              "description" : "Hent alle enheter"
+            }
+          },
+          "/enheter/{organisasjonsnummer}" : {
+            "get" : {
+              "description" : "Hent detaljer om enhet"
+            }
+          },
+          "/underenheter" : {
+            "get" : {
+              "description" : "Hent alle underenheter"
+            }
+          },
+          "/underenheter/{organisasjonsnummer}" : {
+            "get" : {
+              "description" : "Hent detaljer om underenhet"
+            }
+          },
+          "/oppdateringer/enheter" : {
+            "get" : {
+              "description" : "Hent oppdateringer på enheter"
+            }
+          },
+          "/oppdateringer/underenheter" : {
+            "get" : {
+              "description" : "Hent oppdateringer på underenheter"
+            }
+          },
+          "/organisasjonsformer" : {
+            "get" : {
+              "description" : "Hent alle organisasjonsformer"
+            }
+          },
+          "/organisasjonsformer/{orgformKode}" : {
+            "get" : {
+              "description" : "Hent en enkelt organisasjonsform fra kode"
+            }
+          }
+        },
+        "servers" : [ {
+          "url" : "https://data.brreg.no/enhetsregisteret/api",
+          "description" : "Produksjon"
+        } ],
+        "formats" : [ "application/json", "application/vnd.enhetsregisteret.enhet.v1+json", "application/vnd.enhetsregisteret.organisasjonsform.v1+json" ]
+      }
+    }, {
+      "datasetUris" : [ "http://brreg.no/catalogs/910244132/datasets/ae6bd28c-3aad-410f-9195-ba3842ea070c" ],
+      "nationalComponent" : true,
+      "isOpenAccess" : true,
+      "isOpenLicense" : true,
+      "isFree" : true,
+      "cost" : "11",
+      "usageLimitation" : "22",
+      "performance" : "33",
+      "availability" : "44",
+      "statusCode" : "EXPERIMENTAL",
+      "serviceType" : "Kundeforhold",
+      "id" : "f32364ad-8bab-49ab-b41d-4a9ef4b96c4c",
+      "catalogId" : "910244132",
+      "apiSpec" : "{\"swagger\":\"2.0\",\"info\":{\"version\":\"v1.0\",\"title\":\"Sindres nasjonale opplæringskontorregister API\"},\"host\":\"data-nor.udir.no\",\"schemes\":[\"https\"],\"paths\":{\"/enhet/{id}\":{\"get\":{\"tags\":[\"Enhet\"],\"summary\":\"Hent enhet\",\"description\":\"Returnerer alle enheter i registeret. \\r\\n            Anbefalt bruk mellom 15.00 - 08.00 for et fullverdig datagrunnlag utenom importtid til opplæringskontorregisteret.\\r\\n            Cachetid er på 2 timer.\",\"operationId\":\"EnhetApi_GetEnhet\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"parameters\":[{\"name\":\"id\",\"in\":\"path\",\"required\":true,\"type\":\"string\"}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"$ref\":\"#/definitions/EnhetNORApiModel\"}}}}},\"/enheter\":{\"get\":{\"tags\":[\"Enhet\"],\"summary\":\"Alle enheter\",\"description\":\"Returnerer alle enheter i kommune.\",\"operationId\":\"EnhetApi_GetEnheter\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/EnhetNORTinyApiModel\"}}}}}},\"/enheter/{date}\":{\"get\":{\"tags\":[\"Enhet\"],\"summary\":\"Enheter endret\",\"description\":\"Returnerer alle enheter i registeret det er registrert endringer på fra gitt dato.\",\"operationId\":\"EnhetApi_GetEnheterFromDate\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"parameters\":[{\"name\":\"date\",\"in\":\"path\",\"required\":true,\"type\":\"string\",\"format\":\"date-time\"}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/EnhetNORTinyApiModel\"}}}}}},\"/enheter/kommune/{kommuneNr}\":{\"get\":{\"tags\":[\"Enhet\"],\"summary\":\"Alle enheter i kommune\",\"description\":\"Returnerer alle enheter i fylke.\",\"operationId\":\"EnhetApi_GetEnheterInKommune\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"parameters\":[{\"name\":\"kommuneNr\",\"in\":\"path\",\"required\":true,\"type\":\"string\"}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/EnhetSmallApiModel\"}}}}}},\"/enheter/fylke/{fylkeNr}\":{\"get\":{\"tags\":[\"Enhet\"],\"summary\":\"Alle enheter i fylke\",\"description\":\"Returnerer alle enheter i fylke.\",\"operationId\":\"EnhetApi_GetEnheterTinyInFylke\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"parameters\":[{\"name\":\"fylkeNr\",\"in\":\"path\",\"required\":true,\"type\":\"string\"}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/EnhetSmallApiModel\"}}}}}},\"/enheter/kontortype/{kontorTypeId}\":{\"get\":{\"tags\":[\"Enhet\"],\"summary\":\"Alle enheter med opplæringskontortype\",\"description\":\"Returnerer alle enheter som inneholder gitt opplæringskontortype.\",\"operationId\":\"EnhetApi_GetEnheterWithKontorType\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"parameters\":[{\"name\":\"kontorTypeId\",\"in\":\"path\",\"required\":true,\"type\":\"string\"}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/EnhetSmallApiModel\"}}}}}},\"/enheter/nacekode/{nacekode}\":{\"get\":{\"tags\":[\"Enhet\"],\"summary\":\"Alle enheter med nacekode\",\"description\":\"Returnerer alle enheter som inneholder gitt nacekode.\",\"operationId\":\"EnhetApi_GetEnheterWithNacekode\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"parameters\":[{\"name\":\"nacekode\",\"in\":\"path\",\"required\":true,\"type\":\"string\"}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/EnhetSmallApiModel\"}}}}}},\"/enheter/sok\":{\"post\":{\"tags\":[\"Enhet\"],\"summary\":\"Søk i enheter\",\"description\":\"Returnerer enheter basert på søkekriterier. Requesten må inneholde et objekt som vist under. \\r\\n            Her kan du kombinere søkekriterier som søkestreng, nacekode, kontortype, fylke og kommune samt filtrering på om du vil ha kun opplæringskontor, \\r\\n            opplæringskontoreiere eller andre enheter som f.eks organisasjonsledd.  Du kan også filtrere på om du vil\\r\\n            ha aktive eller nedlagte enheter.\\r\\n            Ved behov om å ytterligere filtrering og funksjonalitet kan hele datagrunnlag for registere hentes i metoden /enheter.\\r\\n            \\r\\n            EGENSKAPER:\\r\\n            SokeString - Begrens til enheter med navn, orgnr eller nsrid\\r\\n            NaceKode - Begrens til enheter med nacekode\\r\\n            KontorType - Begrens til enheter med opplæringskontortype\\r\\n            Fylke - Begrens til enheter i fylke\\r\\n            Kommune - Begrens til enheter i kommune\\r\\n            \\r\\n            Aktive - Enheter som er aktive\\r\\n            Nedlagte - Enheter som ikke er aktive\\r\\n            AndreEnheter - Enheter som har enhetstype STAT eller ORGL\\r\\n            Eiere - Enheter som eier et opplæringskontor\\r\\n            Opplaringskontor - Enheter som er opplæringskontor \\r\\n            \\r\\n            MERK:\\r\\n            En av egenskapene sokestring, fylke, kommune, nacekode eller kontortype må med for å få tilbake enheter. \\r\\n            Disse kan kombineres med de boolske egenskapene.\\r\\n            Boolske properties skal kun benyttes med value true.\\r\\n            Eksempler:\\r\\n            Hvis du ønsker å ikke ha med utgåtte enheter legger du med \\\"Aktive\\\": true\\r\\n            Hvis du ønsker kun nedlagte opplæringskontor i Oppland sender du med \\\"Fylke\\\": \\\"5\\\", \\\"Nedlagte\\\": true, \\\"Opplaringskontor\\\": true\\r\\n            Hvis ingen boolske properties er angitt så er det, det samme som at alle står til true.\",\"operationId\":\"EnhetApi_Sok\",\"consumes\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\",\"application/x-www-form-urlencoded\"],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"parameters\":[{\"name\":\"model\",\"in\":\"body\",\"required\":true,\"schema\":{\"$ref\":\"#/definitions/SokNORApiModel\"}}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/EnhetSmallApiModel\"}}}}}},\"/fylker\":{\"get\":{\"tags\":[\"Fylke\"],\"summary\":\"Alle fylker\",\"description\":\"Returnerer alle fylker.\",\"operationId\":\"FylkeApi_GetFylker\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/Fylke\"}}}}}},\"/kommuner\":{\"get\":{\"tags\":[\"Kommune\"],\"summary\":\"Alle kommuner\",\"description\":\"Returnerer alle kommuner.\",\"operationId\":\"KommuneApi_GetKommuner\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/Kommune\"}}}}}},\"/kommuner/{fylkeNr}\":{\"get\":{\"tags\":[\"Kommune\"],\"summary\":\"Alle kommuner i fylke\",\"description\":\"Returnerer alle kommuner i gitt fylke.\",\"operationId\":\"KommuneApi_GetKommunerInFylke\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"parameters\":[{\"name\":\"fylkeNr\",\"in\":\"path\",\"required\":true,\"type\":\"string\"}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/Kommune\"}}}}}},\"/kontortyper\":{\"get\":{\"tags\":[\"Kontortype\"],\"summary\":\"Alle opplæringskontortyper\",\"description\":\"Returnerer alle opplæringskontortyper.\",\"operationId\":\"KontorTypeApi_GetEnheter\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"$ref\":\"#/definitions/SkoleType\"}}}}},\"/nacekoder\":{\"get\":{\"tags\":[\"Nacekode\"],\"summary\":\"Alle nacekoder\",\"description\":\"Returnerer alle nacekoder for registeret.\",\"operationId\":\"NaceKodeApi_GetNacekoder\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"$ref\":\"#/definitions/Nacekode\"}}}}},\"/relasjonstyper\":{\"get\":{\"tags\":[\"Relasjon\"],\"summary\":\"Alle relasjonstyper\",\"description\":\"Returnerer alle relasjonstyper.\",\"operationId\":\"RelasjonApi_GetRelasjonsTyper\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"$ref\":\"#/definitions/RelasjonsType\"}}}}},\"/trestruktur/{orgNr}/{relasjonsType}\":{\"get\":{\"tags\":[\"Relasjon\"],\"summary\":\"Trestruktur for enhet med relasjonstype\",\"description\":\"Returnerer en trestruktur med underenheter av en gitt enhet basert på orgnr og relasjonstype.\",\"operationId\":\"RelasjonApi_GetEnheterWithNacekode\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"parameters\":[{\"name\":\"orgNr\",\"in\":\"path\",\"required\":true,\"type\":\"string\"},{\"name\":\"relasjonsType\",\"in\":\"path\",\"required\":true,\"type\":\"integer\",\"format\":\"int32\"}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"$ref\":\"#/definitions/EnhetTrestrukturApiModel\"}}}}}},\"definitions\":{\"EnhetNORApiModel\":{\"type\":\"object\",\"properties\":{\"NSRId\":{\"format\":\"int32\",\"type\":\"integer\"},\"OrgNr\":{\"type\":\"string\"},\"Navn\":{\"type\":\"string\"},\"Karakteristikk\":{\"type\":\"string\"},\"FulltNavn\":{\"type\":\"string\",\"readOnly\":true},\"Kallenavn\":{\"type\":\"string\"},\"KommuneNavn\":{\"type\":\"string\"},\"Epost\":{\"type\":\"string\"},\"Url\":{\"type\":\"string\"},\"Maalform\":{\"type\":\"string\"},\"OpplaeringsKontorLeder\":{\"type\":\"string\"},\"OpplaeringsKontorLederFornavn\":{\"type\":\"string\"},\"OpplaeringsKontorLederEtternavn\":{\"type\":\"string\"},\"GsiId\":{\"type\":\"string\"},\"Telefon\":{\"type\":\"string\"},\"Mobil\":{\"type\":\"string\"},\"Fax\":{\"type\":\"string\"},\"ErOpplaeringskontor\":{\"type\":\"boolean\"},\"ErOpplaeringskontorEier\":{\"type\":\"boolean\"},\"VisesPaaWeb\":{\"type\":\"boolean\"},\"ErAktiv\":{\"type\":\"boolean\"},\"AntallLaerlinger\":{\"format\":\"int32\",\"type\":\"integer\"},\"AnsatteFra\":{\"format\":\"int32\",\"type\":\"integer\"},\"AnsatteTil\":{\"format\":\"int32\",\"type\":\"integer\"},\"SistEndretDato\":{\"format\":\"date-time\",\"type\":\"string\"},\"OpprettetDato\":{\"format\":\"date-time\",\"type\":\"string\"},\"Besoksadresse\":{\"$ref\":\"#/definitions/Adresse\"},\"Nacekoder\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/Nacekode\"}},\"Postadresse\":{\"$ref\":\"#/definitions/Adresse\"},\"Fylke\":{\"$ref\":\"#/definitions/Fylke\"},\"EnhetsType\":{\"$ref\":\"#/definitions/EnhetsType\"},\"SektorType\":{\"$ref\":\"#/definitions/SektorType\"},\"OpplaeringsKontorTyper\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/SkoleType\"}},\"Kommune\":{\"$ref\":\"#/definitions/Kommune\"},\"Koordinater\":{\"$ref\":\"#/definitions/Koordinater\"},\"Utgaattype\":{\"$ref\":\"#/definitions/Utgaattype\"},\"ParentRelasjoner\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/Relasjon\"}},\"ChildRelasjoner\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/Relasjon\"}},\"PersonEpost\":{\"type\":\"string\"},\"PersonTelefon\":{\"type\":\"string\"}}},\"Adresse\":{\"type\":\"object\",\"properties\":{\"Adress\":{\"type\":\"string\"},\"Postnr\":{\"type\":\"string\"},\"Poststed\":{\"type\":\"string\"},\"Land\":{\"type\":\"string\"}}},\"Nacekode\":{\"type\":\"object\",\"properties\":{\"Kode\":{\"type\":\"string\"},\"Navn\":{\"type\":\"string\"},\"Versjon\":{\"type\":\"string\"}}},\"Fylke\":{\"type\":\"object\",\"properties\":{\"Fylkesnr\":{\"type\":\"string\"},\"Navn\":{\"type\":\"string\"},\"OrgNr\":{\"type\":\"string\"},\"OrgNrFylkesmann\":{\"type\":\"string\"}}},\"EnhetsType\":{\"type\":\"object\",\"properties\":{\"Type\":{\"type\":\"string\"},\"Navn\":{\"type\":\"string\"},\"Offentlig\":{\"type\":\"boolean\"}}},\"SektorType\":{\"type\":\"object\",\"properties\":{\"Navn\":{\"type\":\"string\"},\"Id\":{\"type\":\"string\"}}},\"SkoleType\":{\"type\":\"object\",\"properties\":{\"Navn\":{\"type\":\"string\"},\"NavnTekst\":{\"type\":\"string\"},\"Id\":{\"type\":\"string\"},\"ErSystemType\":{\"type\":\"boolean\"}}},\"Kommune\":{\"type\":\"object\",\"properties\":{\"ErNedlagt\":{\"type\":\"boolean\"},\"KommuneGruppe\":{\"$ref\":\"#/definitions/KommuneGruppe\"},\"Kommunenr\":{\"type\":\"string\"},\"Navn\":{\"type\":\"string\"},\"OrgNr\":{\"type\":\"string\"},\"Fylkesnr\":{\"type\":\"string\"}}},\"Koordinater\":{\"type\":\"object\",\"properties\":{\"Zoom\":{\"format\":\"int32\",\"type\":\"integer\"},\"Lengdegrad\":{\"format\":\"double\",\"type\":\"number\"},\"Breddegrad\":{\"format\":\"double\",\"type\":\"number\"},\"GeoKvalitet\":{\"type\":\"string\"}}},\"Utgaattype\":{\"type\":\"object\",\"properties\":{\"EnumId\":{\"type\":\"string\"},\"Name\":{\"type\":\"string\"}}},\"Relasjon\":{\"type\":\"object\",\"properties\":{\"Enhet\":{\"$ref\":\"#/definitions/EnhetSmallApiModel\"},\"RelasjonsType\":{\"$ref\":\"#/definitions/RelasjonsType\"}}},\"KommuneGruppe\":{\"type\":\"object\",\"properties\":{\"Gruppe\":{\"type\":\"string\"},\"Navn\":{\"type\":\"string\"}}},\"EnhetSmallApiModel\":{\"type\":\"object\",\"properties\":{\"NSRId\":{\"format\":\"int32\",\"type\":\"integer\"},\"Navn\":{\"type\":\"string\"},\"Karakteristikk\":{\"type\":\"string\"},\"FulltNavn\":{\"type\":\"string\",\"readOnly\":true},\"Kallenavn\":{\"type\":\"string\"},\"OrgNr\":{\"type\":\"string\"},\"Epost\":{\"type\":\"string\"},\"Poststed\":{\"type\":\"string\"},\"Kommune\":{\"type\":\"string\"},\"Kommunenr\":{\"type\":\"string\"},\"BesoksAdresse\":{\"type\":\"string\"},\"Telefon\":{\"type\":\"string\"},\"NaceKode1\":{\"type\":\"string\"},\"NaceKode2\":{\"type\":\"string\"},\"NaceKode3\":{\"type\":\"string\"},\"Zoom\":{\"format\":\"int32\",\"type\":\"integer\"},\"Lengdegrad\":{\"format\":\"double\",\"type\":\"number\"},\"Breddegrad\":{\"format\":\"double\",\"type\":\"number\"},\"GeoKvalitet\":{\"type\":\"string\"}}},\"RelasjonsType\":{\"type\":\"object\",\"properties\":{\"Beskrivelse\":{\"type\":\"string\"},\"Navn\":{\"type\":\"string\"},\"Id\":{\"type\":\"string\"},\"ErSystemRelasjon\":{\"type\":\"boolean\"}}},\"EnhetNORTinyApiModel\":{\"type\":\"object\",\"properties\":{\"NSRId\":{\"format\":\"int32\",\"type\":\"integer\"},\"OrgNr\":{\"type\":\"string\"},\"Navn\":{\"type\":\"string\"},\"Karakteristikk\":{\"type\":\"string\"},\"FulltNavn\":{\"type\":\"string\",\"readOnly\":true},\"KommuneNavn\":{\"type\":\"string\"},\"Epost\":{\"type\":\"string\"},\"ErAktiv\":{\"type\":\"boolean\"},\"ErOpplaeringskontor\":{\"type\":\"boolean\"},\"ErOpplaeringskontorEier\":{\"type\":\"boolean\"},\"VisesPaaWeb\":{\"type\":\"boolean\"},\"KommuneNr\":{\"type\":\"string\"},\"FylkeNr\":{\"type\":\"string\"}}},\"SokNORApiModel\":{\"type\":\"object\",\"properties\":{\"SokeString\":{\"type\":\"string\"},\"NaceKode\":{\"type\":\"string\"},\"KontorType\":{\"type\":\"string\"},\"Fylke\":{\"type\":\"string\"},\"Kommune\":{\"type\":\"string\"},\"Nedlagte\":{\"type\":\"boolean\"},\"Aktive\":{\"type\":\"boolean\"},\"Opplaringskontor\":{\"type\":\"boolean\"},\"Eiere\":{\"type\":\"boolean\"},\"AndreEnheter\":{\"type\":\"boolean\"}}},\"EnhetTrestrukturApiModel\":{\"type\":\"object\",\"properties\":{\"NSRId\":{\"format\":\"int32\",\"type\":\"integer\"},\"OrgNr\":{\"type\":\"string\"},\"Navn\":{\"type\":\"string\"},\"Karakteristikk\":{\"type\":\"string\"},\"RelasjonsType\":{\"format\":\"int32\",\"type\":\"integer\"},\"Children\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/EnhetTrestrukturApiModel\"}}}}}}",
+      "apiSpecification" : {
+        "info" : {
+          "title" : "Sindres nasjonale opplæringskontorregister API",
+          "version" : "v1.0"
+        },
+        "paths" : {
+          "/enhet/{id}" : {
+            "get" : {
+              "summary" : "Hent enhet",
+              "description" : "Returnerer alle enheter i registeret. \r\n            Anbefalt bruk mellom 15.00 - 08.00 for et fullverdig datagrunnlag utenom importtid til opplæringskontorregisteret.\r\n            Cachetid er på 2 timer."
+            }
+          },
+          "/enheter" : {
+            "get" : {
+              "summary" : "Alle enheter",
+              "description" : "Returnerer alle enheter i kommune."
+            }
+          },
+          "/enheter/{date}" : {
+            "get" : {
+              "summary" : "Enheter endret",
+              "description" : "Returnerer alle enheter i registeret det er registrert endringer på fra gitt dato."
+            }
+          },
+          "/enheter/kommune/{kommuneNr}" : {
+            "get" : {
+              "summary" : "Alle enheter i kommune",
+              "description" : "Returnerer alle enheter i fylke."
+            }
+          },
+          "/enheter/fylke/{fylkeNr}" : {
+            "get" : {
+              "summary" : "Alle enheter i fylke",
+              "description" : "Returnerer alle enheter i fylke."
+            }
+          },
+          "/enheter/kontortype/{kontorTypeId}" : {
+            "get" : {
+              "summary" : "Alle enheter med opplæringskontortype",
+              "description" : "Returnerer alle enheter som inneholder gitt opplæringskontortype."
+            }
+          },
+          "/enheter/nacekode/{nacekode}" : {
+            "get" : {
+              "summary" : "Alle enheter med nacekode",
+              "description" : "Returnerer alle enheter som inneholder gitt nacekode."
+            }
+          },
+          "/enheter/sok" : {
+            "post" : {
+              "summary" : "Søk i enheter",
+              "description" : "Returnerer enheter basert på søkekriterier. Requesten må inneholde et objekt som vist under. \r\n            Her kan du kombinere søkekriterier som søkestreng, nacekode, kontortype, fylke og kommune samt filtrering på om du vil ha kun opplæringskontor, \r\n            opplæringskontoreiere eller andre enheter som f.eks organisasjonsledd.  Du kan også filtrere på om du vil\r\n            ha aktive eller nedlagte enheter.\r\n            Ved behov om å ytterligere filtrering og funksjonalitet kan hele datagrunnlag for registere hentes i metoden /enheter.\r\n            \r\n            EGENSKAPER:\r\n            SokeString - Begrens til enheter med navn, orgnr eller nsrid\r\n            NaceKode - Begrens til enheter med nacekode\r\n            KontorType - Begrens til enheter med opplæringskontortype\r\n            Fylke - Begrens til enheter i fylke\r\n            Kommune - Begrens til enheter i kommune\r\n            \r\n            Aktive - Enheter som er aktive\r\n            Nedlagte - Enheter som ikke er aktive\r\n            AndreEnheter - Enheter som har enhetstype STAT eller ORGL\r\n            Eiere - Enheter som eier et opplæringskontor\r\n            Opplaringskontor - Enheter som er opplæringskontor \r\n            \r\n            MERK:\r\n            En av egenskapene sokestring, fylke, kommune, nacekode eller kontortype må med for å få tilbake enheter. \r\n            Disse kan kombineres med de boolske egenskapene.\r\n            Boolske properties skal kun benyttes med value true.\r\n            Eksempler:\r\n            Hvis du ønsker å ikke ha med utgåtte enheter legger du med \"Aktive\": true\r\n            Hvis du ønsker kun nedlagte opplæringskontor i Oppland sender du med \"Fylke\": \"5\", \"Nedlagte\": true, \"Opplaringskontor\": true\r\n            Hvis ingen boolske properties er angitt så er det, det samme som at alle står til true."
+            }
+          },
+          "/fylker" : {
+            "get" : {
+              "summary" : "Alle fylker",
+              "description" : "Returnerer alle fylker."
+            }
+          },
+          "/kommuner" : {
+            "get" : {
+              "summary" : "Alle kommuner",
+              "description" : "Returnerer alle kommuner."
+            }
+          },
+          "/kommuner/{fylkeNr}" : {
+            "get" : {
+              "summary" : "Alle kommuner i fylke",
+              "description" : "Returnerer alle kommuner i gitt fylke."
+            }
+          },
+          "/kontortyper" : {
+            "get" : {
+              "summary" : "Alle opplæringskontortyper",
+              "description" : "Returnerer alle opplæringskontortyper."
+            }
+          },
+          "/nacekoder" : {
+            "get" : {
+              "summary" : "Alle nacekoder",
+              "description" : "Returnerer alle nacekoder for registeret."
+            }
+          },
+          "/relasjonstyper" : {
+            "get" : {
+              "summary" : "Alle relasjonstyper",
+              "description" : "Returnerer alle relasjonstyper."
+            }
+          },
+          "/trestruktur/{orgNr}/{relasjonsType}" : {
+            "get" : {
+              "summary" : "Trestruktur for enhet med relasjonstype",
+              "description" : "Returnerer en trestruktur med underenheter av en gitt enhet basert på orgnr og relasjonstype."
+            }
+          }
+        },
+        "servers" : [ {
+          "url" : "https://data-nor.udir.no/"
+        } ]
+      }
+    }, {
+      "datasetUris" : [ "http://brreg.no/catalogs/910244132/datasets/c21c88c9-382a-4d85-ad53-b038b1aedae7", "http://brreg.no/catalogs/910244132/datasets/ae6bd28c-3aad-410f-9195-ba3842ea070c" ],
+      "nationalComponent" : true,
+      "isOpenAccess" : true,
+      "isOpenLicense" : true,
+      "isFree" : true,
+      "cost" : "Torsdag pris 2",
+      "usageLimitation" : "Torsdag trafikk 2",
+      "performance" : "Torsdag kapasitet 2",
+      "availability" : "Torsdag pålitelighet 2",
+      "statusCode" : "STABLE",
+      "serviceType" : "Kontoopplysninger",
+      "id" : "60aba1ba-c580-4803-8b44-6a2c02af224e",
+      "catalogId" : "910244132",
+      "apiSpecUrl" : "https://raw.githubusercontent.com/brreg/openAPI/master/specs/enhetsregisteret.json",
+      "apiSpecification" : {
+        "info" : {
+          "title" : "Åpne Data fra Enhetsregisteret - API Dokumentasjon",
+          "description" : "Teknisk beskrivelse av REST-tjenestene i Åpne Data fra Enhetsregisteret - Work in progress\n---\n\n## Ordbok\n### Enhetsregisteret\nRegister over grunndata om juridiske personer og andre enheter. Enhetsregisteret tildeler organisasjonsnummer for entydig identifisering av enheter.\n\n### Organisasjonsnummer\nNisifret nummer som entydig identifiserer enheter i Enhetsregisteret.\n\n### Enhet\nEnhet på øverste nivå i registreringsstrukturen i Enhetsregisteret. Eksempelvis enkeltpersonforetak, foreninger, selskap, sameier og andre som er registrert i Enhetsregisteret. Identifiseres med organisasjonsnummer.\n\n### Underenhet\nEnhet på laveste nivå i registreringsstrukturen i Enhetsregisteret. En underenhet kan ikke eksistere alene og har alltid knytning til en hovedenhet. Identifiseres med organisasjonsnummer.\n\n### Organisasjonsform\nOrganisasjonsform er virksomhetens formelle organisering og gir retningslinjer overfor blant annet ansvarsforhold, skatt, revisjonsplikt, rettigheter og plikter.\n\n### Næringskode\n[Næringskoder]: https://www.brreg.no/bedrift/naeringskoder/\n[Næringskoder]  på brreg.no\n\n[Standard for næringsgruppering]: https://www.ssb.no/klass/klassifikasjoner/6\n[Standard for næringsgruppering]\n---\n\n## Versjonering\nDu kan velge major versjon ved å spesifisere HTTP Accept-headeren. Bruk headeren spesifisert i tabellen under. Hvis versjon ikke spesifiseres, vil man få siste versjon.\n<table>\n  <thead>\n    <tr>\n      <th>API</th>\n      <th>Header</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>/</td>\n      <td>application/vnd.enhetsregisteret.v1+json</td>\n    </tr>\n    <tr>\n      <td>/organisasjonsformer</td>\n      <td>application/vnd.enhetsregisteret.organisasjonsform.v1+json</td>\n    </tr>\n  </tbody>\n</table>\n\n\n### Strategi\nVi skal normalt ikke bryte bakoverkompabiliteten med våre brukere. Likevel kan det være nødvendig i enkelte situasjoner, av for eksempel juridiske årsaker eller vedlikehold, å gjøre endringer som medfører et slikt brudd. Vi vil i dette tilfellet versjonere tjenesten slik at nyeste versjon vil være tilgjengelig sammen med forrige versjon.\n\n#### Dersom man ikke benytter versjonering i accept header, vil man få siste versjon.\n\nEldre versjon vil anses som utdatert/deprecated, og vil på sikt bli tatt bort. Ved behov for denne typen endringer vil vi forsøke å gi bruker god tid, og varsle om endringen i forkant. Se punkt om varsling.\n\n### Når innføres ny versjon\nVi vil innføre en ny versjon når vi introduserer en endring som påvirker bakoverkompabiliteten. Mindre endringer og patcher vil ikke medføre versjonsendring i header.\n\n### Når fjernes en versjon\nVi vil legge ut varsel/driftsmeldinger i god tid på følgende steder:\n- [Driftsmeldinger]: https://www.brreg.no/om-oss/driftsmeldinger/\n[Driftsmeldinger]\n- [RSS-feed]: https://www.brreg.no/produkter-og-tjenester/rss-feed/\n[RSS-feed].\n\nEksempel på endring som medfører versjonering:\n\n- Fjerne eller endre navn på et attributt i HTTP-responsen.\n\n- Fjerne eller endre navn på et REST endepunkt.\n\n---\n\n## Endringslogg\n<table>\n  <thead>\n    <tr>\n      <th>Versjon</th>\n      <th>Dato</th>\n      <th>Endring</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>1.1.0</td>\n      <td>14. august 2018</td>\n      <td>Ny tjeneste /oppdateringer/enheter og /oppdateringer/underenheter</td>\n    </tr>\n    <tr>\n      <td>1.0.0</td>\n      <td>6. april 2018</td>\n      <td>Produksjonssetting av ny åpne data tjeneste for Enhetsregisteret</td>\n    </tr>\n  </tbody>\n</table>\n",
+          "contact" : {
+            "name" : "Forenkling og Brukerdialog hos Brønnøysundregistrene",
+            "email" : "opendata@brreg.no"
+          },
+          "license" : {
+            "name" : "Norsk lisens for offentlige data (NLOD)",
+            "url" : "https://data.norge.no/nlod/no/"
+          },
+          "version" : "1.0.0"
+        },
+        "paths" : {
+          "/" : {
+            "get" : {
+              "description" : "Hent alle tjenester"
+            }
+          },
+          "/enheter" : {
+            "get" : {
+              "description" : "Hent alle enheter"
+            }
+          },
+          "/enheter/{organisasjonsnummer}" : {
+            "get" : {
+              "description" : "Hent detaljer om enhet"
+            }
+          },
+          "/underenheter" : {
+            "get" : {
+              "description" : "Hent alle underenheter"
+            }
+          },
+          "/underenheter/{organisasjonsnummer}" : {
+            "get" : {
+              "description" : "Hent detaljer om underenhet"
+            }
+          },
+          "/oppdateringer/enheter" : {
+            "get" : {
+              "description" : "Hent oppdateringer på enheter"
+            }
+          },
+          "/oppdateringer/underenheter" : {
+            "get" : {
+              "description" : "Hent oppdateringer på underenheter"
+            }
+          },
+          "/organisasjonsformer" : {
+            "get" : {
+              "description" : "Hent alle organisasjonsformer"
+            }
+          },
+          "/organisasjonsformer/{orgformKode}" : {
+            "get" : {
+              "description" : "Hent en enkelt organisasjonsform fra kode"
+            }
+          }
+        },
+        "servers" : [ {
+          "url" : "https://data.brreg.no/enhetsregisteret/api",
+          "description" : "Produksjon"
+        } ],
+        "formats" : [ "application/json", "application/vnd.enhetsregisteret.enhet.v1+json", "application/vnd.enhetsregisteret.organisasjonsform.v1+json" ]
+      }
+    }, {
+      "statusCode" : "EXPERIMENTAL",
+      "serviceType" : "Kontoopplysninger",
+      "id" : "e0e9d111-cddf-4c03-aef9-e01fdfd8203c",
+      "catalogId" : "910258028",
+      "apiSpecUrl" : "https://raw.githubusercontent.com/brreg/openAPI/master/specs/enhetsregisteret.json",
+      "apiSpecification" : {
+        "info" : {
+          "title" : "Åpne Data fra Enhetsregisteret - API Dokumentasjon",
+          "description" : "Teknisk beskrivelse av REST-tjenestene i Åpne Data fra Enhetsregisteret - Work in progress\n---\n\n## Ordbok\n### Enhetsregisteret\nRegister over grunndata om juridiske personer og andre enheter. Enhetsregisteret tildeler organisasjonsnummer for entydig identifisering av enheter.\n\n### Organisasjonsnummer\nNisifret nummer som entydig identifiserer enheter i Enhetsregisteret.\n\n### Enhet\nEnhet på øverste nivå i registreringsstrukturen i Enhetsregisteret. Eksempelvis enkeltpersonforetak, foreninger, selskap, sameier og andre som er registrert i Enhetsregisteret. Identifiseres med organisasjonsnummer.\n\n### Underenhet\nEnhet på laveste nivå i registreringsstrukturen i Enhetsregisteret. En underenhet kan ikke eksistere alene og har alltid knytning til en hovedenhet. Identifiseres med organisasjonsnummer.\n\n### Organisasjonsform\nOrganisasjonsform er virksomhetens formelle organisering og gir retningslinjer overfor blant annet ansvarsforhold, skatt, revisjonsplikt, rettigheter og plikter.\n\n### Næringskode\n[Næringskoder]: https://www.brreg.no/bedrift/naeringskoder/\n[Næringskoder]  på brreg.no\n\n[Standard for næringsgruppering]: https://www.ssb.no/klass/klassifikasjoner/6\n[Standard for næringsgruppering]\n---\n\n## Versjonering\nDu kan velge major versjon ved å spesifisere HTTP Accept-headeren. Bruk headeren spesifisert i tabellen under. Hvis versjon ikke spesifiseres, vil man få siste versjon.\n<table>\n  <thead>\n    <tr>\n      <th>API</th>\n      <th>Header</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>/</td>\n      <td>application/vnd.enhetsregisteret.v1+json</td>\n    </tr>\n    <tr>\n      <td>/organisasjonsformer</td>\n      <td>application/vnd.enhetsregisteret.organisasjonsform.v1+json</td>\n    </tr>\n  </tbody>\n</table>\n\n\n### Strategi\nVi skal normalt ikke bryte bakoverkompabiliteten med våre brukere. Likevel kan det være nødvendig i enkelte situasjoner, av for eksempel juridiske årsaker eller vedlikehold, å gjøre endringer som medfører et slikt brudd. Vi vil i dette tilfellet versjonere tjenesten slik at nyeste versjon vil være tilgjengelig sammen med forrige versjon.\n\n#### Dersom man ikke benytter versjonering i accept header, vil man få siste versjon.\n\nEldre versjon vil anses som utdatert/deprecated, og vil på sikt bli tatt bort. Ved behov for denne typen endringer vil vi forsøke å gi bruker god tid, og varsle om endringen i forkant. Se punkt om varsling.\n\n### Når innføres ny versjon\nVi vil innføre en ny versjon når vi introduserer en endring som påvirker bakoverkompabiliteten. Mindre endringer og patcher vil ikke medføre versjonsendring i header.\n\n### Når fjernes en versjon\nVi vil legge ut varsel/driftsmeldinger i god tid på følgende steder:\n- [Driftsmeldinger]: https://www.brreg.no/om-oss/driftsmeldinger/\n[Driftsmeldinger]\n- [RSS-feed]: https://www.brreg.no/produkter-og-tjenester/rss-feed/\n[RSS-feed].\n\nEksempel på endring som medfører versjonering:\n\n- Fjerne eller endre navn på et attributt i HTTP-responsen.\n\n- Fjerne eller endre navn på et REST endepunkt.\n\n---\n\n## Endringslogg\n<table>\n  <thead>\n    <tr>\n      <th>Versjon</th>\n      <th>Dato</th>\n      <th>Endring</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>1.1.0</td>\n      <td>14. august 2018</td>\n      <td>Ny tjeneste /oppdateringer/enheter og /oppdateringer/underenheter</td>\n    </tr>\n    <tr>\n      <td>1.0.0</td>\n      <td>6. april 2018</td>\n      <td>Produksjonssetting av ny åpne data tjeneste for Enhetsregisteret</td>\n    </tr>\n  </tbody>\n</table>\n",
+          "contact" : {
+            "name" : "Forenkling og Brukerdialog hos Brønnøysundregistrene",
+            "email" : "opendata@brreg.no"
+          },
+          "license" : {
+            "name" : "Norsk lisens for offentlige data (NLOD)",
+            "url" : "https://data.norge.no/nlod/no/"
+          },
+          "version" : "1.0.0"
+        },
+        "paths" : {
+          "/" : {
+            "get" : {
+              "description" : "Hent alle tjenester"
+            }
+          },
+          "/enheter" : {
+            "get" : {
+              "description" : "Hent alle enheter"
+            }
+          },
+          "/enheter/{organisasjonsnummer}" : {
+            "get" : {
+              "description" : "Hent detaljer om enhet"
+            }
+          },
+          "/underenheter" : {
+            "get" : {
+              "description" : "Hent alle underenheter"
+            }
+          },
+          "/underenheter/{organisasjonsnummer}" : {
+            "get" : {
+              "description" : "Hent detaljer om underenhet"
+            }
+          },
+          "/oppdateringer/enheter" : {
+            "get" : {
+              "description" : "Hent oppdateringer på enheter"
+            }
+          },
+          "/oppdateringer/underenheter" : {
+            "get" : {
+              "description" : "Hent oppdateringer på underenheter"
+            }
+          },
+          "/organisasjonsformer" : {
+            "get" : {
+              "description" : "Hent alle organisasjonsformer"
+            }
+          },
+          "/organisasjonsformer/{orgformKode}" : {
+            "get" : {
+              "description" : "Hent en enkelt organisasjonsform fra kode"
+            }
+          }
+        },
+        "servers" : [ {
+          "url" : "https://data.brreg.no/enhetsregisteret/api",
+          "description" : "Produksjon"
+        } ],
+        "formats" : [ "application/json", "application/vnd.enhetsregisteret.enhet.v1+json", "application/vnd.enhetsregisteret.organisasjonsform.v1+json" ]
+      }
+    }, {
+      "datasetUris" : [ "http://brreg.no/catalogs/910258028/datasets/8a81d42b-8cc0-46ca-8963-fcafd8eb24e7" ],
+      "isOpenAccess" : false,
+      "isOpenLicense" : true,
+      "isFree" : true,
+      "id" : "edd7dbc0-8d96-453f-a0f0-7fd277e20074",
+      "catalogId" : "910258028",
+      "apiSpec" : "{\"swagger\":\"2.0\",\"info\":{\"version\":\"v1.0\",\"title\":\"Sindres nasjonale opplæringskontorregister API\"},\"host\":\"data-nor.udir.no\",\"schemes\":[\"https\"],\"paths\":{\"/enhet/{id}\":{\"get\":{\"tags\":[\"Enhet\"],\"summary\":\"Hent enhet\",\"description\":\"Returnerer alle enheter i registeret. \\r\\n            Anbefalt bruk mellom 15.00 - 08.00 for et fullverdig datagrunnlag utenom importtid til opplæringskontorregisteret.\\r\\n            Cachetid er på 2 timer.\",\"operationId\":\"EnhetApi_GetEnhet\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"parameters\":[{\"name\":\"id\",\"in\":\"path\",\"required\":true,\"type\":\"string\"}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"$ref\":\"#/definitions/EnhetNORApiModel\"}}}}},\"/enheter\":{\"get\":{\"tags\":[\"Enhet\"],\"summary\":\"Alle enheter\",\"description\":\"Returnerer alle enheter i kommune.\",\"operationId\":\"EnhetApi_GetEnheter\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/EnhetNORTinyApiModel\"}}}}}},\"/enheter/{date}\":{\"get\":{\"tags\":[\"Enhet\"],\"summary\":\"Enheter endret\",\"description\":\"Returnerer alle enheter i registeret det er registrert endringer på fra gitt dato.\",\"operationId\":\"EnhetApi_GetEnheterFromDate\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"parameters\":[{\"name\":\"date\",\"in\":\"path\",\"required\":true,\"type\":\"string\",\"format\":\"date-time\"}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/EnhetNORTinyApiModel\"}}}}}},\"/enheter/kommune/{kommuneNr}\":{\"get\":{\"tags\":[\"Enhet\"],\"summary\":\"Alle enheter i kommune\",\"description\":\"Returnerer alle enheter i fylke.\",\"operationId\":\"EnhetApi_GetEnheterInKommune\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"parameters\":[{\"name\":\"kommuneNr\",\"in\":\"path\",\"required\":true,\"type\":\"string\"}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/EnhetSmallApiModel\"}}}}}},\"/enheter/fylke/{fylkeNr}\":{\"get\":{\"tags\":[\"Enhet\"],\"summary\":\"Alle enheter i fylke\",\"description\":\"Returnerer alle enheter i fylke.\",\"operationId\":\"EnhetApi_GetEnheterTinyInFylke\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"parameters\":[{\"name\":\"fylkeNr\",\"in\":\"path\",\"required\":true,\"type\":\"string\"}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/EnhetSmallApiModel\"}}}}}},\"/enheter/kontortype/{kontorTypeId}\":{\"get\":{\"tags\":[\"Enhet\"],\"summary\":\"Alle enheter med opplæringskontortype\",\"description\":\"Returnerer alle enheter som inneholder gitt opplæringskontortype.\",\"operationId\":\"EnhetApi_GetEnheterWithKontorType\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"parameters\":[{\"name\":\"kontorTypeId\",\"in\":\"path\",\"required\":true,\"type\":\"string\"}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/EnhetSmallApiModel\"}}}}}},\"/enheter/nacekode/{nacekode}\":{\"get\":{\"tags\":[\"Enhet\"],\"summary\":\"Alle enheter med nacekode\",\"description\":\"Returnerer alle enheter som inneholder gitt nacekode.\",\"operationId\":\"EnhetApi_GetEnheterWithNacekode\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"parameters\":[{\"name\":\"nacekode\",\"in\":\"path\",\"required\":true,\"type\":\"string\"}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/EnhetSmallApiModel\"}}}}}},\"/enheter/sok\":{\"post\":{\"tags\":[\"Enhet\"],\"summary\":\"Søk i enheter\",\"description\":\"Returnerer enheter basert på søkekriterier. Requesten må inneholde et objekt som vist under. \\r\\n            Her kan du kombinere søkekriterier som søkestreng, nacekode, kontortype, fylke og kommune samt filtrering på om du vil ha kun opplæringskontor, \\r\\n            opplæringskontoreiere eller andre enheter som f.eks organisasjonsledd.  Du kan også filtrere på om du vil\\r\\n            ha aktive eller nedlagte enheter.\\r\\n            Ved behov om å ytterligere filtrering og funksjonalitet kan hele datagrunnlag for registere hentes i metoden /enheter.\\r\\n            \\r\\n            EGENSKAPER:\\r\\n            SokeString - Begrens til enheter med navn, orgnr eller nsrid\\r\\n            NaceKode - Begrens til enheter med nacekode\\r\\n            KontorType - Begrens til enheter med opplæringskontortype\\r\\n            Fylke - Begrens til enheter i fylke\\r\\n            Kommune - Begrens til enheter i kommune\\r\\n            \\r\\n            Aktive - Enheter som er aktive\\r\\n            Nedlagte - Enheter som ikke er aktive\\r\\n            AndreEnheter - Enheter som har enhetstype STAT eller ORGL\\r\\n            Eiere - Enheter som eier et opplæringskontor\\r\\n            Opplaringskontor - Enheter som er opplæringskontor \\r\\n            \\r\\n            MERK:\\r\\n            En av egenskapene sokestring, fylke, kommune, nacekode eller kontortype må med for å få tilbake enheter. \\r\\n            Disse kan kombineres med de boolske egenskapene.\\r\\n            Boolske properties skal kun benyttes med value true.\\r\\n            Eksempler:\\r\\n            Hvis du ønsker å ikke ha med utgåtte enheter legger du med \\\"Aktive\\\": true\\r\\n            Hvis du ønsker kun nedlagte opplæringskontor i Oppland sender du med \\\"Fylke\\\": \\\"5\\\", \\\"Nedlagte\\\": true, \\\"Opplaringskontor\\\": true\\r\\n            Hvis ingen boolske properties er angitt så er det, det samme som at alle står til true.\",\"operationId\":\"EnhetApi_Sok\",\"consumes\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\",\"application/x-www-form-urlencoded\"],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"parameters\":[{\"name\":\"model\",\"in\":\"body\",\"required\":true,\"schema\":{\"$ref\":\"#/definitions/SokNORApiModel\"}}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/EnhetSmallApiModel\"}}}}}},\"/fylker\":{\"get\":{\"tags\":[\"Fylke\"],\"summary\":\"Alle fylker\",\"description\":\"Returnerer alle fylker.\",\"operationId\":\"FylkeApi_GetFylker\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/Fylke\"}}}}}},\"/kommuner\":{\"get\":{\"tags\":[\"Kommune\"],\"summary\":\"Alle kommuner\",\"description\":\"Returnerer alle kommuner.\",\"operationId\":\"KommuneApi_GetKommuner\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/Kommune\"}}}}}},\"/kommuner/{fylkeNr}\":{\"get\":{\"tags\":[\"Kommune\"],\"summary\":\"Alle kommuner i fylke\",\"description\":\"Returnerer alle kommuner i gitt fylke.\",\"operationId\":\"KommuneApi_GetKommunerInFylke\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"parameters\":[{\"name\":\"fylkeNr\",\"in\":\"path\",\"required\":true,\"type\":\"string\"}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/Kommune\"}}}}}},\"/kontortyper\":{\"get\":{\"tags\":[\"Kontortype\"],\"summary\":\"Alle opplæringskontortyper\",\"description\":\"Returnerer alle opplæringskontortyper.\",\"operationId\":\"KontorTypeApi_GetEnheter\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"$ref\":\"#/definitions/SkoleType\"}}}}},\"/nacekoder\":{\"get\":{\"tags\":[\"Nacekode\"],\"summary\":\"Alle nacekoder\",\"description\":\"Returnerer alle nacekoder for registeret.\",\"operationId\":\"NaceKodeApi_GetNacekoder\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"$ref\":\"#/definitions/Nacekode\"}}}}},\"/relasjonstyper\":{\"get\":{\"tags\":[\"Relasjon\"],\"summary\":\"Alle relasjonstyper\",\"description\":\"Returnerer alle relasjonstyper.\",\"operationId\":\"RelasjonApi_GetRelasjonsTyper\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"$ref\":\"#/definitions/RelasjonsType\"}}}}},\"/trestruktur/{orgNr}/{relasjonsType}\":{\"get\":{\"tags\":[\"Relasjon\"],\"summary\":\"Trestruktur for enhet med relasjonstype\",\"description\":\"Returnerer en trestruktur med underenheter av en gitt enhet basert på orgnr og relasjonstype.\",\"operationId\":\"RelasjonApi_GetEnheterWithNacekode\",\"consumes\":[],\"produces\":[\"application/json\",\"text/json\",\"application/xml\",\"text/xml\"],\"parameters\":[{\"name\":\"orgNr\",\"in\":\"path\",\"required\":true,\"type\":\"string\"},{\"name\":\"relasjonsType\",\"in\":\"path\",\"required\":true,\"type\":\"integer\",\"format\":\"int32\"}],\"responses\":{\"200\":{\"description\":\"OK\",\"schema\":{\"$ref\":\"#/definitions/EnhetTrestrukturApiModel\"}}}}}},\"definitions\":{\"EnhetNORApiModel\":{\"type\":\"object\",\"properties\":{\"NSRId\":{\"format\":\"int32\",\"type\":\"integer\"},\"OrgNr\":{\"type\":\"string\"},\"Navn\":{\"type\":\"string\"},\"Karakteristikk\":{\"type\":\"string\"},\"FulltNavn\":{\"type\":\"string\",\"readOnly\":true},\"Kallenavn\":{\"type\":\"string\"},\"KommuneNavn\":{\"type\":\"string\"},\"Epost\":{\"type\":\"string\"},\"Url\":{\"type\":\"string\"},\"Maalform\":{\"type\":\"string\"},\"OpplaeringsKontorLeder\":{\"type\":\"string\"},\"OpplaeringsKontorLederFornavn\":{\"type\":\"string\"},\"OpplaeringsKontorLederEtternavn\":{\"type\":\"string\"},\"GsiId\":{\"type\":\"string\"},\"Telefon\":{\"type\":\"string\"},\"Mobil\":{\"type\":\"string\"},\"Fax\":{\"type\":\"string\"},\"ErOpplaeringskontor\":{\"type\":\"boolean\"},\"ErOpplaeringskontorEier\":{\"type\":\"boolean\"},\"VisesPaaWeb\":{\"type\":\"boolean\"},\"ErAktiv\":{\"type\":\"boolean\"},\"AntallLaerlinger\":{\"format\":\"int32\",\"type\":\"integer\"},\"AnsatteFra\":{\"format\":\"int32\",\"type\":\"integer\"},\"AnsatteTil\":{\"format\":\"int32\",\"type\":\"integer\"},\"SistEndretDato\":{\"format\":\"date-time\",\"type\":\"string\"},\"OpprettetDato\":{\"format\":\"date-time\",\"type\":\"string\"},\"Besoksadresse\":{\"$ref\":\"#/definitions/Adresse\"},\"Nacekoder\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/Nacekode\"}},\"Postadresse\":{\"$ref\":\"#/definitions/Adresse\"},\"Fylke\":{\"$ref\":\"#/definitions/Fylke\"},\"EnhetsType\":{\"$ref\":\"#/definitions/EnhetsType\"},\"SektorType\":{\"$ref\":\"#/definitions/SektorType\"},\"OpplaeringsKontorTyper\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/SkoleType\"}},\"Kommune\":{\"$ref\":\"#/definitions/Kommune\"},\"Koordinater\":{\"$ref\":\"#/definitions/Koordinater\"},\"Utgaattype\":{\"$ref\":\"#/definitions/Utgaattype\"},\"ParentRelasjoner\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/Relasjon\"}},\"ChildRelasjoner\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/Relasjon\"}},\"PersonEpost\":{\"type\":\"string\"},\"PersonTelefon\":{\"type\":\"string\"}}},\"Adresse\":{\"type\":\"object\",\"properties\":{\"Adress\":{\"type\":\"string\"},\"Postnr\":{\"type\":\"string\"},\"Poststed\":{\"type\":\"string\"},\"Land\":{\"type\":\"string\"}}},\"Nacekode\":{\"type\":\"object\",\"properties\":{\"Kode\":{\"type\":\"string\"},\"Navn\":{\"type\":\"string\"},\"Versjon\":{\"type\":\"string\"}}},\"Fylke\":{\"type\":\"object\",\"properties\":{\"Fylkesnr\":{\"type\":\"string\"},\"Navn\":{\"type\":\"string\"},\"OrgNr\":{\"type\":\"string\"},\"OrgNrFylkesmann\":{\"type\":\"string\"}}},\"EnhetsType\":{\"type\":\"object\",\"properties\":{\"Type\":{\"type\":\"string\"},\"Navn\":{\"type\":\"string\"},\"Offentlig\":{\"type\":\"boolean\"}}},\"SektorType\":{\"type\":\"object\",\"properties\":{\"Navn\":{\"type\":\"string\"},\"Id\":{\"type\":\"string\"}}},\"SkoleType\":{\"type\":\"object\",\"properties\":{\"Navn\":{\"type\":\"string\"},\"NavnTekst\":{\"type\":\"string\"},\"Id\":{\"type\":\"string\"},\"ErSystemType\":{\"type\":\"boolean\"}}},\"Kommune\":{\"type\":\"object\",\"properties\":{\"ErNedlagt\":{\"type\":\"boolean\"},\"KommuneGruppe\":{\"$ref\":\"#/definitions/KommuneGruppe\"},\"Kommunenr\":{\"type\":\"string\"},\"Navn\":{\"type\":\"string\"},\"OrgNr\":{\"type\":\"string\"},\"Fylkesnr\":{\"type\":\"string\"}}},\"Koordinater\":{\"type\":\"object\",\"properties\":{\"Zoom\":{\"format\":\"int32\",\"type\":\"integer\"},\"Lengdegrad\":{\"format\":\"double\",\"type\":\"number\"},\"Breddegrad\":{\"format\":\"double\",\"type\":\"number\"},\"GeoKvalitet\":{\"type\":\"string\"}}},\"Utgaattype\":{\"type\":\"object\",\"properties\":{\"EnumId\":{\"type\":\"string\"},\"Name\":{\"type\":\"string\"}}},\"Relasjon\":{\"type\":\"object\",\"properties\":{\"Enhet\":{\"$ref\":\"#/definitions/EnhetSmallApiModel\"},\"RelasjonsType\":{\"$ref\":\"#/definitions/RelasjonsType\"}}},\"KommuneGruppe\":{\"type\":\"object\",\"properties\":{\"Gruppe\":{\"type\":\"string\"},\"Navn\":{\"type\":\"string\"}}},\"EnhetSmallApiModel\":{\"type\":\"object\",\"properties\":{\"NSRId\":{\"format\":\"int32\",\"type\":\"integer\"},\"Navn\":{\"type\":\"string\"},\"Karakteristikk\":{\"type\":\"string\"},\"FulltNavn\":{\"type\":\"string\",\"readOnly\":true},\"Kallenavn\":{\"type\":\"string\"},\"OrgNr\":{\"type\":\"string\"},\"Epost\":{\"type\":\"string\"},\"Poststed\":{\"type\":\"string\"},\"Kommune\":{\"type\":\"string\"},\"Kommunenr\":{\"type\":\"string\"},\"BesoksAdresse\":{\"type\":\"string\"},\"Telefon\":{\"type\":\"string\"},\"NaceKode1\":{\"type\":\"string\"},\"NaceKode2\":{\"type\":\"string\"},\"NaceKode3\":{\"type\":\"string\"},\"Zoom\":{\"format\":\"int32\",\"type\":\"integer\"},\"Lengdegrad\":{\"format\":\"double\",\"type\":\"number\"},\"Breddegrad\":{\"format\":\"double\",\"type\":\"number\"},\"GeoKvalitet\":{\"type\":\"string\"}}},\"RelasjonsType\":{\"type\":\"object\",\"properties\":{\"Beskrivelse\":{\"type\":\"string\"},\"Navn\":{\"type\":\"string\"},\"Id\":{\"type\":\"string\"},\"ErSystemRelasjon\":{\"type\":\"boolean\"}}},\"EnhetNORTinyApiModel\":{\"type\":\"object\",\"properties\":{\"NSRId\":{\"format\":\"int32\",\"type\":\"integer\"},\"OrgNr\":{\"type\":\"string\"},\"Navn\":{\"type\":\"string\"},\"Karakteristikk\":{\"type\":\"string\"},\"FulltNavn\":{\"type\":\"string\",\"readOnly\":true},\"KommuneNavn\":{\"type\":\"string\"},\"Epost\":{\"type\":\"string\"},\"ErAktiv\":{\"type\":\"boolean\"},\"ErOpplaeringskontor\":{\"type\":\"boolean\"},\"ErOpplaeringskontorEier\":{\"type\":\"boolean\"},\"VisesPaaWeb\":{\"type\":\"boolean\"},\"KommuneNr\":{\"type\":\"string\"},\"FylkeNr\":{\"type\":\"string\"}}},\"SokNORApiModel\":{\"type\":\"object\",\"properties\":{\"SokeString\":{\"type\":\"string\"},\"NaceKode\":{\"type\":\"string\"},\"KontorType\":{\"type\":\"string\"},\"Fylke\":{\"type\":\"string\"},\"Kommune\":{\"type\":\"string\"},\"Nedlagte\":{\"type\":\"boolean\"},\"Aktive\":{\"type\":\"boolean\"},\"Opplaringskontor\":{\"type\":\"boolean\"},\"Eiere\":{\"type\":\"boolean\"},\"AndreEnheter\":{\"type\":\"boolean\"}}},\"EnhetTrestrukturApiModel\":{\"type\":\"object\",\"properties\":{\"NSRId\":{\"format\":\"int32\",\"type\":\"integer\"},\"OrgNr\":{\"type\":\"string\"},\"Navn\":{\"type\":\"string\"},\"Karakteristikk\":{\"type\":\"string\"},\"RelasjonsType\":{\"format\":\"int32\",\"type\":\"integer\"},\"Children\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/EnhetTrestrukturApiModel\"}}}}}}",
+      "apiSpecification" : {
+        "info" : {
+          "title" : "Sindres nasjonale opplæringskontorregister API",
+          "version" : "v1.0"
+        },
+        "paths" : {
+          "/enhet/{id}" : {
+            "get" : {
+              "summary" : "Hent enhet",
+              "description" : "Returnerer alle enheter i registeret. \r\n            Anbefalt bruk mellom 15.00 - 08.00 for et fullverdig datagrunnlag utenom importtid til opplæringskontorregisteret.\r\n            Cachetid er på 2 timer."
+            }
+          },
+          "/enheter" : {
+            "get" : {
+              "summary" : "Alle enheter",
+              "description" : "Returnerer alle enheter i kommune."
+            }
+          },
+          "/enheter/{date}" : {
+            "get" : {
+              "summary" : "Enheter endret",
+              "description" : "Returnerer alle enheter i registeret det er registrert endringer på fra gitt dato."
+            }
+          },
+          "/enheter/kommune/{kommuneNr}" : {
+            "get" : {
+              "summary" : "Alle enheter i kommune",
+              "description" : "Returnerer alle enheter i fylke."
+            }
+          },
+          "/enheter/fylke/{fylkeNr}" : {
+            "get" : {
+              "summary" : "Alle enheter i fylke",
+              "description" : "Returnerer alle enheter i fylke."
+            }
+          },
+          "/enheter/kontortype/{kontorTypeId}" : {
+            "get" : {
+              "summary" : "Alle enheter med opplæringskontortype",
+              "description" : "Returnerer alle enheter som inneholder gitt opplæringskontortype."
+            }
+          },
+          "/enheter/nacekode/{nacekode}" : {
+            "get" : {
+              "summary" : "Alle enheter med nacekode",
+              "description" : "Returnerer alle enheter som inneholder gitt nacekode."
+            }
+          },
+          "/enheter/sok" : {
+            "post" : {
+              "summary" : "Søk i enheter",
+              "description" : "Returnerer enheter basert på søkekriterier. Requesten må inneholde et objekt som vist under. \r\n            Her kan du kombinere søkekriterier som søkestreng, nacekode, kontortype, fylke og kommune samt filtrering på om du vil ha kun opplæringskontor, \r\n            opplæringskontoreiere eller andre enheter som f.eks organisasjonsledd.  Du kan også filtrere på om du vil\r\n            ha aktive eller nedlagte enheter.\r\n            Ved behov om å ytterligere filtrering og funksjonalitet kan hele datagrunnlag for registere hentes i metoden /enheter.\r\n            \r\n            EGENSKAPER:\r\n            SokeString - Begrens til enheter med navn, orgnr eller nsrid\r\n            NaceKode - Begrens til enheter med nacekode\r\n            KontorType - Begrens til enheter med opplæringskontortype\r\n            Fylke - Begrens til enheter i fylke\r\n            Kommune - Begrens til enheter i kommune\r\n            \r\n            Aktive - Enheter som er aktive\r\n            Nedlagte - Enheter som ikke er aktive\r\n            AndreEnheter - Enheter som har enhetstype STAT eller ORGL\r\n            Eiere - Enheter som eier et opplæringskontor\r\n            Opplaringskontor - Enheter som er opplæringskontor \r\n            \r\n            MERK:\r\n            En av egenskapene sokestring, fylke, kommune, nacekode eller kontortype må med for å få tilbake enheter. \r\n            Disse kan kombineres med de boolske egenskapene.\r\n            Boolske properties skal kun benyttes med value true.\r\n            Eksempler:\r\n            Hvis du ønsker å ikke ha med utgåtte enheter legger du med \"Aktive\": true\r\n            Hvis du ønsker kun nedlagte opplæringskontor i Oppland sender du med \"Fylke\": \"5\", \"Nedlagte\": true, \"Opplaringskontor\": true\r\n            Hvis ingen boolske properties er angitt så er det, det samme som at alle står til true."
+            }
+          },
+          "/fylker" : {
+            "get" : {
+              "summary" : "Alle fylker",
+              "description" : "Returnerer alle fylker."
+            }
+          },
+          "/kommuner" : {
+            "get" : {
+              "summary" : "Alle kommuner",
+              "description" : "Returnerer alle kommuner."
+            }
+          },
+          "/kommuner/{fylkeNr}" : {
+            "get" : {
+              "summary" : "Alle kommuner i fylke",
+              "description" : "Returnerer alle kommuner i gitt fylke."
+            }
+          },
+          "/kontortyper" : {
+            "get" : {
+              "summary" : "Alle opplæringskontortyper",
+              "description" : "Returnerer alle opplæringskontortyper."
+            }
+          },
+          "/nacekoder" : {
+            "get" : {
+              "summary" : "Alle nacekoder",
+              "description" : "Returnerer alle nacekoder for registeret."
+            }
+          },
+          "/relasjonstyper" : {
+            "get" : {
+              "summary" : "Alle relasjonstyper",
+              "description" : "Returnerer alle relasjonstyper."
+            }
+          },
+          "/trestruktur/{orgNr}/{relasjonsType}" : {
+            "get" : {
+              "summary" : "Trestruktur for enhet med relasjonstype",
+              "description" : "Returnerer en trestruktur med underenheter av en gitt enhet basert på orgnr og relasjonstype."
+            }
+          }
+        },
+        "servers" : [ {
+          "url" : "https://data-nor.udir.no/"
+        } ]
+      }
+    }, {
+      "datasetUris" : [ "https://kartkatalog.geonorge.no/Metadata/uuid/3f95a194-0968-4457-a500-912958de3d39", "https://data.norge.no/node/2111", "https://data.norge.no/node/572" ],
+      "nationalComponent" : true,
+      "isOpenAccess" : true,
+      "isOpenLicense" : true,
+      "isFree" : true,
+      "cost" : "Ingenting",
+      "usageLimitation" : "100",
+      "performance" : "Yes",
+      "availability" : "",
+      "statusCode" : "STABLE",
+      "serviceType" : "Kontoopplysninger",
+      "id" : "16493a26-49f1-4a07-bd9b-76b6e97160a6",
+      "catalogId" : "910244132",
+      "apiSpecUrl" : "https://raw.githubusercontent.com/Informasjonsforvaltning/fdk-testdata/master/testdata/API",
+      "apiSpecification" : {
+        "info" : {
+          "title" : "National API Directory Search API",
+          "description" : "Provides a basic search api against the National API Directory of Norway",
+          "termsOfService" : "https://fellesdatakatalog.brreg.no/about",
+          "contact" : {
+            "name" : "Brønnøysundregistrene",
+            "url" : "https://fellesdatakatalog.brreg.no",
+            "email" : "fellesdatakatalog@brreg.no"
+          },
+          "license" : {
+            "name" : "License of API",
+            "url" : "http://data.norge.no/nlod/no/2.0"
+          },
+          "version" : "1.0"
+        },
+        "paths" : {
+          "/search" : {
+            "get" : {
+              "summary" : "Queries the api catalog for api specifications",
+              "description" : "So far only simple queries is supported"
+            }
+          },
+          "/{id}" : {
+            "get" : {
+              "summary" : "Get a specific api"
+            }
+          }
+        },
+        "servers" : [ {
+          "url" : "https://fellesdatakatalog.brreg.no/api-cat/apis",
+          "description" : "The production API server"
+        } ],
+        "formats" : [ "application/json" ]
+      }
+    }, {
+      "datasetUris" : [ "http://brreg.no/catalogs/910258028/datasets/null" ],
+      "nationalComponent" : true,
+      "isOpenAccess" : true,
+      "isOpenLicense" : true,
+      "isFree" : true,
+      "cost" : "Tusen kroner",
+      "usageLimitation" : "",
+      "performance" : "",
+      "availability" : "",
+      "statusCode" : "DEPRECATED",
+      "deprecationInfoExpirationDate" : "2019-11-27T23:00:00.000+0000",
+      "id" : "5589eb43-e59e-49f6-9aee-fc426a0781ff",
+      "catalogId" : "910258028",
+      "apiSpecUrl" : "https://raw.githubusercontent.com/Informasjonsforvaltning/fdk-testdata/master/testdata/Barnehagefakta.json",
+      "apiSpecification" : {
+        "info" : {
+          "title" : "Barnehagefakta",
+          "version" : "v1"
+        },
+        "paths" : {
+          "/api/Barnehage/orgnr/{orgnr}" : {
+            "get" : {
+              "summary" : "Returnerer n�kkeltall for en barnehage gitt barnehagens organisasjonsnummer",
+              "description" : "For � finne barnehager gitt geografiopplysninger kan barnehager sl�s opp via Location APIet."
+            }
+          },
+          "/api/Barnehage/{id}" : {
+            "get" : {
+              "summary" : "Returnerer n�kkeltall for en barnehage gitt barnehagens unike id i barnehagefakta (nsrId)",
+              "description" : "For � finne nsrId for en barnehage kan barnehager sl�s opp via Location APIet. Der finner man nsrId for hver barnehage."
+            }
+          },
+          "/api/Fylker" : {
+            "get" : {
+              "summary" : "Returnerer struktur med fylker / kommuner",
+              "description" : "Returnerer en struktur med alle landets fylker med deres tilh�rende kommuner."
+            }
+          },
+          "/api/Kommune/{kommunenummer}" : {
+            "get" : {
+              "summary" : "Returnerer data for en gitt kommune",
+              "description" : "Returnerer n�kkeltall for kommenen med det angitte kommunenummeret."
+            }
+          },
+          "/api/Location/{lat1}/{lng1}/{lat2}/{lng2}" : {
+            "get" : {
+              "summary" : "Returnerer barnehager i et rektangul�rt kartutsnitt",
+              "description" : "Tar inn fire tall (floats, med . som kommaseparator) som angir �vre venstre hj�rne og nedre h�yre hj�rne i et kartutsnitt (lat / lng). Returnerer alle barnehager som ligger innenfor dette utsnittet."
+            }
+          },
+          "/api/Location/fylke/{fylkesnummer}" : {
+            "get" : {
+              "summary" : "Returnerer barnehager for et gitt fylkesnummer",
+              "description" : "Returnerer alle barnehager som ligger innenfor det angitte fylket."
+            }
+          },
+          "/api/Location/{lat}/{lng}" : {
+            "get" : {
+              "summary" : "Returnerer barnehager i et kvadratisk kartutsnitt",
+              "description" : "Tar inn to tall (floats, med . som kommaseparator) som angir senter av et kvadratisk kartutsnitt (lat / lng) (med default padding p� 0.2). Returnerer alle barnehager som ligger innenfor dette utsnittet."
+            }
+          },
+          "/api/Location/{lat}/{lng}/{padding}" : {
+            "get" : {
+              "summary" : "Returnerer barnehager i et kvadratisk kartutsnitt",
+              "description" : "Tar inn to tall (floats, med . som kommaseparator) som angir senter av et kvadratisk kartutsnitt (lat / lng). Det tredje tallet angir padding i lat/lng. Default padding er 0.2. Returnerer alle barnehager som ligger innenfor dette utsnittet."
+            }
+          },
+          "/api/Location/kommune/{kommunenummer}" : {
+            "get" : {
+              "summary" : "Returnerer barnehager for et gitt kommunenummer",
+              "description" : "Returnerer alle barnehager som ligger innenfor det angitte kommunenummeret."
+            }
+          },
+          "/api/Location/radius/{lat}/{lng}" : {
+            "get" : {
+              "summary" : "Returnerer barnehager i et sirkul�rt kartutsnitt",
+              "description" : "Tar inn to tall (floats, med . som kommaseparator) som angir senter av et sirkul�rt kartutsnitt (lat / lng) (med default padding p� 0.2). Returnerer alle barnehager som ligger innenfor dette utsnittet."
+            }
+          },
+          "/api/Location/radius/{lat}/{lng}/{radius}" : {
+            "get" : {
+              "summary" : "Returnerer barnehager i et sirkul�rt kartutsnitt",
+              "description" : "Tar inn to tall (floats, med . som kommaseparator) som angir senter av et sirkul�rt kartutsnitt (lat / lng). Det tredje tallet angir padding i lat/lng. Default padding er 0.2. Returnerer alle barnehager som ligger innenfor dette utsnittet."
+            }
+          },
+          "/api/Location" : {
+            "get" : {
+              "summary" : "Returnerer alle barnehager",
+              "description" : "Denne metoden returnerer alle barnehager i barnehagefata"
+            }
+          }
+        },
+        "servers" : [ {
+          "url" : "http://www.barnehagefakta.no/"
+        } ]
+      }
+    }, {
+      "datasetUris" : [ "https://data.norge.no/node/1106" ],
+      "nationalComponent" : false,
+      "isOpenAccess" : false,
+      "isOpenLicense" : false,
+      "isFree" : false,
+      "cost" : "345x",
+      "usageLimitation" : "456x",
+      "performance" : "678x",
+      "availability" : "789789x",
+      "statusCode" : "EXPERIMENTAL",
+      "serviceType" : "Kontoopplysninger",
+      "id" : "b4c6b975-4e53-4861-bdcc-2daaf8135299",
+      "catalogId" : "910244132",
+      "apiSpecUrl" : "https://raw.githubusercontent.com/brreg/openAPI/master/specs/enhetsregisteret.json",
+      "apiSpecification" : {
+        "info" : {
+          "title" : "Åpne Data fra Enhetsregisteret - API Dokumentasjon",
+          "description" : "Teknisk beskrivelse av REST-tjenestene i Åpne Data fra Enhetsregisteret - Work in progress\n---\n\n## Ordbok\n### Enhetsregisteret\nRegister over grunndata om juridiske personer og andre enheter. Enhetsregisteret tildeler organisasjonsnummer for entydig identifisering av enheter.\n\n### Organisasjonsnummer\nNisifret nummer som entydig identifiserer enheter i Enhetsregisteret.\n\n### Enhet\nEnhet på øverste nivå i registreringsstrukturen i Enhetsregisteret. Eksempelvis enkeltpersonforetak, foreninger, selskap, sameier og andre som er registrert i Enhetsregisteret. Identifiseres med organisasjonsnummer.\n\n### Underenhet\nEnhet på laveste nivå i registreringsstrukturen i Enhetsregisteret. En underenhet kan ikke eksistere alene og har alltid knytning til en hovedenhet. Identifiseres med organisasjonsnummer.\n\n### Organisasjonsform\nOrganisasjonsform er virksomhetens formelle organisering og gir retningslinjer overfor blant annet ansvarsforhold, skatt, revisjonsplikt, rettigheter og plikter.\n\n### Næringskode\n[Næringskoder]: https://www.brreg.no/bedrift/naeringskoder/\n[Næringskoder]  på brreg.no\n\n[Standard for næringsgruppering]: https://www.ssb.no/klass/klassifikasjoner/6\n[Standard for næringsgruppering]\n---\n\n## Versjonering\nDu kan velge major versjon ved å spesifisere HTTP Accept-headeren. Bruk headeren spesifisert i tabellen under. Hvis versjon ikke spesifiseres, vil man få siste versjon.\n<table>\n  <thead>\n    <tr>\n      <th>API</th>\n      <th>Header</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>/</td>\n      <td>application/vnd.enhetsregisteret.v1+json</td>\n    </tr>\n    <tr>\n      <td>/organisasjonsformer</td>\n      <td>application/vnd.enhetsregisteret.organisasjonsform.v1+json</td>\n    </tr>\n  </tbody>\n</table>\n\n\n### Strategi\nVi skal normalt ikke bryte bakoverkompabiliteten med våre brukere. Likevel kan det være nødvendig i enkelte situasjoner, av for eksempel juridiske årsaker eller vedlikehold, å gjøre endringer som medfører et slikt brudd. Vi vil i dette tilfellet versjonere tjenesten slik at nyeste versjon vil være tilgjengelig sammen med forrige versjon.\n\n#### Dersom man ikke benytter versjonering i accept header, vil man få siste versjon.\n\nEldre versjon vil anses som utdatert/deprecated, og vil på sikt bli tatt bort. Ved behov for denne typen endringer vil vi forsøke å gi bruker god tid, og varsle om endringen i forkant. Se punkt om varsling.\n\n### Når innføres ny versjon\nVi vil innføre en ny versjon når vi introduserer en endring som påvirker bakoverkompabiliteten. Mindre endringer og patcher vil ikke medføre versjonsendring i header.\n\n### Når fjernes en versjon\nVi vil legge ut varsel/driftsmeldinger i god tid på følgende steder:\n- [Driftsmeldinger]: https://www.brreg.no/om-oss/driftsmeldinger/\n[Driftsmeldinger]\n- [RSS-feed]: https://www.brreg.no/produkter-og-tjenester/rss-feed/\n[RSS-feed].\n\nEksempel på endring som medfører versjonering:\n\n- Fjerne eller endre navn på et attributt i HTTP-responsen.\n\n- Fjerne eller endre navn på et REST endepunkt.\n\n---\n\n## Endringslogg\n<table>\n  <thead>\n    <tr>\n      <th>Versjon</th>\n      <th>Dato</th>\n      <th>Endring</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>1.1.0</td>\n      <td>14. august 2018</td>\n      <td>Ny tjeneste /oppdateringer/enheter og /oppdateringer/underenheter</td>\n    </tr>\n    <tr>\n      <td>1.0.0</td>\n      <td>6. april 2018</td>\n      <td>Produksjonssetting av ny åpne data tjeneste for Enhetsregisteret</td>\n    </tr>\n  </tbody>\n</table>\n",
+          "contact" : {
+            "name" : "Forenkling og Brukerdialog hos Brønnøysundregistrene",
+            "email" : "opendata@brreg.no"
+          },
+          "license" : {
+            "name" : "Norsk lisens for offentlige data (NLOD)",
+            "url" : "https://data.norge.no/nlod/no/"
+          },
+          "version" : "1.0.0"
+        },
+        "paths" : {
+          "/" : {
+            "get" : {
+              "description" : "Hent alle tjenester"
+            }
+          },
+          "/enheter" : {
+            "get" : {
+              "description" : "Hent alle enheter"
+            }
+          },
+          "/enheter/{organisasjonsnummer}" : {
+            "get" : {
+              "description" : "Hent detaljer om enhet"
+            }
+          },
+          "/underenheter" : {
+            "get" : {
+              "description" : "Hent alle underenheter"
+            }
+          },
+          "/underenheter/{organisasjonsnummer}" : {
+            "get" : {
+              "description" : "Hent detaljer om underenhet"
+            }
+          },
+          "/oppdateringer/enheter" : {
+            "get" : {
+              "description" : "Hent oppdateringer på enheter"
+            }
+          },
+          "/oppdateringer/underenheter" : {
+            "get" : {
+              "description" : "Hent oppdateringer på underenheter"
+            }
+          },
+          "/organisasjonsformer" : {
+            "get" : {
+              "description" : "Hent alle organisasjonsformer"
+            }
+          },
+          "/organisasjonsformer/{orgformKode}" : {
+            "get" : {
+              "description" : "Hent en enkelt organisasjonsform fra kode"
+            }
+          }
+        },
+        "servers" : [ {
+          "url" : "https://data.brreg.no/enhetsregisteret/api",
+          "description" : "Produksjon"
+        } ],
+        "formats" : [ "application/json", "application/vnd.enhetsregisteret.enhet.v1+json", "application/vnd.enhetsregisteret.organisasjonsform.v1+json" ]
+      }
+    } ]
+  },
+  "_links" : {
+    "self" : {
+      "href" : "https://api-catalogue/public/apis?page=0&size=20"
+    }
+  },
+  "page" : {
+    "size" : 20,
+    "totalElements" : 8,
+    "totalPages" : 1,
+    "number" : 0
+  }
+}

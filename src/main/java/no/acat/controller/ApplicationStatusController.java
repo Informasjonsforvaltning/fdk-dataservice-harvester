@@ -31,4 +31,14 @@ public class ApplicationStatusController {
         }
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
     }
+
+    @GetMapping("/count")
+    public ResponseEntity<Long> count() {
+        try {
+            return ResponseEntity.ok(apiDocumentRepository.getCount());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+    }
 }

@@ -3,7 +3,6 @@ package no.acat.repository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.acat.model.ApiDocument;
 import no.acat.service.ElasticsearchService;
-import no.fdk.test.testcategories.UnitTest;
 import org.elasticsearch.action.ListenableActionFuture;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -15,9 +14,14 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,29 +29,48 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-@Category(UnitTest.class)
+@ExtendWith(MockitoExtension.class)
+@Tag("unit")
 public class ApiDocumentRepositoryTest {
+    @Mock
+    private ElasticsearchService mockElasticsearchService;
+    @Mock
+    private ObjectMapper mapper;
+    @Mock
+    private SearchResponse searchResponse;
+    @Mock
+    private Client client;
+    @Mock
+    private SearchRequestBuilder searchRequestBuilder;
+    @Mock
+    private BulkRequestBuilder bulkRequestBuilder;
+    @Mock
+    private BulkResponse bulkResponse;
+    @Mock
+    private ListenableActionFuture listenableActionFuture;
 
-    ApiDocumentRepository spyApiDocumentRepository;
-    ElasticsearchService mockElasticsearchService;
-    ObjectMapper mapper;
+    @InjectMocks
+    private ApiDocumentRepository spyApiDocumentRepository;
 
-    @Before
-    public void setup() throws IOException {
-
-        mapper = mock(ObjectMapper.class);
-        mockElasticsearchService = mock(ElasticsearchService.class);
-        spyApiDocumentRepository = spy(new ApiDocumentRepository(mockElasticsearchService, mapper));
-
+    @BeforeEach
+    void resetMocks() {
+        Mockito.reset(
+            mockElasticsearchService,
+            mapper,
+            searchResponse,
+            client,
+            searchRequestBuilder,
+            bulkRequestBuilder,
+            bulkResponse,
+            listenableActionFuture
+        );
     }
 
     @Test
     public void checkIf_Count_ReturnOK() {
-        SearchResponse searchResponse = mock(SearchResponse.class);
-        Client client = mock(Client.class);
-        SearchRequestBuilder searchRequestBuilder = mock(SearchRequestBuilder.class);
 
         when(mockElasticsearchService.getClient()).thenReturn(client);
         when(client.prepareSearch("acat")).thenReturn(searchRequestBuilder);
@@ -59,8 +82,6 @@ public class ApiDocumentRepositoryTest {
         SearchHits hits = mock(SearchHits.class);
         when(searchResponse.getHits()).thenReturn(hits);
         when(hits.getTotalHits()).thenReturn(10L);
-
-        doCallRealMethod().when(spyApiDocumentRepository).getCount();
 
         long count = spyApiDocumentRepository.getCount();
 
@@ -75,9 +96,6 @@ public class ApiDocumentRepositoryTest {
         String id = "1002";
         ApiDocument apiDocument = new ApiDocument();
         apiDocument.setId(id);
-        SearchResponse searchResponse = mock(SearchResponse.class);
-        Client client = mock(Client.class);
-        SearchRequestBuilder searchRequestBuilder = mock(SearchRequestBuilder.class);
 
         when(mockElasticsearchService.getClient()).thenReturn(client);
         when(client.prepareSearch("acat")).thenReturn(searchRequestBuilder);
@@ -94,8 +112,6 @@ public class ApiDocumentRepositoryTest {
         when(hits.getHits()).thenReturn(shits);
         when(shits[0].getSourceAsString()).thenReturn("{\"id\":\"1002\"}");
 
-        doCallRealMethod().when(spyApiDocumentRepository).getApiDocumentByHarvestSourceUri("harvestSourceUri");
-
         Optional<ApiDocument> expected = spyApiDocumentRepository.getApiDocumentByHarvestSourceUri("harvestSourceUri");
 
         Assert.assertThat(expected.get().getId(), is(id));
@@ -103,15 +119,11 @@ public class ApiDocumentRepositoryTest {
     }
 
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void checkIf_createOrReplaceApiDocument_hasFailures() throws IOException {
 
         String id = "1002";
         ApiDocument apiDocument = new ApiDocument();
-        Client client = mock(Client.class);
-        BulkRequestBuilder bulkRequestBuilder = mock(BulkRequestBuilder.class);
-        BulkResponse bulkResponse = mock(BulkResponse.class);
-        ListenableActionFuture listenableActionFuture = mock(ListenableActionFuture.class);
 
         when(mockElasticsearchService.getClient()).thenReturn(client);
         when(client.prepareBulk()).thenReturn(bulkRequestBuilder);
@@ -120,9 +132,7 @@ public class ApiDocumentRepositoryTest {
         when(listenableActionFuture.actionGet()).thenReturn(bulkResponse);
         when(bulkResponse.hasFailures()).thenReturn(true);
 
-        doCallRealMethod().when(spyApiDocumentRepository).createOrReplaceApiDocument(apiDocument);
-
-        spyApiDocumentRepository.createOrReplaceApiDocument(apiDocument);
+        assertThrows(RuntimeException.class, () -> spyApiDocumentRepository.createOrReplaceApiDocument(apiDocument));
 
     }
 
@@ -131,10 +141,6 @@ public class ApiDocumentRepositoryTest {
 
         String id = "1002";
         ApiDocument apiDocument = new ApiDocument();
-        Client client = mock(Client.class);
-        BulkRequestBuilder bulkRequestBuilder = mock(BulkRequestBuilder.class);
-        BulkResponse bulkResponse = mock(BulkResponse.class);
-        ListenableActionFuture listenableActionFuture = mock(ListenableActionFuture.class);
 
         when(mockElasticsearchService.getClient()).thenReturn(client);
         when(client.prepareBulk()).thenReturn(bulkRequestBuilder);
@@ -143,11 +149,10 @@ public class ApiDocumentRepositoryTest {
         when(listenableActionFuture.actionGet()).thenReturn(bulkResponse);
         when(bulkResponse.hasFailures()).thenReturn(false);
 
-        doCallRealMethod().when(spyApiDocumentRepository).createOrReplaceApiDocument(apiDocument);
-
         spyApiDocumentRepository.createOrReplaceApiDocument(apiDocument);
 
-        verify(spyApiDocumentRepository, times(1)).createOrReplaceApiDocument(apiDocument);
+        verify(listenableActionFuture, times(1)).actionGet();
+        verify(bulkResponse, times(1)).hasFailures();
     }
 
     @Test
@@ -155,23 +160,17 @@ public class ApiDocumentRepositoryTest {
 
         List<String> ids = new ArrayList<>();
 
-        doCallRealMethod().when(spyApiDocumentRepository).deleteApiDocumentByIds(anyList());
-
         spyApiDocumentRepository.deleteApiDocumentByIds(ids);
 
         Assert.assertTrue(ids.size() == 0);
 
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void checkIf_deleteApiDocumentByIds_hasFailures() {
 
         List<String> ids = new ArrayList<>();
         ids.add("1");
-        Client client = mock(Client.class);
-        BulkRequestBuilder bulkRequestBuilder = mock(BulkRequestBuilder.class);
-        BulkResponse bulkResponse = mock(BulkResponse.class);
-        ListenableActionFuture listenableActionFuture = mock(ListenableActionFuture.class);
 
         when(mockElasticsearchService.getClient()).thenReturn(client);
         when(client.prepareBulk()).thenReturn(bulkRequestBuilder);
@@ -179,9 +178,7 @@ public class ApiDocumentRepositoryTest {
         when(listenableActionFuture.actionGet()).thenReturn(bulkResponse);
         when(bulkResponse.hasFailures()).thenReturn(true);
 
-        doCallRealMethod().when(spyApiDocumentRepository).deleteApiDocumentByIds(anyList());
-
-        spyApiDocumentRepository.deleteApiDocumentByIds(ids);
+        assertThrows(RuntimeException.class, () -> spyApiDocumentRepository.deleteApiDocumentByIds(ids));
 
     }
 
@@ -190,10 +187,6 @@ public class ApiDocumentRepositoryTest {
 
         List<String> ids = new ArrayList<>();
         ids.add("1");
-        Client client = mock(Client.class);
-        BulkRequestBuilder bulkRequestBuilder = mock(BulkRequestBuilder.class);
-        BulkResponse bulkResponse = mock(BulkResponse.class);
-        ListenableActionFuture listenableActionFuture = mock(ListenableActionFuture.class);
 
         when(mockElasticsearchService.getClient()).thenReturn(client);
         when(client.prepareBulk()).thenReturn(bulkRequestBuilder);
@@ -201,11 +194,10 @@ public class ApiDocumentRepositoryTest {
         when(listenableActionFuture.actionGet()).thenReturn(bulkResponse);
         when(bulkResponse.hasFailures()).thenReturn(false);
 
-        doCallRealMethod().when(spyApiDocumentRepository).deleteApiDocumentByIds(anyList());
-
         spyApiDocumentRepository.deleteApiDocumentByIds(ids);
 
-        verify(spyApiDocumentRepository, times(1)).deleteApiDocumentByIds(ids);
+        verify(listenableActionFuture, times(1)).actionGet();
+        verify(bulkResponse, times(1)).hasFailures();
     }
 
 }

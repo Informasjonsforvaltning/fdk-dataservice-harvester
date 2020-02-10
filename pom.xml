@@ -33,11 +33,6 @@
         <testcontainers.version>1.12.5</testcontainers.version>
 
         <start-class>no.acat.AcatApiApplication</start-class>
-
-        <unittest.category/>
-        <endtoendtest.category/>
-        <loadtest.category/>
-        <integrationtest.category/>
     </properties>
 
     <dependencies>
@@ -213,8 +208,20 @@
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test</artifactId>
+            <artifactId>kotlin-test-junit5</artifactId>
             <version>${kotlin.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>1.9.10</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path-assert</artifactId>
+            <version>2.2.0</version>
             <scope>test</scope>
         </dependency>
 
@@ -235,11 +242,39 @@
                 <!-- Unit test runner -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.0</version>
+                <version>3.0.0-M3</version>
                 <configuration>
-                    <useSystemClassLoader>false</useSystemClassLoader>
-                    <groups>no.fdk.test.testcategories.UnitTest</groups> <!-- java.lang.Exception is a hack to make a valid comma-separated list og category classes -->
-                    <argLine>${surefireArgLine}  -Dfile.encoding=${project.build.sourceEncoding}</argLine>
+                    <groups>unit</groups>
+                    <excludedGroups>contract</excludedGroups>
+                    <includes>
+                        <include>**/*.java</include>
+                    </includes>
+                    <systemProperties>
+                        <property>
+                            <name>test.type</name>
+                            <value>unit</value>
+                        </property>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.0.0-M3</version>
+                <configuration>
+                    <groups>contract</groups>
+                    <excludedGroups>unit</excludedGroups>
+                    <includes>
+                        <include>**/*.java</include>
+                    </includes>
+                    <!--System property used in TestPlanExecutionListener for tests to determine test type-->
+                    <systemProperties>
+                        <property>
+                            <name>test.type</name>
+                            <value>contract</value>
+                        </property>
+                    </systemProperties>
                 </configuration>
             </plugin>
 

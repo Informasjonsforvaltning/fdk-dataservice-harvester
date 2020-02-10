@@ -1,5 +1,7 @@
 package no.acat.harvester;
 
+import lombok.RequiredArgsConstructor;
+import no.acat.configuration.AppProperties;
 import no.acat.model.ApiDocument;
 import no.acat.repository.ApiDocumentRepository;
 import no.acat.service.ApiDocumentBuilderService;
@@ -9,7 +11,6 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -23,23 +24,14 @@ import java.util.*;
 The purpose of the harvester is to ensure that search index is synchronized to registrations.
  */
 @Service
+@RequiredArgsConstructor
 public class ApiHarvester {
     private static final Logger logger = LoggerFactory.getLogger(ApiHarvester.class);
     public int RETRY_COUNT_API_RETRIEVAL = 100;
-    private ApiDocumentBuilderService apiDocumentBuilderService;
-    private RegistrationApiClient registrationApiClient;
-    private ApiDocumentRepository apiDocumentRepository;
-
-    @Autowired
-    public ApiHarvester(
-        ApiDocumentBuilderService apiDocumentBuilderService,
-        RegistrationApiClient registrationApiClient,
-        ApiDocumentRepository apiDocumentRepository
-    ) {
-        this.registrationApiClient = registrationApiClient;
-        this.apiDocumentBuilderService = apiDocumentBuilderService;
-        this.apiDocumentRepository = apiDocumentRepository;
-    }
+    private final ApiDocumentBuilderService apiDocumentBuilderService;
+    private final RegistrationApiClient registrationApiClient;
+    private final ApiDocumentRepository apiDocumentRepository;
+    private final AppProperties appProperties;
 
     public void harvestAll() {
 
@@ -121,7 +113,7 @@ public class ApiHarvester {
     List<ApiRegistrationPublic> getApiRegistrationsFromCsv() {
         List<ApiRegistrationPublic> result = new ArrayList<>();
 
-        org.springframework.core.io.Resource apiCatalogCsvFile = new ClassPathResource("apis.csv");
+        org.springframework.core.io.Resource apiCatalogCsvFile = new ClassPathResource(appProperties.getApiRegistrationsFile());
         Iterable<CSVRecord> records;
 
         try (Reader input = new BufferedReader(new InputStreamReader(apiCatalogCsvFile.getInputStream()))) {

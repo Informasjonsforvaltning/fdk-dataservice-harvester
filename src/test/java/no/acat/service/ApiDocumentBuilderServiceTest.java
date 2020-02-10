@@ -3,38 +3,43 @@ package no.acat.service;
 import no.acat.model.ApiDocument;
 import no.acat.repository.ApiDocumentRepository;
 import no.acat.utils.Utils;
-import no.fdk.test.testcategories.UnitTest;
 import no.acat.converters.apispecificationparser.ParseException;
 import no.acat.common.model.ApiRegistrationPublic;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@Category(UnitTest.class)
+@ExtendWith(MockitoExtension.class)
+@Tag("unit")
 public class ApiDocumentBuilderServiceTest {
+    @Mock
+    private ApiDocumentRepository apiDocumentRepositoryMock;
+    @Mock
+    private PublisherCatClient publisherCatClientMock;
+    @Mock
+    private DatasetCatClient datasetCatClientMock;
+    @InjectMocks
+    private ApiDocumentBuilderService apiDocumentBuilderService;
 
-    ApiDocumentBuilderService apiDocumentBuilderService;
-
-    ApiDocumentRepository apiDocumentRepositoryMock;
-    PublisherCatClient publisherCatClientMock;
-    DatasetCatClient datasetCatClientMock;
-
-    @Before
-    public void setup() {
-
-        apiDocumentRepositoryMock = mock(ApiDocumentRepository.class);
-        publisherCatClientMock = mock(PublisherCatClient.class);
-        datasetCatClientMock = mock(DatasetCatClient.class);
-
-        apiDocumentBuilderService = new ApiDocumentBuilderService(apiDocumentRepositoryMock, publisherCatClientMock, datasetCatClientMock);
+    @BeforeEach
+    void resetMocks() {
+        Mockito.reset(
+            apiDocumentRepositoryMock,
+            publisherCatClientMock,
+            datasetCatClientMock
+        );
     }
 
     @Test

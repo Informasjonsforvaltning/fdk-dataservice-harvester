@@ -1,36 +1,40 @@
 package no.acat.harvester;
 
+import no.acat.configuration.AppProperties;
 import no.acat.model.ApiDocument;
 import no.acat.repository.ApiDocumentRepository;
 import no.acat.service.ApiDocumentBuilderService;
 import no.acat.service.RegistrationApiClient;
-import no.fdk.test.testcategories.UnitTest;
 import no.acat.common.model.ApiRegistrationPublic;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-@Category(UnitTest.class)
-@RunWith(SpringRunner.class)
+@ExtendWith(MockitoExtension.class)
+@Tag("unit")
 public class ApiHarvestTest {
 
+    @Mock
     private ApiDocumentBuilderService apiDocumentBuilderServiceMock;
+    @Mock
     private ApiDocumentRepository apiDocumentRepositoryMock;
+    @Mock
+    private RegistrationApiClient registrationApiClientMock;
+    @Mock
+    private AppProperties appProperties;
+    @InjectMocks
+    private ApiHarvester harvester;
 
-    @Before
-    public void setup() throws Throwable {
-        apiDocumentRepositoryMock = mock(ApiDocumentRepository.class);
-
-        apiDocumentBuilderServiceMock = mock(ApiDocumentBuilderService.class);
-        when(apiDocumentBuilderServiceMock.createFromApiRegistration(any(), any(), any())).thenReturn(new ApiDocument());
-    }
+    private ApiDocument apiDocument = new ApiDocument();
 
     @Test
     public void harvestAllOK() throws Throwable {
@@ -38,56 +42,43 @@ public class ApiHarvestTest {
         List<ApiRegistrationPublic> publishedApis = new ArrayList<>();
         publishedApis.add(new ApiRegistrationPublic());
 
-        RegistrationApiClient registrationApiClientMock = mock(RegistrationApiClient.class);
+        when(apiDocumentBuilderServiceMock.createFromApiRegistration(any(), any(), any())).thenReturn(apiDocument);
         when(registrationApiClientMock.getPublished()).thenReturn(publishedApis);
-
-        ApiHarvester harvester = new ApiHarvester(apiDocumentBuilderServiceMock, registrationApiClientMock, apiDocumentRepositoryMock);
+        when(appProperties.getApiRegistrationsFile()).thenReturn("test-apis.csv");
 
         harvester.harvestAll();
 
-        verify(apiDocumentRepositoryMock, times(121)).createOrReplaceApiDocument(any());
+        verify(apiDocumentRepositoryMock, times(4)).createOrReplaceApiDocument(apiDocument);
     }
 
 
     @Test
     public void harvestAllShouldWorkWithEmtpyRegistration() throws Throwable {
-
-        RegistrationApiClient registrationApiClientMock = mock(RegistrationApiClient.class);
         when(registrationApiClientMock.getPublished()).thenReturn(new ArrayList<>());
+        when(appProperties.getApiRegistrationsFile()).thenReturn("empty-test-apis.csv");
 
+        harvester.harvestAll();
 
-        ApiHarvester harvester = new ApiHarvester(apiDocumentBuilderServiceMock, registrationApiClientMock, apiDocumentRepositoryMock);
-
-        ApiHarvester harvesterSpy = spy(harvester);
-
-        doReturn(new ArrayList<>()).when(harvesterSpy).getApiRegistrationsFromCsv();
-
-        harvesterSpy.harvestAll();
-
-        verify(apiDocumentRepositoryMock, times(0)).createOrReplaceApiDocument(any());
+        verify(apiDocumentRepositoryMock, times(0)).createOrReplaceApiDocument(apiDocument);
     }
 
     @Test
     public void harvestAllShouldWorkWithEmtpyPublished() throws Throwable {
-
-        RegistrationApiClient registrationApiClientMock = mock(RegistrationApiClient.class);
         when(registrationApiClientMock.getPublished()).thenReturn(new ArrayList<>());
-
-        ApiHarvester harvester = new ApiHarvester(apiDocumentBuilderServiceMock, registrationApiClientMock, apiDocumentRepositoryMock);
+        when(apiDocumentBuilderServiceMock.createFromApiRegistration(any(), any(), any())).thenReturn(apiDocument);
+        when(appProperties.getApiRegistrationsFile()).thenReturn("test-apis.csv");
 
         harvester.harvestAll();
 
-        verify(apiDocumentRepositoryMock, times(120)).createOrReplaceApiDocument(any());
+        verify(apiDocumentRepositoryMock, times(3)).createOrReplaceApiDocument(any());
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void shouldGetExceptionWhenHarvestApiFails() {
-        RegistrationApiClient registrationApiClientMock = mock(RegistrationApiClient.class);
         when(registrationApiClientMock.getPublished()).thenReturn(null);
+        when(appProperties.getApiRegistrationsFile()).thenReturn("test-apis.csv");
 
-
-        ApiHarvester harvester = new ApiHarvester(apiDocumentBuilderServiceMock, registrationApiClientMock, apiDocumentRepositoryMock);
         harvester.RETRY_COUNT_API_RETRIEVAL = 5;
-        harvester.harvestAll();//Throws exception.
+        assertThrows(RuntimeException.class, () -> harvester.harvestAll());//Throws exception.
     }
 }

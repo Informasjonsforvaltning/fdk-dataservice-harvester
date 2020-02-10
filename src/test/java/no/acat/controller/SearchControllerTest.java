@@ -5,14 +5,11 @@ import no.acat.model.ApiDocument;
 import no.acat.model.queryresponse.QueryResponse;
 import no.acat.service.ElasticsearchService;
 import no.acat.utils.Utils;
-import no.fdk.test.testcategories.UnitTest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
@@ -21,8 +18,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
-@Category(UnitTest.class)
-@RunWith(SpringRunner.class)
+@Tag("unit")
 public class SearchControllerTest {
 
     private String apiSpecExample = "{\"openapi\": \"3.0.1\",\n" +

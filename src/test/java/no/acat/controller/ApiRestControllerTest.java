@@ -2,31 +2,29 @@ package no.acat.controller;
 
 import no.acat.model.ApiDocument;
 import no.acat.repository.ApiDocumentRepository;
-import no.fdk.test.testcategories.UnitTest;
 import no.fdk.webutils.exceptions.NotFoundException;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-@Category(UnitTest.class)
+@ExtendWith(MockitoExtension.class)
+@Tag("unit")
 public class ApiRestControllerTest {
 
-    ApiDocumentRepository apiDocumentRepository;
-
+    @Mock
+    private ApiDocumentRepository apiDocumentRepository;
+    @InjectMocks
     private ApiRestController controller;
-
-    @Before
-    public void setup() {
-        apiDocumentRepository = mock(ApiDocumentRepository.class);
-        controller = new ApiRestController(apiDocumentRepository);
-    }
 
     @Test
     public void getApiDocument_ShouldReturnApiDocument() throws Exception {
@@ -40,13 +38,13 @@ public class ApiRestControllerTest {
         Assert.assertSame(testDocument, apiDocument);
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void getApiDocument_WhenInvalidId_ShouldFailWithNotFoundException() throws NotFoundException, IOException {
         String id = "b";
 
         when(apiDocumentRepository.getById(id)).thenReturn(Optional.empty());
 
-        controller.getApiDocument(id);
+        assertThrows(NotFoundException.class, () -> controller.getApiDocument(id));
     }
 
     @Test
