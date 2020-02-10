@@ -4,7 +4,7 @@ COPY pom.xml /tmp/
 COPY src /tmp/src/
 WORKDIR /tmp/
 
-RUN mvn clean package --no-transfer-progress
+RUN mvn clean package --no-transfer-progress -DskipTests
 
 FROM openjdk:8-jre
 

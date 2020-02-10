@@ -1,36 +1,43 @@
 package no.acat.harvester;
 
-
-import no.fdk.test.testcategories.UnitTest;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
 
-@Category(UnitTest.class)
+@ExtendWith(MockitoExtension.class)
+@Tag("unit")
 public class HarvestQueueTest {
     private static final Logger logger = LoggerFactory.getLogger(HarvestExecutor.class);
 
-    private HarvestQueue queue;
+    private HarvestQueue queue = new HarvestQueue();
+    @Mock
     private ApiHarvester harvester;
-    private HarvestExecutor executor;
 
-    @Before
-    public void setup() {
-        queue = new HarvestQueue();
-        harvester = mock(ApiHarvester.class);
-        doNothing().when(harvester).harvestAll();
+    @InjectMocks
+    private HarvestExecutor executor = new HarvestExecutor(harvester, queue);
 
-        executor = new HarvestExecutor(harvester, queue);
-        executor.harvestLoop();
+    @BeforeEach
+    void resetMocks() {
+        Mockito.reset(
+            harvester
+        );
     }
 
     @Test
     public void testExecutionLogic() throws Throwable {
+        doNothing().when(harvester).harvestAll();
+        executor.harvestLoop();
 
         String ht = HarvestExecutor.HARVEST_ALL;
 
@@ -56,15 +63,14 @@ public class HarvestQueueTest {
 
     @Test
     public void harvestAllFails() throws Throwable {
-        doThrow(new NullPointerException("Throws error")).when(harvester).harvestAll();
+        executor.harvestLoop();
 
         queue.addTask(HarvestExecutor.HARVEST_ALL);
 
         Thread.sleep(1300); //Timer is every 1000 ms. Added 300 ms to make the test work on slow or loaded machines.
 
-        assertEquals("queue should be empty", queue.poll(), null);
+        assertNull("queue should be empty", queue.poll());
 
     }
-
 
 }

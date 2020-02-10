@@ -1,9 +1,11 @@
 package no.acat;
 
 import com.google.common.base.Predicates;
+import no.acat.configuration.AppProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +27,7 @@ import java.util.Set;
 @PropertySource("classpath:swagger.properties")
 @EnableScheduling
 @EnableSwagger2
+@EnableConfigurationProperties(AppProperties.class)
 public class AcatApiApplication {
     @Value("${springfox.documentation.swagger.v2.path}")
     private String swagger2Endpoint;

@@ -1,11 +1,10 @@
 package no.acat.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.fdk.test.testcategories.UnitTest;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
-@Category(UnitTest.class)
+@Tag("unit")
 public class ElasticsearchServiceTest {
 
     @Test

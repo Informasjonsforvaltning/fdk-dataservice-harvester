@@ -1,16 +1,15 @@
 package no.acat.converters.apispecificationparser;
 
 import no.acat.common.model.apispecification.ApiSpecification;
-import no.fdk.test.testcategories.UnitTest;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 
-@Category(UnitTest.class)
+@Tag("unit")
 public class UniversalParserTest {
 
     private final Parser parser = new UniversalParser();
@@ -58,6 +57,5 @@ public class UniversalParserTest {
         ApiSpecification parsed = parser.parse(spec);
         Assert.assertEquals("Åpne Data fra Enhetsregisteret - API Dokumentasjon", parsed.getInfo().getTitle());
     }
-
 
 }

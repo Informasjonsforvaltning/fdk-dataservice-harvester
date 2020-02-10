@@ -1,37 +1,36 @@
 package no.acat.controller;
 
 import no.acat.utils.Utils;
-import no.fdk.test.testcategories.UnitTest;
 import no.acat.bindings.ConvertRequest;
 import no.acat.bindings.ConvertResponse;
 import no.fdk.webutils.exceptions.BadRequestException;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@Category(UnitTest.class)
+@ExtendWith(MockitoExtension.class)
+@Tag("unit")
 public class ConvertControllerTest {
 
+    @InjectMocks
     private ConvertController convertController;
 
-    @Before
-    public void setup() {
-        convertController = new ConvertController();
-    }
-
-    @Test(expected = BadRequestException.class)
+    @Test
     public void testConvertWithoutSpecShouldFailed() throws Exception {
 
         ConvertRequest convertRequest = mock(ConvertRequest.class);
 
         when(convertRequest.getSpec()).thenReturn(null);
-        convertController.convert(convertRequest);
+        assertThrows(BadRequestException.class, () -> convertController.convert(convertRequest));
     }
 
     @Test
@@ -59,12 +58,12 @@ public class ConvertControllerTest {
             "Åpne Data fra Enhetsregisteret - API Dokumentasjon");
     }
 
-    @Test(expected = BadRequestException.class)
+    @Test
     public void checkIfDownloadingSpecFailed() throws Exception {
         String url = "https://fake.url";
 
         ConvertRequest convertRequest = ConvertRequest.builder().url(url).build();
 
-        convertController.convert(convertRequest);
+        assertThrows(BadRequestException.class, () -> convertController.convert(convertRequest));
     }
 }

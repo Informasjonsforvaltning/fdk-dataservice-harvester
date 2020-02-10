@@ -2,28 +2,28 @@ package no.acat.converters.apispecificationparser;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import no.acat.common.model.apispecification.ApiSpecification;
-import no.fdk.test.testcategories.UnitTest;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
-@Category(UnitTest.class)
+@Tag("unit")
 public class SwaggerJsonParserTest {
 
     private final SwaggerJsonParser swaggerJsonParser = new SwaggerJsonParser();
 
-    private String spec;
-    private String invalidSpec;
+    private static String spec;
+    private static String invalidSpec;
 
-    @Before
-    public void setup() throws IOException {
-        spec = IOUtils.toString(new ClassPathResource("fs-api-swagger.json").getInputStream(), "UTF-8");
-        invalidSpec = IOUtils.toString(new ClassPathResource("fs-api-swagger-invalid-missing-title.json").getInputStream(), "UTF-8");
+    @BeforeAll
+    public static void setup() throws IOException {
+        spec = IOUtils.toString(new ClassPathResource("fs-api-swagger.json").getInputStream(), StandardCharsets.UTF_8);
+        invalidSpec = IOUtils.toString(new ClassPathResource("fs-api-swagger-invalid-missing-title.json").getInputStream(), StandardCharsets.UTF_8);
     }
 
     @Test
