@@ -19,7 +19,7 @@ val API_ENV_VALUES : Map<String,String> = ImmutableMap.of(
     "WIREMOCK_TEST_HOST" , WIREMOCK_TEST_HOST,
     "FDK_ES_CLUSTERNODES" , ELASTIC_CLUSTERNODES,
     "FDK_ES_CLUSTERNAME" , ELASTIC_CLUSERNAME,
-    "API_REGISTRATIONS_FILENAME" , "test-apis"
+    "API_REGISTRATIONS_FILENAME" , "test-apis.csv"
 )
 val ELASTIC_ENV_VALUES : Map<String,String> = ImmutableMap.of(
     "cluster.name" , ELASTIC_CLUSERNAME,
