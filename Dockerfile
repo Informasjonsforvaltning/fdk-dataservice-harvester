@@ -12,7 +12,7 @@ ENV TZ=Europe/Oslo
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 VOLUME /tmp
-COPY --from=MAVEN_BUILD_ENVIRONMENT /tmp/target/fdk-api-harvester.jar app.jar
+COPY --from=MAVEN_BUILD_ENVIRONMENT /tmp/target/fdk-dataservice-harvester.jar app.jar
 
 RUN sh -c 'touch /app.jar'
 CMD java -jar  $JAVA_OPTS app.jar
