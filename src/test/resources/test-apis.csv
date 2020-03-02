@@ -1,4 +1,0 @@
-Id,OrgNr,OrgName,ApiSpecUrl,ApiDocUrl,NationalComponent,DatasetRefs,ServiceType
-2,123456789,Universitetet i Test,https://docker-demo.fsat.no/fsapi/swagger.json,https://docker-demo.fsat.no/fsapi/swagger.html#!/person/get_personer_id,,,
-3,123456789,Test,https://ks-no.github.io/api/innsyn-sok-api-v1.json,https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-sok-api-v1.json,,,
-4,123456789,Testdirektoratet,https://data-nor.udir.no/swagger/docs/v1.0,https://data.norge.no/data/utdanningsdirektoratet/nasjonalt-register-opplæringskontorer-nor,,,
