@@ -1,18 +1,15 @@
+spring.data.elasticsearch:
+  repositories.enabled: true
+  cluster-nodes: ${FDK_ES_CLUSTERNODES:localhost:9300}
+  cluster-name: ${FDK_ES_CLUSTERNAME:elasticsearch}
 logging:
   level.root: WARN
   level.no: ${LOG_LEVEL:DEBUG}
   level.org.springframework: WARN
   level.org.springframework.web: WARN
-elastic:
-  clusterNodes: ${FDK_ES_CLUSTERNODES:elasticsearch5:9300}
-  clusterName: ${FDK_ES_CLUSTERNAME:elasticsearch}
-
----
-#Utv-miljø lokalt på egen PC
-spring:
-  profiles: contract-test
-elastic:
-  clusterNodes: ${FDK_ES_CLUSTERNODES}
-  clusterName: ${FDK_ES_CLUSTERNAME}
 server:
   port: 8080
+
+---
+spring:
+  profiles: contract-test
