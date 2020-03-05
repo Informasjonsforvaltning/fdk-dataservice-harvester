@@ -7,14 +7,14 @@ import java.io.BufferedReader
 import java.net.HttpURLConnection
 import java.net.URL
 
-private val LOGGER = LoggerFactory.getLogger(DcatApNo2Adapter::class.java)
+private val LOGGER = LoggerFactory.getLogger(RDFAdapter::class.java)
 
 enum class AcceptHeaders(val value: String) {
     TURTLE("text/turtle")
 }
 
 @Service
-class DcatApNo2Adapter {
+class RDFAdapter {
 
     fun getDatasourceCatalog(url: String): String? {
         val connection = URL(url).openConnection() as HttpURLConnection

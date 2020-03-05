@@ -5,6 +5,9 @@ logging:
   level.org.springframework.web: WARN
 server:
   port: 8080
+fuseki:
+  fusekiUri: ${dcatServiceUri:http://localhost:3030/fuseki/}
+  dataserviceEndpoint: dataservice
 
 ---
 spring:
