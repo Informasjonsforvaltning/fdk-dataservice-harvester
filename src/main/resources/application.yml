@@ -1,7 +1,3 @@
-spring.data.elasticsearch:
-  repositories.enabled: true
-  cluster-nodes: ${FDK_ES_CLUSTERNODES:localhost:9300}
-  cluster-name: ${FDK_ES_CLUSTERNAME:elasticsearch}
 logging:
   level.root: WARN
   level.no: ${LOG_LEVEL:DEBUG}
