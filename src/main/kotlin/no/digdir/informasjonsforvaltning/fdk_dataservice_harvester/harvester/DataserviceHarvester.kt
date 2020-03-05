@@ -1,6 +1,6 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.harvester
 
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.DcatApNo2Adapter
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.RDFAdapter
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.generated.model.Catalog
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.JenaType
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.parseCatalog
@@ -9,10 +9,10 @@ import org.apache.jena.rdf.model.StmtIterator
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
-private val LOGGER = LoggerFactory.getLogger(DcatApNo2Adapter::class.java)
+private val LOGGER = LoggerFactory.getLogger(RDFAdapter::class.java)
 
 @Service
-class DataserviceHarvester(private val dcatApNo2Adapter: DcatApNo2Adapter) {
+class DataserviceHarvester(private val dcatApNo2Adapter: RDFAdapter) {
 
     fun harvestDataservices() : Catalog? {
         val url = "https://raw.githubusercontent.com/Informasjonsforvaltning/dataservice-publisher/master/tests/catalog_2.ttl"

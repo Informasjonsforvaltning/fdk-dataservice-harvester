@@ -1,2 +1,9 @@
 version: "3"
+
 services:
+  fuseki:
+    image: fuseki:latest
+    volumes:
+      - /etc/fuseki/databases/
+    ports:
+      - "3030:8080"
