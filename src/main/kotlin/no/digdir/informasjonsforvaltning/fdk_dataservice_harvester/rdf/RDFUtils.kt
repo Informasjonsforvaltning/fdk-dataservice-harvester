@@ -8,10 +8,10 @@ import org.apache.jena.rdf.model.ModelFactory
 import org.apache.jena.rdf.model.Property
 import org.apache.jena.rdf.model.Resource
 import org.apache.jena.rdf.model.Statement
-import org.apache.jena.rdf.model.StmtIterator
 import org.apache.jena.vocabulary.DCAT
 import org.apache.jena.vocabulary.DCTerms
 import org.apache.jena.vocabulary.RDF
+import org.apache.jena.vocabulary.VCARD4
 import java.io.StringReader
 import java.net.URI
 
@@ -34,20 +34,21 @@ fun Model.parseCatalog(): Catalog? {
             .let {
                 Catalog().apply {
                     id = it.uri
-                    publisherUrl = if (it.hasProperty(DCTerms.publisher)) URI(it.getProperty(DCTerms.publisher).resource.uri) else null
+                    publisherUrl = it.extractPropertyURI(DCTerms.publisher)
                     title = it.extractProperty(DCTerms.title)?.string
                     description = it.extractProperty(DCTerms.description)?.string
                     dataservices = it.extractDataservices()
                 }
             }
-
-    } else {
-        null
-    }
+    } else { null }
 }
 
 private fun Resource.extractProperty(property: Property) : Statement? =
     if (this.hasProperty(property)) this.getProperty(property)
+    else null
+
+private fun Resource.extractPropertyURI(property: Property) : URI? =
+    if (this.hasProperty(property)) URI(this.getProperty(property).resource.uri)
     else null
 
 private fun Resource.extractDataservices() : List<Dataservice> =
@@ -56,5 +57,16 @@ private fun Resource.extractDataservices() : List<Dataservice> =
         .map { it.resource }
         .map { Dataservice().apply {
             id = it.uri
-            contactpoint = Contact().apply { }
+            title = it.extractProperty(DCTerms.title)?.string
+            description = it.extractProperty(DCTerms.description)?.string
+            endpointUrl = it.extractPropertyURI(DCAT.endpointURL)
+            endpointdescription = it.extractPropertyURI(DCAT.endpointDescription)
+            contactpoint = it.extractContactPoint()
+        } }
+
+private fun Resource.extractContactPoint() : Contact? =
+    extractProperty(DCAT.contactPoint)
+        ?.resource
+        ?.let { Contact().apply {
+            name = it.extractProperty(VCARD4.hasOrganizationName)?.string
         } }
