@@ -30,7 +30,7 @@ class RDFUtils {
     fun rdfParsedToCatalog() {
         val rdfBody: String = javaClass.classLoader.getResourceAsStream("catalog_1.ttl")!!.reader().readText()
 
-        val parsedCatalog = parseRDFResponse(rdfBody, JenaType.TURTLE).parseCatalog()
+        val parsedCatalog = parseRDFResponse(rdfBody, JenaType.TURTLE).parseCatalogs().first()
 
         Assertions.assertEquals(catalog1, parsedCatalog)
     }
@@ -40,9 +40,9 @@ class RDFUtils {
         val emptyBody: String = javaClass.classLoader.getResourceAsStream("empty.ttl")!!.reader().readText()
         val nullValues: String = javaClass.classLoader.getResourceAsStream("catalog_0.ttl")!!.reader().readText()
 
-        Assertions.assertDoesNotThrow{ parseRDFResponse(emptyBody, JenaType.TURTLE).parseCatalog() }
+        Assertions.assertDoesNotThrow{ parseRDFResponse(emptyBody, JenaType.TURTLE).parseCatalogs() }
 
-        val parsedNullCatalog = parseRDFResponse(nullValues, JenaType.TURTLE).parseCatalog()
+        val parsedNullCatalog = parseRDFResponse(nullValues, JenaType.TURTLE).parseCatalogs().first()
 
         val expected = Catalog().apply {
             id = "http://localhost:8080/catalogs/0"

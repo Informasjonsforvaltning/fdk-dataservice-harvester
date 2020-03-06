@@ -25,23 +25,17 @@ fun parseRDFResponse(responseBody: String, rdfLanguage: JenaType): Model {
     return responseModel
 }
 
-fun Model.parseCatalog(): Catalog? {
-    val catalogResources = this.listResourcesWithProperty(RDF.type, DCAT.Catalog)
-
-    return if (catalogResources.hasNext()) {
-        catalogResources
-            .nextResource()
-            .let {
-                Catalog().apply {
-                    id = it.uri
-                    publisherUrl = it.extractPropertyURI(DCTerms.publisher)
-                    title = it.extractProperty(DCTerms.title)?.string
-                    description = it.extractProperty(DCTerms.description)?.string
-                    dataservices = it.extractDataservices()
-                }
-            }
-    } else { null }
-}
+fun Model.parseCatalogs(): List<Catalog> =
+    this.listResourcesWithProperty(RDF.type, DCAT.Catalog)
+        .toList()
+        .map {
+            Catalog().apply {
+                id = it.uri
+                publisherUrl = it.extractPropertyURI(DCTerms.publisher)
+                title = it.extractProperty(DCTerms.title)?.string
+                description = it.extractProperty(DCTerms.description)?.string
+                dataservices = it.extractDataservices()
+        }}
 
 private fun Resource.extractProperty(property: Property) : Statement? =
     if (this.hasProperty(property)) this.getProperty(property)
