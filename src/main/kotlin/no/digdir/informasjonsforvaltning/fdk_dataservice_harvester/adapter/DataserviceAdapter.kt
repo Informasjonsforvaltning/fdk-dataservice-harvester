@@ -7,16 +7,16 @@ import java.io.BufferedReader
 import java.net.HttpURLConnection
 import java.net.URL
 
-private val LOGGER = LoggerFactory.getLogger(RDFAdapter::class.java)
+private val LOGGER = LoggerFactory.getLogger(DataserviceAdapter::class.java)
 
 enum class AcceptHeaders(val value: String) {
     TURTLE("text/turtle")
 }
 
 @Service
-class RDFAdapter {
+class DataserviceAdapter {
 
-    fun getDatasourceCatalog(url: String): String? {
+    fun getDataserviceCatalog(url: String): String? {
         val connection = URL(url).openConnection() as HttpURLConnection
 
         connection.setRequestProperty("Accept", AcceptHeaders.TURTLE.value)
