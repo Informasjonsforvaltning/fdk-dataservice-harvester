@@ -27,11 +27,24 @@ class FusekiConnection(private val fusekiProperties: FusekiProperties) {
         }
     }
 
+    fun fetchByGraphName(graphName: String): Model {
+        dataserviceConnection().use {
+            it.begin(ReadWrite.READ)
+            return it.fetch(graphName)
+        }
+    }
+
     fun updateModel(model: Model) {
         dataserviceConnection().use {
             it.begin(ReadWrite.WRITE)
             it.load(model)
             it.commit()
+        }
+    }
+
+    fun saveWithGraphName(graphName: String, model: Model) {
+        dataserviceConnection().use {
+            it.put(graphName, model)
         }
     }
 }
