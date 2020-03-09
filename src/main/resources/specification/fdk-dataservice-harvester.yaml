@@ -23,11 +23,18 @@ paths:
         '200':
           description: OK
           content:
-            application/json:
+            application/ld+json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Catalog"
+                type: object
+            application/rdf+json:
+              schema:
+                type: object
+            application/rdf+xml:
+              schema:
+                type: object
+            text/turtle:
+              schema:
+                type: object
   /catalogs/{id}:
     get:
       tags:
@@ -45,9 +52,18 @@ paths:
         '200':
           description: OK
           content:
-            application/json:
+            application/ld+json:
               schema:
-                $ref: "#/components/schemas/Catalog"
+                type: object
+            application/rdf+json:
+              schema:
+                type: object
+            application/rdf+xml:
+              schema:
+                type: object
+            text/turtle:
+              schema:
+                type: object
         '404':
           description: Not Found
   /dataservices/{id}:
@@ -67,9 +83,18 @@ paths:
         '200':
           description: OK
           content:
-            application/json:
+            application/ld+json:
               schema:
-                $ref: "#/components/schemas/Dataservice"
+                type: object
+            application/rdf+json:
+              schema:
+                type: object
+            application/rdf+xml:
+              schema:
+                type: object
+            text/turtle:
+              schema:
+                type: object
         '404':
           description: Not Found
 components:

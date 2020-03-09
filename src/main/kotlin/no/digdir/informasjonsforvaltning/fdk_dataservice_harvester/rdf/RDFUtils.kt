@@ -11,13 +11,30 @@ import org.apache.jena.rdf.model.Statement
 import org.apache.jena.vocabulary.DCAT
 import org.apache.jena.vocabulary.DCTerms
 import org.apache.jena.vocabulary.RDF
+import org.apache.jena.vocabulary.RDFS
+import org.apache.jena.vocabulary.VCARD
 import org.apache.jena.vocabulary.VCARD4
+import org.apache.jena.vocabulary.XSD
+import java.io.ByteArrayOutputStream
 import java.io.StringReader
 import java.net.URI
+import java.util.*
 
 enum class JenaType(val value: String){
-    TURTLE("TURTLE")
+    TURTLE("TURTLE"),
+    RDF_XML("RDF/XML"),
+    RDF_JSON("RDF/JSON"),
+    JSON_LD("JSON-LD"),
+    NOT_JENA("NOT-JENA")
 }
+fun returnTypeFromAcceptHeader(accept: String?): JenaType =
+    when (accept) {
+        "text/turtle" -> JenaType.TURTLE
+        "application/rdf+xml" -> JenaType.RDF_XML
+        "application/rdf+json" -> JenaType.RDF_JSON
+        "application/ld+json" -> JenaType.JSON_LD
+        else -> JenaType.NOT_JENA
+    }
 
 fun parseRDFResponse(responseBody: String, rdfLanguage: JenaType): Model {
     val responseModel = ModelFactory.createDefaultModel()
@@ -25,16 +42,23 @@ fun parseRDFResponse(responseBody: String, rdfLanguage: JenaType): Model {
     return responseModel
 }
 
-fun Model.parseCatalogs(): List<Catalog> =
-    this.listResourcesWithProperty(RDF.type, DCAT.Catalog)
+fun Model.listOfCatalogResources(): List<Resource> =
+    listResourcesWithProperty(RDF.type, DCAT.Catalog)
         .toList()
+
+fun Model.listOfDataServiceResources(): List<Resource> =
+    listResourcesWithProperty(RDF.type, DCAT.DataService)
+        .toList()
+
+fun Model.parseCatalogs(): List<Catalog> =
+    listOfCatalogResources()
         .map {
             Catalog().apply {
                 id = it.uri
                 publisherUrl = it.extractPropertyURI(DCTerms.publisher)
                 title = it.extractProperty(DCTerms.title)?.string
                 description = it.extractProperty(DCTerms.description)?.string
-                dataservices = it.extractDataservices()
+                dataservices = it.extractDataServices()
         }}
 
 private fun Resource.extractProperty(property: Property) : Statement? =
@@ -45,7 +69,7 @@ private fun Resource.extractPropertyURI(property: Property) : URI? =
     if (this.hasProperty(property)) URI(this.getProperty(property).resource.uri)
     else null
 
-private fun Resource.extractDataservices() : List<Dataservice> =
+private fun Resource.extractDataServices() : List<Dataservice> =
     listProperties(DCAT.service)
         .toList()
         .map { it.resource }
@@ -64,3 +88,29 @@ private fun Resource.extractContactPoint() : Contact? =
         ?.let { Contact().apply {
             name = it.extractProperty(VCARD4.hasOrganizationName)?.string
         } }
+
+fun Model.addDefaultPrefixes(): Model {
+    setNsPrefix("meta", HarvestMetaData.uri)
+    setNsPrefix("dcat", DCAT.NS)
+    setNsPrefix("dct", DCTerms.NS)
+    setNsPrefix("rdf", RDF.uri)
+    setNsPrefix("rdfs", RDFS.uri)
+    setNsPrefix("vcard", VCARD4.NS)
+    setNsPrefix("xml", "http://www.w3.org/XML/1998/namespace")
+    setNsPrefix("xsd", XSD.NS)
+
+    return this
+}
+
+fun Model.createRDFResponse(responseType: JenaType): String =
+    ByteArrayOutputStream().use{ out ->
+        write(out, responseType.value)
+        out.flush()
+        out.toString("UTF-8")
+    }
+
+fun Resource.extractMetaDataIdentifier(): String =
+    getProperty(HarvestMetaData.metaData)
+        .resource
+        .getProperty(DCTerms.identifier)
+        .string

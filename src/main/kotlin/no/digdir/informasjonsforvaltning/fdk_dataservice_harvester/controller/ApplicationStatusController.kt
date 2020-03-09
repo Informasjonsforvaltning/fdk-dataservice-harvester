@@ -1,13 +1,13 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.controller
 
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.DataserviceService
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.DataServiceService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class ApplicationStatusController(private val dataserviceService: DataserviceService) {
+class ApplicationStatusController(private val dataServiceService: DataServiceService) {
 
     @GetMapping("/ping")
     fun ping(): ResponseEntity<Void> {
@@ -17,7 +17,7 @@ class ApplicationStatusController(private val dataserviceService: DataserviceSer
     @GetMapping("/ready")
     fun ready(): ResponseEntity<Void> {
         try {
-            dataserviceService.countDataserviceCatalogss()
+            dataServiceService.countDataServiceCatalogs()
             return ResponseEntity.ok().build()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -28,7 +28,7 @@ class ApplicationStatusController(private val dataserviceService: DataserviceSer
     @GetMapping("/count")
     fun count(): ResponseEntity<Int> {
         try {
-            return ResponseEntity.ok(dataserviceService.countDataserviceCatalogss())
+            return ResponseEntity.ok(dataServiceService.countDataServiceCatalogs())
         } catch (e: Exception) {
             e.printStackTrace()
         }
