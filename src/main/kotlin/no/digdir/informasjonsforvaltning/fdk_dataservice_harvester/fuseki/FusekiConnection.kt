@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service
 private val logger = LoggerFactory.getLogger(FusekiConnection::class.java)
 
 @Service
-class FusekiConnection(private val fusekiProperties: FusekiProperties) {
+open class FusekiConnection(private val fusekiProperties: FusekiProperties) {
 
     private fun dataserviceConnection(): RDFConnection =
         RDFConnectionRemote.create()
@@ -20,31 +20,28 @@ class FusekiConnection(private val fusekiProperties: FusekiProperties) {
             .updateEndpoint("${this.fusekiProperties.fusekiUri}/update")
             .build()
 
-    fun fetchCompleteModel(): Model {
+    fun fetchCompleteModel(): Model =
         dataserviceConnection().use {
             it.begin(ReadWrite.READ)
             return it.fetch()
         }
-    }
 
-    fun fetchByGraphName(graphName: String): Model {
+    fun fetchByGraphName(graphName: String): Model =
         dataserviceConnection().use {
             it.begin(ReadWrite.READ)
             return it.fetch(graphName)
         }
-    }
 
-    fun updateModel(model: Model) {
+    fun updateFullModel(model: Model) =
         dataserviceConnection().use {
             it.begin(ReadWrite.WRITE)
             it.load(model)
             it.commit()
         }
-    }
 
-    fun saveWithGraphName(graphName: String, model: Model) {
+    fun saveWithGraphName(graphName: String, model: Model) =
         dataserviceConnection().use {
             it.put(graphName, model)
         }
-    }
+
 }
