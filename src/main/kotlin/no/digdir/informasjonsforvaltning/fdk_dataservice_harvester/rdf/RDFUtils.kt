@@ -71,14 +71,10 @@ private fun Resource.extractProperty(property: Property) : Statement? =
     else null
 
 fun Model.addDefaultPrefixes(): Model {
-    setNsPrefix("meta", HarvestMetaData.uri)
-    setNsPrefix("dcat", DCAT.NS)
     setNsPrefix("dct", DCTerms.NS)
-    setNsPrefix("rdf", RDF.uri)
-    setNsPrefix("rdfs", RDFS.uri)
+    setNsPrefix("dcat", DCAT.NS)
+    setNsPrefix("meta", HarvestMetaData.uri)
     setNsPrefix("vcard", VCARD4.NS)
-    setNsPrefix("xml", "http://www.w3.org/XML/1998/namespace")
-    setNsPrefix("xsd", XSD.NS)
 
     return this
 }
