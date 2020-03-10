@@ -1,5 +1,6 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service
 
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.CatalogFuseki
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.DataServiceFuseki
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.HarvestMetaData
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.listOfCatalogResources
@@ -11,27 +12,27 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class MetaDataService(private val dataServiceFuseki: DataServiceFuseki) {
+class MetaDataService(
+    private val dataServiceFuseki: DataServiceFuseki,
+    private val catalogFuseki: CatalogFuseki
+) {
 
     fun addMetaDataToModel(model: Model): Model {
         model.setNsPrefix("meta", HarvestMetaData.uri)
 
         model.listOfCatalogResources().forEach {
-            model.add(it.modelWithMetaData())
+            it.addProperty(
+                HarvestMetaData.fdkMetaData,
+                model.createResource(HarvestMetaData.HarvestMetaData)
+                    .addProperty(DCTerms.identifier, it.uri.createIdFromUri()))
         }
 
         model.listOfDataServiceResources().forEach {
-            model.add(it.modelWithMetaData())
+            it.addProperty(
+                HarvestMetaData.fdkMetaData,
+                model.createResource(HarvestMetaData.HarvestMetaData)
+                    .addProperty(DCTerms.identifier, it.uri.createIdFromUri()))
         }
-
-        return model
-    }
-
-    private fun Resource.modelWithMetaData(): Model {
-        addProperty(
-            HarvestMetaData.metaData,
-            model.createResource(HarvestMetaData.HarvestMetaData)
-                .addProperty(DCTerms.identifier, uri.createIdFromUri()))
 
         return model
     }

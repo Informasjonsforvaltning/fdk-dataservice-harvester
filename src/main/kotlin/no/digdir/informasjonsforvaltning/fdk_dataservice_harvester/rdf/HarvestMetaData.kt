@@ -11,7 +11,7 @@ class HarvestMetaData {
         const val uri = "http://dcat.difi.no/metadata/"
 
         val HarvestMetaData: Resource = m.createResource(uri + "HarvestMetaData")
-        val metaData: Property = m.createProperty(uri + "metaData")
+        val fdkMetaData: Property = m.createProperty(uri + "fdkMetaData")
         val firstHarvested: Property = m.createProperty(uri + "firstHarvested")
         val lastHarvested: Property = m.createProperty(uri + "lastHarvested")
         val lastChanged: Property = m.createProperty(uri + "lastChanged")

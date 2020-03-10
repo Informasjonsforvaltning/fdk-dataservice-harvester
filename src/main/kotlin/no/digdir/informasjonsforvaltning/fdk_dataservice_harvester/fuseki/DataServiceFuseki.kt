@@ -34,6 +34,7 @@ open class DataServiceFuseki(private val fusekiProperties: FusekiProperties) {
 
     fun saveWithGraphName(graphName: String, model: Model) =
         dataServiceConnection().use {
+            it.begin(ReadWrite.WRITE)
             it.put(graphName, model)
         }
 
