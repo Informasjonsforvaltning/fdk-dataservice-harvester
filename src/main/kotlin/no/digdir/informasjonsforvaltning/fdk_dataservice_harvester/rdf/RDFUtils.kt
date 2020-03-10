@@ -12,13 +12,11 @@ import org.apache.jena.vocabulary.DCAT
 import org.apache.jena.vocabulary.DCTerms
 import org.apache.jena.vocabulary.RDF
 import org.apache.jena.vocabulary.RDFS
-import org.apache.jena.vocabulary.VCARD
 import org.apache.jena.vocabulary.VCARD4
 import org.apache.jena.vocabulary.XSD
 import java.io.ByteArrayOutputStream
 import java.io.StringReader
 import java.net.URI
-import java.util.*
 
 enum class JenaType(val value: String){
     TURTLE("TURTLE"),
@@ -49,6 +47,28 @@ fun Model.listOfCatalogResources(): List<Resource> =
 fun Model.listOfDataServiceResources(): List<Resource> =
     listResourcesWithProperty(RDF.type, DCAT.DataService)
         .toList()
+
+fun Resource.createCatalogModel(): Model {
+    val model = ModelFactory.createDefaultModel()
+    model.add(listProperties())
+    model.add(extractProperty(HarvestMetaData.metaData)?.resource?.listProperties())
+
+    listProperties(DCAT.service)
+        .toList()
+        .map { it.resource.createDataserviceModel() }
+        .forEach { model.add(it) }
+
+    return model
+}
+
+fun Resource.createDataserviceModel(): Model {
+    val model = ModelFactory.createDefaultModel()
+    model.add(listProperties())
+    model.add(extractProperty(HarvestMetaData.metaData)?.resource?.listProperties())
+    model.add(extractProperty(DCAT.contactPoint)?.resource?.listProperties())
+
+    return model
+}
 
 fun Model.parseCatalogs(): List<Catalog> =
     listOfCatalogResources()

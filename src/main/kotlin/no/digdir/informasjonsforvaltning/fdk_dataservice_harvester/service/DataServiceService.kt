@@ -29,4 +29,10 @@ class DataServiceService(private val fusekiConnection: FusekiConnection) {
             .addDefaultPrefixes()
             .createRDFResponse(returnType)
 
+    fun getDataService(id: String, returnType: JenaType): Any? =
+        fusekiConnection
+            .fetchByGraphName(id)
+            .addDefaultPrefixes()
+            .createRDFResponse(returnType)
+
 }

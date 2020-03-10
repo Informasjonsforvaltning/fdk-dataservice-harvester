@@ -3,7 +3,7 @@ package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki
 import org.apache.jena.query.ReadWrite
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.rdfconnection.RDFConnection
-import org.apache.jena.rdfconnection.RDFConnectionRemote
+import org.apache.jena.rdfconnection.RDFConnectionFuseki
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -14,7 +14,7 @@ private val logger = LoggerFactory.getLogger(FusekiConnection::class.java)
 open class FusekiConnection(private val fusekiProperties: FusekiProperties) {
 
     private fun dataserviceConnection(): RDFConnection =
-        RDFConnectionRemote.create()
+        RDFConnectionFuseki.create()
             .destination(this.fusekiProperties.fusekiUri)
             .queryEndpoint("${this.fusekiProperties.fusekiUri}/query")
             .updateEndpoint("${this.fusekiProperties.fusekiUri}/update")
