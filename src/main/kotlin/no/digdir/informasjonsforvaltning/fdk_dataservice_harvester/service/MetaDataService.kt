@@ -1,6 +1,6 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service
 
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.FusekiConnection
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.DataServiceFuseki
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.HarvestMetaData
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.listOfCatalogResources
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.listOfDataServiceResources
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class MetaDataService(private val fusekiConnection: FusekiConnection) {
+class MetaDataService(private val dataServiceFuseki: DataServiceFuseki) {
 
     fun addMetaDataToModel(model: Model): Model {
         model.setNsPrefix("meta", HarvestMetaData.uri)

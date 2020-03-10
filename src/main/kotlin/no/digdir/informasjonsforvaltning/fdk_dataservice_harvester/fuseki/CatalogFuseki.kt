@@ -8,39 +8,32 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 
-private val logger = LoggerFactory.getLogger(FusekiConnection::class.java)
+private val logger = LoggerFactory.getLogger(DataServiceFuseki::class.java)
 
 @Service
-open class FusekiConnection(private val fusekiProperties: FusekiProperties) {
+open class CatalogFuseki(private val fusekiProperties: FusekiProperties) {
 
-    private fun dataserviceConnection(): RDFConnection =
+    private fun catalogConnection(): RDFConnection =
         RDFConnectionFuseki.create()
-            .destination(this.fusekiProperties.fusekiUri)
-            .queryEndpoint("${this.fusekiProperties.fusekiUri}/query")
-            .updateEndpoint("${this.fusekiProperties.fusekiUri}/update")
+            .destination(this.fusekiProperties.catalogUri)
+            .queryEndpoint("${this.fusekiProperties.catalogUri}/query")
+            .updateEndpoint("${this.fusekiProperties.catalogUri}/update")
             .build()
 
     fun fetchCompleteModel(): Model =
-        dataserviceConnection().use {
+        catalogConnection().use {
             it.begin(ReadWrite.READ)
-            return it.fetch()
+            return it.fetchDataset().unionModel
         }
 
     fun fetchByGraphName(graphName: String): Model =
-        dataserviceConnection().use {
+        catalogConnection().use {
             it.begin(ReadWrite.READ)
             return it.fetch(graphName)
         }
 
-    fun updateFullModel(model: Model) =
-        dataserviceConnection().use {
-            it.begin(ReadWrite.WRITE)
-            it.load(model)
-            it.commit()
-        }
-
     fun saveWithGraphName(graphName: String, model: Model) =
-        dataserviceConnection().use {
+        catalogConnection().use {
             it.put(graphName, model)
         }
 
