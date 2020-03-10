@@ -6,7 +6,8 @@ logging:
 server:
   port: 8080
 fuseki:
-  fusekiUri: ${DATASERVICE_FUSEKI_URI:http://localhost:3030/fuseki/dataservice}
+  dataserviceUri: ${DATASERVICE_FUSEKI_URI:http://localhost:3030/fuseki/dataservice}
+  catalogUri: ${DATASERVICE_FUSEKI_URI:http://localhost:3030/fuseki/dataservice-catalog}
 
 ---
 spring:
