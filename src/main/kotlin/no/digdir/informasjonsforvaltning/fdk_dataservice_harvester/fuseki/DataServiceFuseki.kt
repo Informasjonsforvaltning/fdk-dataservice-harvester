@@ -26,10 +26,14 @@ open class DataServiceFuseki(private val fusekiProperties: FusekiProperties) {
             return it.fetchDataset().unionModel
         }
 
-    fun fetchByGraphName(graphName: String): Model =
+    fun fetchByGraphName(graphName: String): Model? =
         dataServiceConnection().use {
             it.begin(ReadWrite.READ)
-            return it.fetch(graphName)
+            return try {
+                it.fetch(graphName)
+            } catch (ex: Exception) {
+                null
+            }
         }
 
     fun saveWithGraphName(graphName: String, model: Model) =

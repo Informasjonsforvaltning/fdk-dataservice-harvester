@@ -18,7 +18,7 @@ class DataServiceService(private val dataServiceFuseki: DataServiceFuseki) {
     fun getDataService(id: String, returnType: JenaType): String? =
         dataServiceFuseki
             .fetchByGraphName(id)
-            .addDefaultPrefixes()
-            .createRDFResponse(returnType)
+            ?.addDefaultPrefixes()
+            ?.createRDFResponse(returnType)
 
 }

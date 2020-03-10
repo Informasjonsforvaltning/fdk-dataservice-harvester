@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import javax.servlet.http.HttpServletRequest
 
-private val LOGGER = LoggerFactory.getLogger(DataserviceController::class.java)
+private val LOGGER = LoggerFactory.getLogger(DataservicesController::class.java)
 
 @Controller
 open class DataservicesController(private val dataServiceService: DataServiceService) : DcatApNoDataservicesApi {
@@ -20,7 +20,7 @@ open class DataservicesController(private val dataServiceService: DataServiceSer
 
         return dataServiceService.getDataService(id, returnType)
             ?.let { ResponseEntity(it, HttpStatus.OK) }
-            ?: ResponseEntity.notFound().build()
+            ?: ResponseEntity(HttpStatus.NOT_FOUND)
     }
 
     override fun getDataServices(httpServletRequest: HttpServletRequest): ResponseEntity<String> {
