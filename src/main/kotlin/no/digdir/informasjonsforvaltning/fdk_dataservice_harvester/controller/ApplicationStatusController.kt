@@ -1,26 +1,23 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.controller
 
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.harvester.DataServiceHarvester
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.DataServiceService
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.CatalogService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class ApplicationStatusController(private val dataServiceService: DataServiceService, private val dataServiceHarvester: DataServiceHarvester) {
+class ApplicationStatusController(private val catalogService: CatalogService) {
 
     @GetMapping("/ping")
     fun ping(): ResponseEntity<Void> {
-        dataServiceHarvester.harvestDataServiceCatalog("https://raw.githubusercontent.com/Informasjonsforvaltning/dataservice-publisher/master/tests/catalog_1.ttl")
-        dataServiceHarvester.harvestDataServiceCatalog("https://raw.githubusercontent.com/Informasjonsforvaltning/dataservice-publisher/master/tests/catalog_2.ttl")
         return ResponseEntity.ok().build()
     }
 
     @GetMapping("/ready")
     fun ready(): ResponseEntity<Void> {
         try {
-            dataServiceService.countDataServiceCatalogs()
+            catalogService.countDataServiceCatalogs()
             return ResponseEntity.ok().build()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -31,7 +28,7 @@ class ApplicationStatusController(private val dataServiceService: DataServiceSer
     @GetMapping("/count")
     fun count(): ResponseEntity<Int> {
         try {
-            return ResponseEntity.ok(dataServiceService.countDataServiceCatalogs())
+            return ResponseEntity.ok(catalogService.countDataServiceCatalogs())
         } catch (e: Exception) {
             e.printStackTrace()
         }

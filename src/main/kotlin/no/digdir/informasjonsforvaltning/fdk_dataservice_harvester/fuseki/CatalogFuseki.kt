@@ -34,6 +34,7 @@ open class CatalogFuseki(private val fusekiProperties: FusekiProperties) {
 
     fun saveWithGraphName(graphName: String, model: Model) =
         catalogConnection().use {
+            it.begin(ReadWrite.WRITE)
             it.put(graphName, model)
         }
 

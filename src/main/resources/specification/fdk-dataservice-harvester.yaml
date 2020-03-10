@@ -1,46 +1,56 @@
 openapi: 3.0.2
 info:
   title: FDK dataservice harvester
-  description: Harvests dataservices in DCAT-AP-NO v2, for use in fellesdatakatalog
+  description: Tilgjengeliggjør dataservice-beskrivelser fra en dataservice-katalog ihht DCAT-AP-NO v2.0
   version: '1.0'
   contact:
     name: Digitaliseringsdirektoratet
-    url: 'https://digdir.no'
+    url: 'https://fellesdatakatalog.digdir.no'
+    email: fellesdatakatalog@digdir.no
   license:
     name: License of API
     url: 'http://data.norge.no/nlod/no/2.0'
 tags:
-  - name: dataservices
-    description: Harvested dataservices
+  - name: dcat-ap-no-catalogs
+    description: DCAT-AP-NO catalogs
+  - name: dcat-ap-no-dataservices
+    description: DCAT-AP-NO dataservices
+servers:
+  - url: 'https://dataservice-catalog.fellesdatakatalog.digdir.no/'
+    description: Produksjonsmiljø
+  - url: 'https://dataservice-catalog.staging.fellesdatakatalog.digdir.no/'
+    description: Testmiljø
+  - url: 'https://dataservice-catalog.demo.fellesdatakatalog.digdir.no/'
+    description: Demomiljø
 paths:
   /catalogs:
     get:
       tags:
-        - dataservices
-      summary: Get all harvested catalogs
+        - dcat-ap-no-catalogs
+      description: Returnerer samlinger av kataloger
       operationId: getCatalogs
       responses:
         '200':
           description: OK
           content:
-            application/ld+json:
-              schema:
-                type: object
-            application/rdf+json:
-              schema:
-                type: object
-            application/rdf+xml:
-              schema:
-                type: object
             text/turtle:
               schema:
-                type: object
+                type: string
+            application/rdf+json:
+              schema:
+                type: string
+            application/ld+json:
+              schema:
+                type: string
+            application/rdf+xml:
+              schema:
+                type: string
   /catalogs/{id}:
     get:
       tags:
-        - dataservices
-      summary: Get a specific catalog
-      operationId: getCatalog
+        - dcat-ap-no-catalogs
+      description: Returnerer en katalog
+      operationId: getCatalogById
       parameters:
         - name: id
           in: path
@@ -52,26 +62,46 @@ paths:
         '200':
           description: OK
           content:
-            application/ld+json:
-              schema:
-                type: object
-            application/rdf+json:
-              schema:
-                type: object
-            application/rdf+xml:
-              schema:
-                type: object
             text/turtle:
               schema:
-                type: object
-        '404':
-          description: Not Found
+                type: string
+            application/rdf+json:
+              schema:
+                type: string
+            application/ld+json:
+              schema:
+                type: string
+            application/rdf+xml:
+              schema:
+                type: string
+  /dataservices:
+    get:
+      tags:
+        - dcat-ap-no-dataservices
+      description: Returnerer samlinger av dataservicer
+      operationId: getDataServices
+      responses:
+        '200':
+          description: OK
+          content:
+            text/turtle:
+              schema:
+                type: string
+            application/rdf+json:
+              schema:
+                type: string
+            application/ld+json:
+              schema:
+                type: string
+            application/rdf+xml:
+              schema:
+                type: string
   /dataservices/{id}:
     get:
       tags:
-        - dataservices
-      summary: Get a specific dataservice
-      operationId: getDataservice
+        - dcat-ap-no-dataservices
+      description: Returnerer en dataservice
+      operationId: getDataServiceById
       parameters:
         - name: id
           in: path
@@ -83,54 +113,15 @@ paths:
         '200':
           description: OK
           content:
-            application/ld+json:
-              schema:
-                type: object
-            application/rdf+json:
-              schema:
-                type: object
-            application/rdf+xml:
-              schema:
-                type: object
             text/turtle:
               schema:
-                type: object
-        '404':
-          description: Not Found
-components:
-  schemas:
-    Catalog:
-      properties:
-        id:
-          type: string
-        publisherUrl:
-          type: string
-          format: uri
-        title:
-          type: string
-        description:
-          type: string
-        dataservices:
-          type: array
-          items:
-            $ref: '#/components/schemas/Dataservice'
-    Dataservice:
-      properties:
-        id:
-          type: string
-        title:
-          type: string
-        description:
-          type: string
-        endpointUrl:
-          type: string
-          format: uri
-        endpointdescription:
-          type: string
-          format: uri
-        contactpoint:
-          $ref: '#/components/schemas/Contact'
-    Contact:
-      properties:
-        name:
-          type: string
+                type: string
+            application/rdf+json:
+              schema:
+                type: string
+            application/ld+json:
+              schema:
+                type: string
+            application/rdf+xml:
+              schema:
+                type: string
