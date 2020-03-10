@@ -27,7 +27,7 @@ class CatalogService(private val catalogFuseki: CatalogFuseki) {
     fun getDataServiceCatalog(id: String, returnType: JenaType): String? =
         catalogFuseki
             .fetchByGraphName(id)
-            .addDefaultPrefixes()
-            .createRDFResponse(returnType)
+            ?.addDefaultPrefixes()
+            ?.createRDFResponse(returnType)
 
 }

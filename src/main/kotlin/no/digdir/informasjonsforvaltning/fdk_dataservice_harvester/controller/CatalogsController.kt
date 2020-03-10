@@ -10,10 +10,10 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import javax.servlet.http.HttpServletRequest
 
-private val LOGGER = LoggerFactory.getLogger(DataserviceController::class.java)
+private val LOGGER = LoggerFactory.getLogger(CatalogsController::class.java)
 
 @Controller
-open class DataserviceController(private val catalogService: CatalogService) : DcatApNoCatalogsApi {
+open class CatalogsController(private val catalogService: CatalogService) : DcatApNoCatalogsApi {
 
     override fun getCatalogById(httpServletRequest: HttpServletRequest, id: String): ResponseEntity<String> {
         LOGGER.info("get DataService catalog with id $id")
@@ -21,7 +21,7 @@ open class DataserviceController(private val catalogService: CatalogService) : D
 
         return catalogService.getDataServiceCatalog(id, returnType)
             ?.let { ResponseEntity(it, HttpStatus.OK) }
-            ?: ResponseEntity.notFound().build()
+            ?: ResponseEntity(HttpStatus.NOT_FOUND)
     }
 
     override fun getCatalogs(httpServletRequest: HttpServletRequest): ResponseEntity<String> {
