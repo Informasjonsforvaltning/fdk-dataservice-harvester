@@ -28,4 +28,13 @@ open class DataserviceController(private val dataServiceService: DataServiceServ
         val returnType = returnTypeFromAcceptHeader(httpServletRequest.getHeader("Accept"))
         return ResponseEntity(dataServiceService.getAllDataServiceCatalogs(returnType), HttpStatus.OK)
     }
+
+    override fun getDataservice(httpServletRequest: HttpServletRequest, id: String): ResponseEntity<Any> {
+        LOGGER.info("get DataService with id $id")
+        val returnType = returnTypeFromAcceptHeader(httpServletRequest.getHeader("Accept"))
+
+        return dataServiceService.getDataService(id, returnType)
+            ?.let { ResponseEntity(it, HttpStatus.OK) }
+            ?: ResponseEntity.notFound().build()
+    }
 }

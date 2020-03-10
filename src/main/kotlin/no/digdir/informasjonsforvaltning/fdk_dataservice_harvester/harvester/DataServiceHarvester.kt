@@ -3,6 +3,8 @@ package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.harvester
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.DataServiceAdapter
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.FusekiConnection
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.JenaType
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createCatalogModel
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createDataserviceModel
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.extractMetaDataIdentifier
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.listOfCatalogResources
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.listOfDataServiceResources
@@ -26,7 +28,8 @@ class DataServiceHarvester(
             ?.let { metaDataService.addMetaDataToModel(it) }
             ?.run {
                 fuseki.updateFullModel(this)
-                listOfCatalogResources().forEach{ fuseki.saveWithGraphName(it.extractMetaDataIdentifier(), it.model) }
+                listOfCatalogResources().forEach{ fuseki.saveWithGraphName(it.extractMetaDataIdentifier(), it.createCatalogModel()) }
+                listOfDataServiceResources().forEach{ fuseki.saveWithGraphName(it.extractMetaDataIdentifier(), it.createDataserviceModel()) }
             }
     }
 
