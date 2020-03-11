@@ -5,6 +5,7 @@ import org.apache.jena.rdf.model.ModelFactory
 import org.apache.jena.rdf.model.Property
 import org.apache.jena.rdf.model.Resource
 import org.apache.jena.rdf.model.Statement
+import org.apache.jena.sparql.vocabulary.FOAF
 import org.apache.jena.vocabulary.DCAT
 import org.apache.jena.vocabulary.DCTerms
 import org.apache.jena.vocabulary.RDF
@@ -44,15 +45,9 @@ fun Model.listOfDataServiceResources(): List<Resource> =
     listResourcesWithProperty(RDF.type, DCAT.DataService)
         .toList()
 
-fun Resource.createCatalogModel(): Model {
+fun Resource.createModelOfTopLevelProperties(): Model {
     val model = ModelFactory.createDefaultModel()
     model.add(listProperties())
-    model.add(extractProperty(HarvestMetaData.fdkMetaData)?.resource?.listProperties())
-
-    listProperties(DCAT.service)
-        .toList()
-        .map { it.resource.createDataserviceModel() }
-        .forEach { model.add(it) }
 
     return model
 }
@@ -60,7 +55,6 @@ fun Resource.createCatalogModel(): Model {
 fun Resource.createDataserviceModel(): Model {
     val model = ModelFactory.createDefaultModel()
     model.add(listProperties())
-    model.add(extractProperty(HarvestMetaData.fdkMetaData)?.resource?.listProperties())
     model.add(extractProperty(DCAT.contactPoint)?.resource?.listProperties())
 
     return model
@@ -73,7 +67,7 @@ private fun Resource.extractProperty(property: Property) : Statement? =
 fun Model.addDefaultPrefixes(): Model {
     setNsPrefix("dct", DCTerms.NS)
     setNsPrefix("dcat", DCAT.NS)
-    setNsPrefix("meta", HarvestMetaData.uri)
+    setNsPrefix("foaf", FOAF.getURI())
     setNsPrefix("vcard", VCARD4.NS)
 
     return this
@@ -86,8 +80,8 @@ fun Model.createRDFResponse(responseType: JenaType): String =
         out.toString("UTF-8")
     }
 
-fun Resource.extractMetaDataIdentifier(): String =
-    getProperty(HarvestMetaData.fdkMetaData)
-        .resource
-        .getProperty(DCTerms.identifier)
-        .string
+fun Model.extractMetaDataIdentifier(): String =
+    listResourcesWithProperty(RDF.type, DCAT.record)
+        .toList()
+        .first()
+        .getProperty(DCTerms.identifier).string
