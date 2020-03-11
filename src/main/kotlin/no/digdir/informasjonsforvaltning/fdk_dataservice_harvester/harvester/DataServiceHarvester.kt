@@ -6,6 +6,7 @@ import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.Catalo
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.DataServiceFuseki
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.JenaType
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createDataserviceModel
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createIdFromUri
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createModelOfTopLevelProperties
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.extractMetaDataIdentifier
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.listOfCatalogResources
@@ -21,7 +22,6 @@ import org.apache.jena.vocabulary.RDF
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.LocalDate
-import java.util.*
 
 private val LOGGER = LoggerFactory.getLogger(DataServiceHarvester::class.java)
 
@@ -46,7 +46,7 @@ class DataServiceHarvester(
     }
 
     private fun catalogModelWithMetaData(resource: Resource, harvested: Model): HarvestedModel {
-        val dbId = resource.uri.createIdFromUri()
+        val dbId = createIdFromUri(resource.uri)
         val dbModel = catalogFuseki.fetchByGraphName(dbId)
 
         val dbMetaData: Resource? = dbModel?.extractMetaDataResource()
@@ -60,7 +60,7 @@ class DataServiceHarvester(
     }
 
     private fun dataServiceWithMetaData(resource: Resource, harvested: Model): HarvestedModel {
-        val dbId = resource.uri.createIdFromUri()
+        val dbId = createIdFromUri(resource.uri)
         val dbModel = dataServiceFuseki.fetchByGraphName(dbId)
 
         val dbMetaData: Resource? = dbModel?.extractMetaDataResource()
@@ -157,7 +157,3 @@ private fun Resource.addModified(dbResource: Resource?) {
         ?.toList()
         ?.forEach { addProperty(DCTerms.modified, it.string) }
 }
-
-private fun String.createIdFromUri(): String =
-    UUID.nameUUIDFromBytes(toByteArray())
-        .toString()

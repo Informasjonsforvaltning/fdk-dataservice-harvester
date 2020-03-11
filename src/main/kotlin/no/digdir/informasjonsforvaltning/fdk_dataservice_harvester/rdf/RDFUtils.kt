@@ -14,6 +14,7 @@ import org.apache.jena.vocabulary.VCARD4
 import org.apache.jena.vocabulary.XSD
 import java.io.ByteArrayOutputStream
 import java.io.StringReader
+import java.util.*
 
 enum class JenaType(val value: String){
     TURTLE("TURTLE"),
@@ -85,3 +86,7 @@ fun Model.extractMetaDataIdentifier(): String =
         .toList()
         .first()
         .getProperty(DCTerms.identifier).string
+
+fun createIdFromUri(uri: String): String =
+    UUID.nameUUIDFromBytes(uri.toByteArray())
+        .toString()
