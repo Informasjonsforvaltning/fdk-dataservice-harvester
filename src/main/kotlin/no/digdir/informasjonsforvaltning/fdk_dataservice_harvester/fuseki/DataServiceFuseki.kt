@@ -1,5 +1,6 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki
 
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration.FusekiProperties
 import org.apache.jena.query.ReadWrite
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.rdfconnection.RDFConnection

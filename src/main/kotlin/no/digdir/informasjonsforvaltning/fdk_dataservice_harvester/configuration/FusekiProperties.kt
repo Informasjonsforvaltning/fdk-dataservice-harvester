@@ -1,4 +1,4 @@
-package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki
+package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding

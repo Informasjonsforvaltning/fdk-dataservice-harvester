@@ -1,6 +1,7 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.harvester
 
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.DataServiceAdapter
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration.ApplicationProperties
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.CatalogFuseki
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.DataServiceFuseki
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.JenaType
@@ -30,7 +31,8 @@ private fun nowDateString(): String = LocalDate.now().toString()
 class DataServiceHarvester(
     private val adapter: DataServiceAdapter,
     private val dataServiceFuseki: DataServiceFuseki,
-    private val catalogFuseki: CatalogFuseki
+    private val catalogFuseki: CatalogFuseki,
+    private val applicationProperties: ApplicationProperties
 ) {
 
     fun harvestDataServiceCatalog(url: String) {
@@ -72,7 +74,7 @@ class DataServiceHarvester(
     }
 
     private fun Model.addCatalogMetaData(dbId: String, uri: String, dbMetaData: Resource?): Model {
-        createResource("http://fdk-dataservice-harvester:8080/catalogs/$dbId")
+        createResource("${applicationProperties.catalogUri}/$dbId")
             .addProperty(RDF.type, DCAT.record)
             .addProperty(DCTerms.identifier, dbId)
             .addProperty(FOAF.primaryTopic, createResource(uri))
@@ -82,7 +84,7 @@ class DataServiceHarvester(
     }
 
     private fun Model.addDataServiceMetaData(dbId: String, uri: String, dbMetaData: Resource?): Model {
-        createResource("http://fdk-dataservice-harvester:8080/dataservices/$dbId")
+        createResource("${applicationProperties.dataserviceUri}/$dbId")
             .addProperty(RDF.type, DCAT.record)
             .addProperty(DCTerms.identifier, dbId)
             .addProperty(FOAF.primaryTopic, createResource(uri))

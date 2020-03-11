@@ -8,6 +8,9 @@ server:
 fuseki:
   dataserviceUri: ${DATASERVICE_FUSEKI_URI:http://localhost:3030/fuseki/dataservice}
   catalogUri: ${DATASERVICE_FUSEKI_URI:http://localhost:3030/fuseki/dataservice-catalog}
+application:
+  dataserviceUri: ${DATASERVICE_HARVESTER_EXTERNAL_URI:http://dataservice-harvester.staging.fellesdatakatalog.digdir.no}/dataservices
+  catalogUri: ${DATASERVICE_HARVESTER_EXTERNAL_URI:http://dataservice-harvester.staging.fellesdatakatalog.digdir.no}/catalogs
 
 ---
 spring:
