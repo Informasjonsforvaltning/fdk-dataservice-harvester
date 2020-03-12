@@ -1,5 +1,7 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.harvester
 
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.DataServiceAdapter
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration.ApplicationProperties
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.dto.HarvestDataSource
@@ -37,7 +39,11 @@ class DataServiceHarvester(
 ) {
 
     fun initiateHarvest(sources: List<HarvestDataSource>) {
-        sources.forEach { if (it.url != null) harvestDataServiceCatalog(it.url) }
+        sources.forEach {
+            if (it.url != null) {
+                GlobalScope.launch { harvestDataServiceCatalog(it.url) }
+            }
+        }
     }
 
     fun harvestDataServiceCatalog(url: String) {
