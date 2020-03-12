@@ -2,6 +2,7 @@ package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.harvester
 
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.DataServiceAdapter
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration.ApplicationProperties
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.dto.HarvestDataSource
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.CatalogFuseki
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.DataServiceFuseki
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.JenaType
@@ -34,6 +35,10 @@ class DataServiceHarvester(
     private val catalogFuseki: CatalogFuseki,
     private val applicationProperties: ApplicationProperties
 ) {
+
+    fun initiateHarvest(sources: List<HarvestDataSource>) {
+        sources.forEach { if (it.url != null) harvestDataServiceCatalog(it.url) }
+    }
 
     fun harvestDataServiceCatalog(url: String) {
         adapter.getDataServiceCatalog(url)

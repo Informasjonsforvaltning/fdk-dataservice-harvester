@@ -1,4 +1,4 @@
-FROM maven:3.6.3-jdk-11 AS MAVEN_BUILD_ENVIRONMENT
+FROM maven:3.6.3-jdk-8-slim AS MAVEN_BUILD_ENVIRONMENT
 
 COPY pom.xml /tmp/
 COPY src /tmp/src/
@@ -6,7 +6,7 @@ WORKDIR /tmp/
 
 RUN mvn clean package --no-transfer-progress -DskipTests
 
-FROM openjdk:11-jre
+FROM openjdk:8-jre
 
 ENV TZ=Europe/Oslo
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
