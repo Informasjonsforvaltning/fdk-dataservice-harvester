@@ -6,11 +6,11 @@ logging:
 server:
   port: 8080
 fuseki:
-  dataserviceUri: ${DATASERVICE_FUSEKI_URI:http://localhost:3030/fuseki/dataservice}
-  catalogUri: ${DATASERVICE_FUSEKI_URI:http://localhost:3030/fuseki/dataservice-catalog}
+  dataserviceUri: ${FDK_FUSEKI_SERVICE_URI:http://fdk-fuseki-service:8080/fuseki}/dataservice
+  catalogUri: ${FDK_FUSEKI_SERVICE_URI:http://fdk-fuseki-service:8080/fuseki}/dataservice-catalog
 application:
-  dataserviceUri: ${DATASERVICE_HARVESTER_EXTERNAL_URI:http://dataservice-harvester.staging.fellesdatakatalog.digdir.no}/dataservices
-  catalogUri: ${DATASERVICE_HARVESTER_EXTERNAL_URI:http://dataservice-harvester.staging.fellesdatakatalog.digdir.no}/catalogs
+  dataserviceUri: ${FDK_DATASERVICE_HARVESTER_URI:https://dataservice-harvester.staging.fellesdatakatalog.digdir.no}/dataservices
+  catalogUri: ${FDK_DATASERVICE_HARVESTER_URI:https://dataservice-harvester.staging.fellesdatakatalog.digdir.no}/catalogs
 
 ---
 spring:
