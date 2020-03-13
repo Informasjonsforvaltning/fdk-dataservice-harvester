@@ -38,3 +38,15 @@ application:
 ---
 spring:
   profiles: contract-test
+  rabbitmq:
+    host: ${WIREMOCK_TEST_HOST}
+    port: ${WIREMOCK_TEST_PORT}
+    username: admin
+    password: admin
+fuseki:
+  dataserviceUri: ${FUSEKI_TEST_URI}/fuseki/dataservice
+  catalogUri: ${FUSEKI_TEST_URI}/fuseki/dataservice-catalog
+application:
+  dataserviceUri: ${WIREMOCK_TEST_URI}/dataservices
+  catalogUri: https://dataservice-harvester.staging.fellesdatakatalog.digdir.no/catalogs
+  harvestAdminRootUrl: ${WIREMOCK_TEST_URI}/api

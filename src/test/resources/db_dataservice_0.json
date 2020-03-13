@@ -1,0 +1,75 @@
+{
+  "@graph": [
+    {
+      "@id": "_:b0",
+      "@type": "vcard:Organization",
+      "hasOrganizationName": {
+        "@language": "nb",
+        "@value": "Testdirektoratet"
+      },
+      "hasURL": "https://testdirektoratet.no"
+    },
+    {
+      "@id": "https://dataservice-harvester.staging.fellesdatakatalog.digdir.no/dataservices/ea51178e-f843-3025-98c5-7d02ce887f90",
+      "@type": "dcat:record",
+      "identifier": "ea51178e-f843-3025-98c5-7d02ce887f90",
+      "issued": "2020-03-12",
+      "modified": "2020-03-12",
+      "primaryTopic": "https://testdirektoratet.no/model/dataservice/0"
+    },
+    {
+      "@id": "https://testdirektoratet.no/model/dataservice/0",
+      "@type": "dcat:DataService",
+      "description": {
+        "@language": "nb",
+        "@value": "Description of service 0"
+      },
+      "title": {
+        "@language": "nb",
+        "@value": "Test Service 0"
+      },
+      "contactPoint": "_:b0",
+      "endpointDescription": "https://testdirektoratet.no/openapi/dataservice/0.yaml"
+    }
+  ],
+  "@context": {
+    "hasURL": {
+      "@id": "http://www.w3.org/2006/vcard/ns#hasURL",
+      "@type": "@id"
+    },
+    "hasOrganizationName": {
+      "@id": "http://www.w3.org/2006/vcard/ns#hasOrganizationName"
+    },
+    "endpointDescription": {
+      "@id": "http://www.w3.org/ns/dcat#endpointDescription",
+      "@type": "@id"
+    },
+    "contactPoint": {
+      "@id": "http://www.w3.org/ns/dcat#contactPoint",
+      "@type": "@id"
+    },
+    "title": {
+      "@id": "http://purl.org/dc/terms/title"
+    },
+    "description": {
+      "@id": "http://purl.org/dc/terms/description"
+    },
+    "identifier": {
+      "@id": "http://purl.org/dc/terms/identifier"
+    },
+    "primaryTopic": {
+      "@id": "http://xmlns.com/foaf/0.1/primaryTopic",
+      "@type": "@id"
+    },
+    "issued": {
+      "@id": "http://purl.org/dc/terms/issued"
+    },
+    "modified": {
+      "@id": "http://purl.org/dc/terms/modified"
+    },
+    "dct": "http://purl.org/dc/terms/",
+    "vcard": "http://www.w3.org/2006/vcard/ns#",
+    "dcat": "http://www.w3.org/ns/dcat#",
+    "foaf": "http://xmlns.com/foaf/0.1/"
+  }
+}
