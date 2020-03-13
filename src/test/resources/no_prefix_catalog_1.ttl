@@ -1,0 +1,19 @@
+<https://testdirektoratet.no/model/dataservice-catalogs/1>
+        a       <http://www.w3.org/ns/dcat#Catalog> ;
+        <http://purl.org/dc/terms/publisher>
+                <https://organization-catalogue.fellesdatakatalog.brreg.no/organizations/123456789> ;
+        <http://purl.org/dc/terms/title>
+                "Dataservicekatalog 1 for Testdirektoratet"@nb ;
+        <http://www.w3.org/ns/dcat#service>
+                <https://testdirektoratet.no/model/dataservice/1> .
+
+<https://dataservice-harvester.staging.fellesdatakatalog.digdir.no/catalogs/65555cdb-6809-3cc4-bff1-aaa6d9426311>
+        a       <http://www.w3.org/ns/dcat#record> ;
+        <http://purl.org/dc/terms/identifier>
+                "65555cdb-6809-3cc4-bff1-aaa6d9426311" ;
+        <http://purl.org/dc/terms/issued>
+                "2020-03-12" ;
+        <http://purl.org/dc/terms/modified>
+                "2020-03-12" ;
+        <http://xmlns.com/foaf/0.1/primaryTopic>
+                <https://testdirektoratet.no/model/dataservice-catalogs/1> .

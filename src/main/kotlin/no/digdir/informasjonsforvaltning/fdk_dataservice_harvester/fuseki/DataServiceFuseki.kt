@@ -5,11 +5,7 @@ import org.apache.jena.query.ReadWrite
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.rdfconnection.RDFConnection
 import org.apache.jena.rdfconnection.RDFConnectionFuseki
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-
-
-private val logger = LoggerFactory.getLogger(DataServiceFuseki::class.java)
 
 @Service
 open class DataServiceFuseki(private val fusekiProperties: FusekiProperties) {
@@ -21,13 +17,13 @@ open class DataServiceFuseki(private val fusekiProperties: FusekiProperties) {
             .updateEndpoint("${this.fusekiProperties.dataserviceUri}/update")
             .build()
 
-    fun fetchCompleteModel(): Model =
+    open fun fetchCompleteModel(): Model =
         dataServiceConnection().use {
             it.begin(ReadWrite.READ)
             return it.fetchDataset().unionModel
         }
 
-    fun fetchByGraphName(graphName: String): Model? =
+    open fun fetchByGraphName(graphName: String): Model? =
         dataServiceConnection().use {
             it.begin(ReadWrite.READ)
             return try {

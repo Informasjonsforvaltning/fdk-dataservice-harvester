@@ -5,7 +5,6 @@ import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.CATALOG
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.TestResponseReader
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.apiGet
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -15,14 +14,14 @@ import kotlin.test.assertTrue
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("contract")
 class CatalogsContract : ApiTestContainer() {
-    val responseReader = TestResponseReader()
+    private val responseReader = TestResponseReader()
 
     @Test
     fun findSpecific() {
         val response = apiGet("/catalogs/$CATALOG_ID_0", "application/rdf+xml")
         assertEquals(HttpStatus.OK.value(), response["status"])
 
-        val expected = responseReader.getExpectedResponse("contract_catalog_0.ttl", "TURTLE")
+        val expected = responseReader.parseFile("catalog_0.ttl", "TURTLE")
         val responseModel = responseReader.parseResponse(response["body"] as String, "RDFXML")
 
         assertTrue(expected.isIsomorphicWith(responseModel))
@@ -39,7 +38,7 @@ class CatalogsContract : ApiTestContainer() {
         val response = apiGet("/catalogs", "text/turtle")
         assertEquals(HttpStatus.OK.value(), response["status"])
 
-        val expected = responseReader.getExpectedResponse("contract_all_catalogs.ttl", "TURTLE")
+        val expected = responseReader.parseFile("all_catalogs.ttl", "TURTLE")
         val responseModel = responseReader.parseResponse(response["body"] as String, "TURTLE")
 
         assertTrue(expected.isIsomorphicWith(responseModel))

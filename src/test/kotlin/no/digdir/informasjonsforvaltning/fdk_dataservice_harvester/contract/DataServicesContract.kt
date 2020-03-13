@@ -14,14 +14,14 @@ import kotlin.test.assertTrue
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("contract")
 class DataServicesContract : ApiTestContainer() {
-    val responseReader = TestResponseReader()
+    private val responseReader = TestResponseReader()
 
     @Test
     fun findSpecific() {
         val response = apiGet("/dataservices/$DATASERVICE_ID_0", "application/rdf+json")
         assertEquals(HttpStatus.OK.value(), response["status"])
 
-        val expected = responseReader.getExpectedResponse("contract_dataservice_0.ttl", "TURTLE")
+        val expected = responseReader.parseFile("dataservice_0.ttl", "TURTLE")
         val responseModel = responseReader.parseResponse(response["body"] as String, "RDF/JSON")
 
         assertTrue(expected.isIsomorphicWith(responseModel))
@@ -38,7 +38,7 @@ class DataServicesContract : ApiTestContainer() {
         val response = apiGet("/dataservices", "application/ld+json")
         assertEquals(HttpStatus.OK.value(), response["status"])
 
-        val expected = responseReader.getExpectedResponse("contract_all_dataservices.ttl", "TURTLE")
+        val expected = responseReader.parseFile("all_dataservices.ttl", "TURTLE")
         val responseModel = responseReader.parseResponse(response["body"] as String, "JSONLD")
 
         assertTrue(expected.isIsomorphicWith(responseModel))
