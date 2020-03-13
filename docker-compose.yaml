@@ -13,7 +13,7 @@ services:
       - rabbitmq
 
   fdk-fuseki-service:
-    image: eu.gcr.io/digdir-fdk-infra/fdk-fuseki-service:latest
+    image: eu.gcr.io/digdir-fdk-infra/fdk-fuseki-service:staging_latest
     volumes:
       - /etc/fuseki/databases/
     ports:

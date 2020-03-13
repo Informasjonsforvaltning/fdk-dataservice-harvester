@@ -1,0 +1,54 @@
+{
+  "@graph": [
+    {
+      "@id": "https://dataservice-harvester.staging.fellesdatakatalog.digdir.no/catalogs/e422e2a7-287f-349f-876a-dc3541676f21",
+      "@type": "dcat:record",
+      "identifier": "e422e2a7-287f-349f-876a-dc3541676f21",
+      "issued": "2020-03-12",
+      "modified": "2020-03-12",
+      "primaryTopic": "https://testdirektoratet.no/model/dataservice-catalogs/0"
+    },
+    {
+      "@id": "https://testdirektoratet.no/model/dataservice-catalogs/0",
+      "@type": "dcat:Catalog",
+      "publisher": "https://organization-catalogue.fellesdatakatalog.brreg.no/organizations/123456789",
+      "title": {
+        "@language": "nb",
+        "@value": "Dataservicekatalog for Testdirektoratet"
+      },
+      "service": [
+        "https://testdirektoratet.no/model/dataservice/0"
+      ]
+    }
+  ],
+  "@context": {
+    "publisher": {
+      "@id": "http://purl.org/dc/terms/publisher",
+      "@type": "@id"
+    },
+    "title": {
+      "@id": "http://purl.org/dc/terms/title"
+    },
+    "service": {
+      "@id": "http://www.w3.org/ns/dcat#service",
+      "@type": "@id"
+    },
+    "identifier": {
+      "@id": "http://purl.org/dc/terms/identifier"
+    },
+    "primaryTopic": {
+      "@id": "http://xmlns.com/foaf/0.1/primaryTopic",
+      "@type": "@id"
+    },
+    "issued": {
+      "@id": "http://purl.org/dc/terms/issued"
+    },
+    "modified": {
+      "@id": "http://purl.org/dc/terms/modified"
+    },
+    "dct": "http://purl.org/dc/terms/",
+    "vcard": "http://www.w3.org/2006/vcard/ns#",
+    "dcat": "http://www.w3.org/ns/dcat#",
+    "foaf": "http://xmlns.com/foaf/0.1/"
+  }
+}
