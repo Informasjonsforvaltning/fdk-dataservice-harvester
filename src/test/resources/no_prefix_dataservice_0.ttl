@@ -1,0 +1,26 @@
+<https://testdirektoratet.no/model/dataservice/0>
+        a       <http://www.w3.org/ns/dcat#DataService> ;
+        <http://purl.org/dc/terms/description>
+                "Description of service 0"@nb ;
+        <http://purl.org/dc/terms/title>
+                "Test Service 0"@nb ;
+        <http://www.w3.org/ns/dcat#contactPoint>
+                [ a       <http://www.w3.org/2006/vcard/ns#Organization> ;
+                  <http://www.w3.org/2006/vcard/ns#hasOrganizationName>
+                          "Testdirektoratet"@nb ;
+                  <http://www.w3.org/2006/vcard/ns#hasURL>
+                          <https://testdirektoratet.no>
+                ] ;
+        <http://www.w3.org/ns/dcat#endpointDescription>
+                <https://testdirektoratet.no/openapi/dataservice/0.yaml> .
+
+<https://dataservice-harvester.staging.fellesdatakatalog.digdir.no/dataservices/ea51178e-f843-3025-98c5-7d02ce887f90>
+        a       <http://www.w3.org/ns/dcat#record> ;
+        <http://purl.org/dc/terms/identifier>
+                "ea51178e-f843-3025-98c5-7d02ce887f90" ;
+        <http://purl.org/dc/terms/issued>
+                "2020-03-12" ;
+        <http://purl.org/dc/terms/modified>
+                "2020-03-12" ;
+        <http://xmlns.com/foaf/0.1/primaryTopic>
+                <https://testdirektoratet.no/model/dataservice/0> .

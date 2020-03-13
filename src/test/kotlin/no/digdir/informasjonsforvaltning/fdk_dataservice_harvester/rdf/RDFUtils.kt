@@ -4,6 +4,7 @@ import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.CATALOG
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.CATALOG_ID_1
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.DATASERVICE_ID_0
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.DATASERVICE_ID_1
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.TestResponseReader
 import org.apache.jena.rdf.model.ModelFactory
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Tag
@@ -14,42 +15,7 @@ import kotlin.test.assertEquals
 
 @Tag("unit")
 class RDFUtils {
-
-    @Test
-    fun extractDataServiceCatalogsFromModel() {
-        val rdfBody: String = javaClass.classLoader.getResourceAsStream("catalogs.ttl")!!.reader().readText()
-
-        val extracted = parseRDFResponse(rdfBody, JenaType.TURTLE)
-            .listOfCatalogResources()
-            .map { it.model }
-            .forEach { println(it.createRDFResponse(JenaType.TURTLE)) }
-
-
-    }
-
-    @Test
-    fun extractDataServicesFromModel() {
-        val rdfBody: String = javaClass.classLoader.getResourceAsStream("catalog_2.ttl")!!.reader().readText()
-
-        val parsedRDFModel = parseRDFResponse(rdfBody, JenaType.TURTLE)
-
-        val expected = ModelFactory.createDefaultModel()
-        expected.read(InputStreamReader(javaClass.classLoader.getResourceAsStream("catalog_2.ttl")!!, StandardCharsets.UTF_8), "", "TURTLE")
-
-        Assertions.assertTrue(parsedRDFModel.isIsomorphicWith(expected))
-    }
-
-    @Test
-    fun rdfModelParser() {
-        val rdfBody: String = javaClass.classLoader.getResourceAsStream("catalog_2.ttl")!!.reader().readText()
-
-        val parsedRDFModel = parseRDFResponse(rdfBody, JenaType.TURTLE)
-
-        val expected = ModelFactory.createDefaultModel()
-        expected.read(InputStreamReader(javaClass.classLoader.getResourceAsStream("catalog_2.ttl")!!, StandardCharsets.UTF_8), "", "TURTLE")
-
-        Assertions.assertTrue(parsedRDFModel.isIsomorphicWith(expected))
-    }
+    private val responseReader = TestResponseReader()
 
     @Test
     fun createId() {
@@ -57,5 +23,29 @@ class RDFUtils {
         assertEquals(DATASERVICE_ID_1, createIdFromUri("https://testdirektoratet.no/model/dataservice/1"))
         assertEquals(CATALOG_ID_0, createIdFromUri("https://testdirektoratet.no/model/dataservice-catalogs/0"))
         assertEquals(CATALOG_ID_1, createIdFromUri("https://testdirektoratet.no/model/dataservice-catalogs/1"))
+    }
+
+    @Test
+    fun extractIdFromModel() {
+        val catalogModel0 = responseReader.parseFile("db_catalog_0.json", "JSONLD")
+        val catalogModel1 = responseReader.parseFile("db_catalog_1.json", "JSONLD")
+        val dataserviceModel0 = responseReader.parseFile("db_dataservice_0.json", "JSONLD")
+        val dataserviceModel1 = responseReader.parseFile("db_dataservice_1.json", "JSONLD")
+
+        assertEquals(CATALOG_ID_0, catalogModel0.extractMetaDataIdentifier())
+        assertEquals(CATALOG_ID_1, catalogModel1.extractMetaDataIdentifier())
+        assertEquals(DATASERVICE_ID_0, dataserviceModel0.extractMetaDataIdentifier())
+        assertEquals(DATASERVICE_ID_1, dataserviceModel1.extractMetaDataIdentifier())
+    }
+
+    @Test
+    fun rdfModelParser() {
+        val rdfBody: String = javaClass.classLoader.getResourceAsStream("all_catalogs.ttl")!!.reader().readText()
+
+        val parsedRDFModel = parseRDFResponse(rdfBody, JenaType.TURTLE)
+
+        val expected = responseReader.parseFile("all_catalogs.ttl", "TURTLE")
+
+        Assertions.assertTrue(parsedRDFModel.isIsomorphicWith(expected))
     }
 }
