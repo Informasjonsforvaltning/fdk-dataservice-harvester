@@ -5,12 +5,9 @@ import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.CATALOG
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.DATASERVICE_ID_0
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.DATASERVICE_ID_1
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.TestResponseReader
-import org.apache.jena.rdf.model.ModelFactory
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
-import java.io.InputStreamReader
-import java.nio.charset.StandardCharsets
 import kotlin.test.assertEquals
 
 @Tag("unit")

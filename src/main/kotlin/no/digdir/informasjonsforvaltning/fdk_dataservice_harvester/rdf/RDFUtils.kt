@@ -9,7 +9,6 @@ import org.apache.jena.sparql.vocabulary.FOAF
 import org.apache.jena.vocabulary.DCAT
 import org.apache.jena.vocabulary.DCTerms
 import org.apache.jena.vocabulary.RDF
-import org.apache.jena.vocabulary.RDFS
 import org.apache.jena.vocabulary.VCARD4
 import org.apache.jena.vocabulary.XSD
 import java.io.ByteArrayOutputStream
@@ -21,14 +20,19 @@ enum class JenaType(val value: String){
     RDF_XML("RDF/XML"),
     RDF_JSON("RDF/JSON"),
     JSON_LD("JSON-LD"),
+    NTRIPLES("N-TRIPLES"),
+    N3("N3"),
     NOT_JENA("NOT-JENA")
 }
-fun returnTypeFromAcceptHeader(accept: String?): JenaType =
+
+fun jenaTypeFromAcceptHeader(accept: String?): JenaType =
     when (accept) {
         "text/turtle" -> JenaType.TURTLE
         "application/rdf+xml" -> JenaType.RDF_XML
         "application/rdf+json" -> JenaType.RDF_JSON
         "application/ld+json" -> JenaType.JSON_LD
+        "application/n-triples" -> JenaType.NTRIPLES
+        "text/n3" -> JenaType.N3
         else -> JenaType.NOT_JENA
     }
 

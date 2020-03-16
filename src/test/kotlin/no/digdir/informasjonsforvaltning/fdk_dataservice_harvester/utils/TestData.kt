@@ -2,7 +2,6 @@ package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils
 
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.dto.HarvestDataSource
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.ApiTestContainer.Companion.TEST_API
-import java.time.ZoneId
 import java.util.*
 
 const val API_PORT = 8080
@@ -32,3 +31,13 @@ fun getApiAddress(endpoint: String): String {
 }
 
 val TEST_HARVEST_DATE: Calendar = Calendar.Builder().setTimeZone(TimeZone.getTimeZone("UTC")).setDate(2020, 2, 12).setTimeOfDay(11, 52, 16, 122).build()
+
+val TEST_HARVEST_SOURCE = HarvestDataSource(
+    id = "harvest-source-id",
+    url = "harvest-url",
+    acceptHeaderValue = "text/turtle",
+    dataType = "dataservice",
+    dataSourceType = "DCAT-AP-NO",
+    publisherId = "123456789",
+    description = "Test harvest source"
+)

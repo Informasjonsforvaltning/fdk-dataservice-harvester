@@ -2,7 +2,6 @@ package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils
 
 import org.slf4j.LoggerFactory
 import org.testcontainers.Testcontainers
-import org.testcontainers.containers.BindMode
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.Network
 import org.testcontainers.containers.output.Slf4jLogConsumer

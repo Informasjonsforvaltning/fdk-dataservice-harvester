@@ -11,12 +11,12 @@ import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.CatalogFuseki
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.DataServiceFuseki
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.TEST_HARVEST_DATE
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.TEST_HARVEST_SOURCE
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.TestResponseReader
 import org.apache.jena.rdf.model.Model
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import kotlin.test.assertTrue
-
 
 @Tag("unit")
 class HarvesterTest {
@@ -31,7 +31,7 @@ class HarvesterTest {
 
     @Test
     fun harvestDataSource() {
-        whenever(adapter.getDataServiceCatalog("harvest-url"))
+        whenever(adapter.getDataServiceCatalog(TEST_HARVEST_SOURCE))
             .thenReturn(javaClass.classLoader.getResourceAsStream("harvest_response.ttl").reader().readText())
 
         whenever(valuesMock.catalogUri)
@@ -42,7 +42,7 @@ class HarvesterTest {
         val expectedCatalog = responseReader.parseFile("no_prefix_catalog_0.ttl", "TURTLE")
         val expectedDataService = responseReader.parseFile("no_prefix_dataservice_0.ttl", "TURTLE")
 
-        harvester.harvestDataServiceCatalog("harvest-url", TEST_HARVEST_DATE)
+        harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE)
 
         argumentCaptor<Model>().apply {
             verify(catalogFuseki, times(1)).saveWithGraphName(any(), capture())
