@@ -56,7 +56,7 @@ class CatalogService(
 
         dataServiceIdList
             .toList()
-            .map { id -> dataServiceFuseki.fetchByGraphName(id) }
+            .mapNotNull { id -> dataServiceFuseki.fetchByGraphName(id) }
             .forEach { unionModel = unionModel.union(it) }
 
         return unionModel
