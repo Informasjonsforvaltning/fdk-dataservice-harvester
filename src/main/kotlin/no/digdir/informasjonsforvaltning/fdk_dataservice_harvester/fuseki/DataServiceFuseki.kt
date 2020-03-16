@@ -8,7 +8,7 @@ import org.apache.jena.rdfconnection.RDFConnectionFuseki
 import org.springframework.stereotype.Service
 
 @Service
-open class DataServiceFuseki(private val fusekiProperties: FusekiProperties) {
+class DataServiceFuseki(private val fusekiProperties: FusekiProperties) {
 
     private fun dataServiceConnection(): RDFConnection =
         RDFConnectionFuseki.create()
@@ -17,13 +17,13 @@ open class DataServiceFuseki(private val fusekiProperties: FusekiProperties) {
             .updateEndpoint("${this.fusekiProperties.dataserviceUri}/update")
             .build()
 
-    open fun fetchCompleteModel(): Model =
+    fun fetchCompleteModel(): Model =
         dataServiceConnection().use {
             it.begin(ReadWrite.READ)
             return it.fetchDataset().unionModel
         }
 
-    open fun fetchByGraphName(graphName: String): Model? =
+    fun fetchByGraphName(graphName: String): Model? =
         dataServiceConnection().use {
             it.begin(ReadWrite.READ)
             return try {

@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
+import java.util.*
 
 @RestController
 class ApplicationStatusController(private val catalogService: CatalogService, private val dataServiceHarvester: DataServiceHarvester) {
@@ -34,13 +35,6 @@ class ApplicationStatusController(private val catalogService: CatalogService, pr
             e.printStackTrace()
         }
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build()
-    }
-
-    @GetMapping("/harvest")
-    fun harvest(): ResponseEntity<Void> {
-        dataServiceHarvester.harvestDataServiceCatalog("https://dataservice-publisher.staging.fellesdatakatalog.digdir.no/catalogs/1")
-        dataServiceHarvester.harvestDataServiceCatalog("https://dataservice-publisher.staging.fellesdatakatalog.digdir.no/catalogs/2")
-        return ResponseEntity.ok().build()
     }
 
 }

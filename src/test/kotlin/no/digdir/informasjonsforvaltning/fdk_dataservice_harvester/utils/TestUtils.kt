@@ -1,6 +1,7 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils
 
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.ApiTestContainer.Companion.TEST_API
+import org.apache.jena.rdf.model.Model
 import java.io.BufferedReader
 import java.net.URL
 import org.springframework.http.HttpStatus
@@ -47,3 +48,7 @@ fun addTestDataToFuseki(file: String, endpoint: String) {
 private fun isOK(response: Int?): Boolean =
     if(response == null) false
     else HttpStatus.resolve(response)?.is2xxSuccessful == true
+
+fun Model.setModifiedAndIssuedToTestValue(){
+
+}

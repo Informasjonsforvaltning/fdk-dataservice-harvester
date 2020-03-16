@@ -18,7 +18,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @Tag("unit")
-class CatalogSericeTest {
+class CatalogServiceTest {
     private val dataServiceFuseki: DataServiceFuseki = mock()
     private val catalogFuseki: CatalogFuseki = mock()
     private val catalogService: CatalogService = CatalogService(catalogFuseki, dataServiceFuseki)
@@ -119,6 +119,21 @@ class CatalogSericeTest {
             val response = catalogService.getDataServiceCatalog(CATALOG_ID_0, JenaType.TURTLE)
 
             assertTrue(dbCatalog.union(dbDataService).isIsomorphicWith(responseReader.parseResponse(response!!, "TURTLE")))
+        }
+
+        @Test
+        fun handlesMissingDataService() {
+            val dbCatalog = responseReader.parseFile("no_prefix_catalog_0.ttl", "TURTLE")
+
+            whenever(catalogFuseki.fetchByGraphName(CATALOG_ID_0))
+                .thenReturn(dbCatalog)
+
+            whenever(dataServiceFuseki.fetchByGraphName(DATASERVICE_ID_0))
+                .thenReturn(null)
+
+            val response = catalogService.getDataServiceCatalog(CATALOG_ID_0, JenaType.TURTLE)
+
+            assertTrue(dbCatalog.isIsomorphicWith(responseReader.parseResponse(response!!, "TURTLE")))
         }
 
 

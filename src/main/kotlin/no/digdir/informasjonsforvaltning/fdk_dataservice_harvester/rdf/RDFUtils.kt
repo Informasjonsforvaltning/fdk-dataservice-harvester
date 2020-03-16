@@ -70,6 +70,7 @@ fun Model.addDefaultPrefixes(): Model {
     setNsPrefix("dcat", DCAT.NS)
     setNsPrefix("foaf", FOAF.getURI())
     setNsPrefix("vcard", VCARD4.NS)
+    setNsPrefix("xsd", XSD.NS)
 
     return this
 }

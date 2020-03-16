@@ -50,8 +50,6 @@ abstract class ApiTestContainer {
             addTestDataToFuseki("src/test/resources/db_catalog_0.json", "dataservice-catalog?graph=$CATALOG_ID_0")
             addTestDataToFuseki("src/test/resources/db_catalog_1.json", "dataservice-catalog?graph=$CATALOG_ID_1")
 
-
-
             try {
                 val result = TEST_API.execInContainer("wget", "-O", "-", "$WIREMOCK_TEST_HOST/ping")
                 if (!result.stderr.contains("200")) {
@@ -63,14 +61,6 @@ abstract class ApiTestContainer {
                 e.printStackTrace()
             }
 
-        }
-
-        fun stopGracefully() {
-            logger.debug("Shutting down container gracefully")
-            TEST_API.dockerClient
-                .stopContainerCmd(TEST_API.containerId)
-                .withTimeout(100)
-                .exec()
         }
     }
 

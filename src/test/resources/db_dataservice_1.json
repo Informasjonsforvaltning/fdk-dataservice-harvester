@@ -13,8 +13,8 @@
       "@id": "https://dataservice-harvester.staging.fellesdatakatalog.digdir.no/dataservices/4d69ecde-f1e8-3f28-8565-360746e8b5ef",
       "@type": "dcat:record",
       "identifier": "4d69ecde-f1e8-3f28-8565-360746e8b5ef",
-      "issued": "2020-03-12",
-      "modified": "2020-03-12",
+      "issued": "2020-03-12T11:52:16.122Z",
+      "modified": "2020-03-12T11:52:16.122Z",
       "primaryTopic": "https://testdirektoratet.no/model/dataservice/1"
     },
     {
@@ -62,10 +62,12 @@
       "@type": "@id"
     },
     "issued": {
-      "@id": "http://purl.org/dc/terms/issued"
+      "@id": "http://purl.org/dc/terms/issued",
+      "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
     },
     "modified": {
-      "@id": "http://purl.org/dc/terms/modified"
+      "@id": "http://purl.org/dc/terms/modified",
+      "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
     },
     "dct": "http://purl.org/dc/terms/",
     "vcard": "http://www.w3.org/2006/vcard/ns#",
