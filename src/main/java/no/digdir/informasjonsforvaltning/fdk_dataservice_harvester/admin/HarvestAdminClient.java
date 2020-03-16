@@ -32,7 +32,6 @@ public class HarvestAdminClient {
 
     public HarvestAdminClient() {
         this.restTemplate = new RestTemplate();
-
         this.defaultHeaders = new HttpHeaders();
         defaultHeaders.setAccept(singletonList(MediaType.APPLICATION_JSON));
         defaultHeaders.setContentType(MediaType.APPLICATION_JSON);

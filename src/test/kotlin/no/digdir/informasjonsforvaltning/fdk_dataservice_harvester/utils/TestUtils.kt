@@ -47,7 +47,3 @@ fun addTestDataToFuseki(file: String, endpoint: String) {
 private fun isOK(response: Int?): Boolean =
     if(response == null) false
     else HttpStatus.resolve(response)?.is2xxSuccessful == true
-
-fun Model.setModifiedAndIssuedToTestValue(){
-
-}

@@ -46,13 +46,11 @@ class HarvesterTest {
 
         argumentCaptor<Model>().apply {
             verify(catalogFuseki, times(1)).saveWithGraphName(any(), capture())
-
             assertTrue(firstValue.isIsomorphicWith(expectedCatalog))
         }
 
         argumentCaptor<Model>().apply {
             verify(dataServiceFuseki, times(1)).saveWithGraphName(any(), capture())
-
             assertTrue(firstValue.isIsomorphicWith(expectedDataService))
         }
 
