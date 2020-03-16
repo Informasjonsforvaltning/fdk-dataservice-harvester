@@ -86,6 +86,8 @@ paths:
             application/n-triples:
               schema:
                 type: string
+        '404':
+          description: DataService catalog with requested id does not exist
   /dataservices:
     get:
       tags:
@@ -149,3 +151,5 @@ paths:
             application/n-triples:
               schema:
                 type: string
+        '404':
+          description: DataService with requested id does not exist

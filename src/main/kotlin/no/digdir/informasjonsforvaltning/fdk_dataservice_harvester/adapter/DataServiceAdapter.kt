@@ -16,7 +16,6 @@ class DataServiceAdapter {
     fun getDataServiceCatalog(source: HarvestDataSource): String? =
         try {
             val connection = URL(source.url).openConnection() as HttpURLConnection
-
             connection.setRequestProperty("Accept", source.acceptHeaderValue)
 
             if (connection.responseCode != HttpStatus.OK.value()) {
