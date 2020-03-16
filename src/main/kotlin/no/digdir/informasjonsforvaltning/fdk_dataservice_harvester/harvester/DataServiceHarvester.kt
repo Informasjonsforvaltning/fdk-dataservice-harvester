@@ -12,6 +12,7 @@ import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createDat
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createIdFromUri
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createModelOfTopLevelProperties
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.extractMetaDataIdentifier
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.jenaTypeFromAcceptHeader
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.listOfCatalogResources
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.listOfDataServiceResources
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.parseRDFResponse
@@ -38,21 +39,29 @@ class DataServiceHarvester(
 ) {
 
     fun initiateHarvest(sources: List<HarvestDataSource>) {
-        sources.forEach {
-            if (it.url != null) {
-                GlobalScope.launch { harvestDataServiceCatalog(it.url, Calendar.getInstance()) }
+        sources
+            .filter { it.dataType == "dataservice" }
+            .forEach {
+                if (it.url != null) {
+                    GlobalScope.launch { harvestDataServiceCatalog(it, Calendar.getInstance()) }
+                }
             }
-        }
     }
 
-    fun harvestDataServiceCatalog(url: String, harvestDate: Calendar) {
-        adapter.getDataServiceCatalog(url)
-            ?.let { parseRDFResponse(it, JenaType.TURTLE) }
-            ?.filterModifiedAndAddMetaData(harvestDate)
-            ?.run {
-                catalogs.forEach{ catalogFuseki.saveWithGraphName(it.extractMetaDataIdentifier(), it) }
-                dataServices.forEach{ dataServiceFuseki.saveWithGraphName(it.extractMetaDataIdentifier(), it) }
-            }
+    fun harvestDataServiceCatalog(source: HarvestDataSource, harvestDate: Calendar) {
+        val jenaWriterType = jenaTypeFromAcceptHeader(source.acceptHeaderValue)
+
+        if (jenaWriterType == JenaType.NOT_JENA) {
+            LOGGER.error("Not able to harvest from ${source.url}, header ${source.acceptHeaderValue} is not acceptable ")
+        } else {
+            adapter.getDataServiceCatalog(source)
+                ?.let { parseRDFResponse(it, jenaWriterType) }
+                ?.filterModifiedAndAddMetaData(harvestDate)
+                ?.run {
+                    catalogs.forEach { catalogFuseki.saveWithGraphName(it.extractMetaDataIdentifier(), it) }
+                    dataServices.forEach { dataServiceFuseki.saveWithGraphName(it.extractMetaDataIdentifier(), it) }
+                }
+        }
     }
 
     private fun catalogModelWithMetaData(resource: Resource, harvested: Model, harvestDate: Calendar): HarvestedModel {

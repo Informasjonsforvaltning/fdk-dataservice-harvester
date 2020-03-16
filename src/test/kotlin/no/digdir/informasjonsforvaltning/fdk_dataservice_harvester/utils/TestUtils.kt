@@ -6,7 +6,6 @@ import java.io.BufferedReader
 import java.net.URL
 import org.springframework.http.HttpStatus
 import java.io.File
-import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 
 fun apiGet(endpoint: String, acceptHeader: String?): Map<String,Any> {

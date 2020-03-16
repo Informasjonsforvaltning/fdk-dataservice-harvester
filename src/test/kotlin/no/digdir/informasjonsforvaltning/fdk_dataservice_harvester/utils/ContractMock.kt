@@ -2,7 +2,6 @@ package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import java.io.File
 
 private val mockserver = WireMockServer(LOCAL_SERVER_PORT)
 
