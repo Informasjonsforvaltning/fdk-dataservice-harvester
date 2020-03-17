@@ -1,6 +1,7 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.controller
 
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.generated.api.DcatApNoDataservicesApi
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.JenaType
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.jenaTypeFromAcceptHeader
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.DataServiceService
 import org.slf4j.LoggerFactory
@@ -18,7 +19,7 @@ open class DataservicesController(private val dataServiceService: DataServiceSer
         LOGGER.info("get DataService with id $id")
         val returnType = jenaTypeFromAcceptHeader(httpServletRequest.getHeader("Accept"))
 
-        return dataServiceService.getDataService(id, returnType)
+        return dataServiceService.getDataService(id, returnType ?: JenaType.TURTLE)
             ?.let { ResponseEntity(it, HttpStatus.OK) }
             ?: ResponseEntity(HttpStatus.NOT_FOUND)
     }
@@ -26,6 +27,6 @@ open class DataservicesController(private val dataServiceService: DataServiceSer
     override fun getDataServices(httpServletRequest: HttpServletRequest): ResponseEntity<String> {
         LOGGER.info("get all DataServices")
         val returnType = jenaTypeFromAcceptHeader(httpServletRequest.getHeader("Accept"))
-        return ResponseEntity(dataServiceService.getAllDataServices(returnType), HttpStatus.OK)
+        return ResponseEntity(dataServiceService.getAllDataServices(returnType ?: JenaType.TURTLE), HttpStatus.OK)
     }
 }
