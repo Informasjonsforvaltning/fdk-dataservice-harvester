@@ -49,7 +49,7 @@ class DataServiceHarvester(
     }
 
     fun harvestDataServiceCatalog(source: HarvestDataSource, harvestDate: Calendar) {
-        LOGGER.info("Starting havest for ${source.url}")
+        LOGGER.info("Starting harvest of ${source.url}")
         val jenaWriterType = jenaTypeFromAcceptHeader(source.acceptHeaderValue)
 
         if (jenaWriterType == null || jenaWriterType == JenaType.NOT_JENA) {
