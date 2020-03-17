@@ -3,7 +3,7 @@ package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rabbit;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.admin.HarvestAdminClient;
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.HarvestAdminAdapter;
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.dto.HarvestDataSource;
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.harvester.DataServiceHarvester;
 import org.slf4j.Logger;
@@ -23,12 +23,12 @@ public class RabbitMQListener {
     private static final Logger logger = LoggerFactory.getLogger(RabbitMQListener.class);
     private static List<String> ALLOWED_FIELDS = Arrays.asList("publisherId", "dataType");
 
-    private final HarvestAdminClient harvestAdminClient;
+    private final HarvestAdminAdapter harvestAdminAdapter;
     private final ObjectMapper objectMapper;
     private final DataServiceHarvester harvester;
 
-    public RabbitMQListener(HarvestAdminClient harvestAdminClient, ObjectMapper objectMapper, DataServiceHarvester harvester) {
-        this.harvestAdminClient = harvestAdminClient;
+    public RabbitMQListener(HarvestAdminAdapter harvestAdminAdapter, ObjectMapper objectMapper, DataServiceHarvester harvester) {
+        this.harvestAdminAdapter = harvestAdminAdapter;
         this.objectMapper = objectMapper;
         this.harvester = harvester;
     }
@@ -56,7 +56,7 @@ public class RabbitMQListener {
                 body,
                 new TypeReference<Map<String, String>>() {});
 
-        List<HarvestDataSource> sources = this.harvestAdminClient.getDataSources(createQueryParams(fields));
+        List<HarvestDataSource> sources = this.harvestAdminAdapter.getDataSources(createQueryParams(fields));
 
         this.harvester.initiateHarvest(sources);
     }

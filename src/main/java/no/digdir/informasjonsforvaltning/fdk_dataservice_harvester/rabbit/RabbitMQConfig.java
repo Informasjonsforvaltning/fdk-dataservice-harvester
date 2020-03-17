@@ -1,7 +1,7 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rabbit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.admin.HarvestAdminClient;
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.HarvestAdminAdapter;
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.harvester.DataServiceHarvester;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -12,20 +12,20 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    private final HarvestAdminClient harvestAdminClient;
+    private final HarvestAdminAdapter harvestAdminAdapter;
     private final ObjectMapper objectMapper;
     private final DataServiceHarvester harvester;
 
     @Autowired
-    public RabbitMQConfig(HarvestAdminClient harvestAdminClient, ObjectMapper objectMapper, DataServiceHarvester harvester) {
-        this.harvestAdminClient = harvestAdminClient;
+    public RabbitMQConfig(HarvestAdminAdapter harvestAdminAdapter, ObjectMapper objectMapper, DataServiceHarvester harvester) {
+        this.harvestAdminAdapter = harvestAdminAdapter;
         this.objectMapper = objectMapper;
         this.harvester = harvester;
     }
 
     @Bean
     public RabbitMQListener receiver() {
-        return new RabbitMQListener(harvestAdminClient, objectMapper, harvester);
+        return new RabbitMQListener(harvestAdminAdapter, objectMapper, harvester);
     }
 
     @Bean
