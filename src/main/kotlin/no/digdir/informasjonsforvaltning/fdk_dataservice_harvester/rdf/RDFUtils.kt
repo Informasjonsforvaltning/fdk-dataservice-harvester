@@ -25,7 +25,7 @@ enum class JenaType(val value: String){
     NOT_JENA("NOT-JENA")
 }
 
-fun jenaTypeFromAcceptHeader(accept: String?): JenaType =
+fun jenaTypeFromAcceptHeader(accept: String?): JenaType? =
     when (accept) {
         "text/turtle" -> JenaType.TURTLE
         "application/rdf+xml" -> JenaType.RDF_XML
@@ -33,6 +33,8 @@ fun jenaTypeFromAcceptHeader(accept: String?): JenaType =
         "application/ld+json" -> JenaType.JSON_LD
         "application/n-triples" -> JenaType.NTRIPLES
         "text/n3" -> JenaType.N3
+        "*/*" -> null
+        null -> null
         else -> JenaType.NOT_JENA
     }
 

@@ -1,6 +1,7 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.controller
 
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.generated.api.DcatApNoCatalogsApi
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.JenaType
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.jenaTypeFromAcceptHeader
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.CatalogService
 import org.slf4j.LoggerFactory
@@ -18,7 +19,8 @@ open class CatalogsController(private val catalogService: CatalogService) : Dcat
         LOGGER.info("get DataService catalog with id $id")
         val returnType = jenaTypeFromAcceptHeader(httpServletRequest.getHeader("Accept"))
 
-        return catalogService.getDataServiceCatalog(id, returnType)
+
+        return catalogService.getDataServiceCatalog(id, returnType ?: JenaType.TURTLE)
             ?.let { ResponseEntity(it, HttpStatus.OK) }
             ?: ResponseEntity(HttpStatus.NOT_FOUND)
     }
@@ -26,6 +28,6 @@ open class CatalogsController(private val catalogService: CatalogService) : Dcat
     override fun getCatalogs(httpServletRequest: HttpServletRequest): ResponseEntity<String> {
         LOGGER.info("get all DataService catalogs")
         val returnType = jenaTypeFromAcceptHeader(httpServletRequest.getHeader("Accept"))
-        return ResponseEntity(catalogService.getAllDataServiceCatalogs(returnType), HttpStatus.OK)
+        return ResponseEntity(catalogService.getAllDataServiceCatalogs(returnType ?: JenaType.TURTLE), HttpStatus.OK)
     }
 }

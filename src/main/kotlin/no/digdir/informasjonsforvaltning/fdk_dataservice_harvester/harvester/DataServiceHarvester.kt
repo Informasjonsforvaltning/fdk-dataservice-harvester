@@ -51,7 +51,7 @@ class DataServiceHarvester(
     fun harvestDataServiceCatalog(source: HarvestDataSource, harvestDate: Calendar) {
         val jenaWriterType = jenaTypeFromAcceptHeader(source.acceptHeaderValue)
 
-        if (jenaWriterType == JenaType.NOT_JENA) {
+        if (jenaWriterType == null || jenaWriterType == JenaType.NOT_JENA) {
             LOGGER.error("Not able to harvest from ${source.url}, header ${source.acceptHeaderValue} is not acceptable ")
         } else {
             adapter.getDataServiceCatalog(source)
