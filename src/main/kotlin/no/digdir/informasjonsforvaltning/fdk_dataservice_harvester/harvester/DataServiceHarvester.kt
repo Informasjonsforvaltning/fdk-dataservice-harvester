@@ -166,10 +166,6 @@ private fun harvestedIsIsomorphicWithDatabaseModel(fullModelFromDB: Model?, harv
         )
     ) ?: false
 
-private fun Resource.extractMetaDataFirstHarvested(): String? =
-    getProperty(DCTerms.issued)
-        ?.string
-
 private fun Model.issuedDate(dbResource: Resource?, harvestDate: Calendar): Literal =
     dbResource?.listProperties(DCTerms.issued)
         ?.toList()
