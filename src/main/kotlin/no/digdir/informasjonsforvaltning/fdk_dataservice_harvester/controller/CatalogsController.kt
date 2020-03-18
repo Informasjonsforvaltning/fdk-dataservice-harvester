@@ -19,15 +19,19 @@ open class CatalogsController(private val catalogService: CatalogService) : Dcat
         LOGGER.info("get DataService catalog with id $id")
         val returnType = jenaTypeFromAcceptHeader(httpServletRequest.getHeader("Accept"))
 
-
-        return catalogService.getDataServiceCatalog(id, returnType ?: JenaType.TURTLE)
-            ?.let { ResponseEntity(it, HttpStatus.OK) }
-            ?: ResponseEntity(HttpStatus.NOT_FOUND)
+        return if (returnType == JenaType.NOT_JENA) ResponseEntity(HttpStatus.NOT_ACCEPTABLE)
+        else {
+            catalogService.getDataServiceCatalog(id, returnType ?: JenaType.TURTLE)
+                ?.let { ResponseEntity(it, HttpStatus.OK) }
+                ?: ResponseEntity(HttpStatus.NOT_FOUND)
+        }
     }
 
     override fun getCatalogs(httpServletRequest: HttpServletRequest): ResponseEntity<String> {
         LOGGER.info("get all DataService catalogs")
         val returnType = jenaTypeFromAcceptHeader(httpServletRequest.getHeader("Accept"))
-        return ResponseEntity(catalogService.getAllDataServiceCatalogs(returnType ?: JenaType.TURTLE), HttpStatus.OK)
+
+        return if (returnType == JenaType.NOT_JENA) ResponseEntity(HttpStatus.NOT_ACCEPTABLE)
+        else ResponseEntity(catalogService.getAllDataServiceCatalogs(returnType ?: JenaType.TURTLE), HttpStatus.OK)
     }
 }

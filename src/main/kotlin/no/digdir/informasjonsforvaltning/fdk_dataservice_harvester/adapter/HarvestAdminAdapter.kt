@@ -26,7 +26,7 @@ class HarvestAdminAdapter(private val applicationProperties: ApplicationProperti
         contentType = MediaType.APPLICATION_JSON
     }
 
-    fun getDataSources(queryParams: MultiValueMap<String, String>): List<HarvestDataSource> {
+    fun getDataSources(queryParams: MultiValueMap<String, String>?): List<HarvestDataSource> {
         val url = String.format("%s/datasources", applicationProperties.harvestAdminRootUrl)
         val uriBuilder = UriComponentsBuilder.fromHttpUrl(url).queryParams(queryParams)
         try {

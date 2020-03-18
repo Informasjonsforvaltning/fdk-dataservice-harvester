@@ -19,14 +19,19 @@ open class DataservicesController(private val dataServiceService: DataServiceSer
         LOGGER.info("get DataService with id $id")
         val returnType = jenaTypeFromAcceptHeader(httpServletRequest.getHeader("Accept"))
 
-        return dataServiceService.getDataService(id, returnType ?: JenaType.TURTLE)
-            ?.let { ResponseEntity(it, HttpStatus.OK) }
-            ?: ResponseEntity(HttpStatus.NOT_FOUND)
+        return if (returnType == JenaType.NOT_JENA) ResponseEntity(HttpStatus.NOT_ACCEPTABLE)
+        else {
+            dataServiceService.getDataService(id, returnType ?: JenaType.TURTLE)
+                ?.let { ResponseEntity(it, HttpStatus.OK) }
+                ?: ResponseEntity(HttpStatus.NOT_FOUND)
+        }
     }
 
     override fun getDataServices(httpServletRequest: HttpServletRequest): ResponseEntity<String> {
         LOGGER.info("get all DataServices")
         val returnType = jenaTypeFromAcceptHeader(httpServletRequest.getHeader("Accept"))
-        return ResponseEntity(dataServiceService.getAllDataServices(returnType ?: JenaType.TURTLE), HttpStatus.OK)
+
+        return if (returnType == JenaType.NOT_JENA) ResponseEntity(HttpStatus.NOT_ACCEPTABLE)
+        else ResponseEntity(dataServiceService.getAllDataServices(returnType ?: JenaType.TURTLE), HttpStatus.OK)
     }
 }

@@ -97,3 +97,15 @@ fun Model.extractMetaDataIdentifier(): String =
 fun createIdFromUri(uri: String): String =
     UUID.nameUUIDFromBytes(uri.toByteArray())
         .toString()
+
+fun Model.extractCatalogModelURI(): String =
+    listResourcesWithProperty(RDF.type, DCAT.Catalog)
+        .toList()
+        .first()
+        .uri
+
+fun Model.extractDataServiceModelURI(): String =
+    listResourcesWithProperty(RDF.type, DCAT.DataService)
+        .toList()
+        .first()
+        .uri
