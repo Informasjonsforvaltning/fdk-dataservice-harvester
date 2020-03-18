@@ -1,9 +1,6 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.harvester
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.DataServiceAdapter
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.HarvestAdminAdapter
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration.ApplicationProperties
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.dto.HarvestDataSource
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.CatalogFuseki
@@ -29,33 +26,17 @@ import org.apache.jena.vocabulary.DCTerms
 import org.apache.jena.vocabulary.RDF
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import org.springframework.util.MultiValueMap
 import java.util.*
-import javax.annotation.PostConstruct
 
 private val LOGGER = LoggerFactory.getLogger(DataServiceHarvester::class.java)
 
 @Service
 class DataServiceHarvester(
     private val adapter: DataServiceAdapter,
-    private val harvestAdminAdapter: HarvestAdminAdapter,
     private val dataServiceFuseki: DataServiceFuseki,
     private val catalogFuseki: CatalogFuseki,
     private val applicationProperties: ApplicationProperties
 ) {
-
-    @PostConstruct
-    private fun fullHarvestOnStartup() = initiateHarvest(null)
-
-    fun initiateHarvest(params: MultiValueMap<String, String>?) {
-        harvestAdminAdapter.getDataSources(params)
-            .filter { it.dataType == "dataservice" }
-            .forEach {
-                if (it.url != null) {
-                    GlobalScope.launch { harvestDataServiceCatalog(it, Calendar.getInstance()) }
-                }
-            }
-    }
 
     fun harvestDataServiceCatalog(source: HarvestDataSource, harvestDate: Calendar) {
         LOGGER.debug("Starting harvest of ${source.url}")

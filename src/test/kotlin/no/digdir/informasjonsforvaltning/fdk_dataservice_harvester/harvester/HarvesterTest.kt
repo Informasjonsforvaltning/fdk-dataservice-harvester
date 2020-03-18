@@ -25,9 +25,8 @@ class HarvesterTest {
     private val catalogFuseki: CatalogFuseki = mock()
     private val valuesMock: ApplicationProperties = mock()
     private val adapter: DataServiceAdapter = mock()
-    private val adminAdapter: HarvestAdminAdapter = mock()
 
-    private val harvester = DataServiceHarvester(adapter, adminAdapter, dataServiceFuseki, catalogFuseki, valuesMock)
+    private val harvester = DataServiceHarvester(adapter, dataServiceFuseki, catalogFuseki, valuesMock)
 
     private val responseReader = TestResponseReader()
 

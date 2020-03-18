@@ -1,7 +1,7 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rabbit
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.harvester.DataServiceHarvester
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.harvester.HarvesterActivity
 import org.springframework.amqp.core.AnonymousQueue
 import org.springframework.amqp.core.Binding
 import org.springframework.amqp.core.BindingBuilder
@@ -14,10 +14,10 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 open class RabbitMQConfig (
     private val objectMapper: ObjectMapper,
-    private val harvester: DataServiceHarvester
+    private val harvesterActivity: HarvesterActivity
 ) {
     @Bean
-    open fun receiver(): RabbitMQListener = RabbitMQListener(objectMapper, harvester)
+    open fun receiver(): RabbitMQListener = RabbitMQListener(objectMapper, harvesterActivity)
 
     @Bean
     open fun queue(): Queue = AnonymousQueue()
