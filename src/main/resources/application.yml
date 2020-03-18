@@ -9,8 +9,8 @@ fuseki:
   dataserviceUri: ${FDK_FUSEKI_SERVICE_URI:http://fdk-fuseki-service:8080/fuseki}/dataservice
   catalogUri: ${FDK_FUSEKI_SERVICE_URI:http://fdk-fuseki-service:8080/fuseki}/dataservice-catalog
 application:
-  dataserviceUri: ${FDK_DATASERVICE_HARVESTER_URI:https://dataservice-harvester.staging.fellesdatakatalog.digdir.no}/dataservices
-  catalogUri: ${FDK_DATASERVICE_HARVESTER_URI:https://dataservice-harvester.staging.fellesdatakatalog.digdir.no}/catalogs
+  dataserviceUri: ${FDK_DATASERVICE_HARVESTER_URI:https://dataservices.staging.fellesdatakatalog.digdir.no}/dataservices
+  catalogUri: ${FDK_DATASERVICE_HARVESTER_URI:https://dataservices.staging.fellesdatakatalog.digdir.no}/catalogs
   harvestAdminRootUrl: ${HARVEST_ADMIN_ROOT_URL:http://fdk-harvest-admin:8080/api}
 spring:
   rabbitmq:
@@ -31,9 +31,9 @@ fuseki:
   dataserviceUri: http://localhost:3030/fuseki/dataservice
   catalogUri: http://localhost:3030/fuseki/dataservice-catalog
 application:
-  dataserviceUri: https://dataservice-harvester.staging.fellesdatakatalog.digdir.no/dataservices
-  catalogUri: https://dataservice-harvester.staging.fellesdatakatalog.digdir.no/catalogs
-  harvestAdminRootUrl: http://localhost:8135/api
+  dataserviceUri: https://dataservices.staging.fellesdatakatalog.digdir.no/dataservices
+  catalogUri: https://dataservices.staging.fellesdatakatalog.digdir.no/catalogs
+  harvestAdminRootUrl: https://admin-api.staging.fellesdatakatalog.digdir.no/api
 
 ---
 spring:
@@ -48,5 +48,5 @@ fuseki:
   catalogUri: ${FUSEKI_TEST_URI}/fuseki/dataservice-catalog
 application:
   dataserviceUri: ${WIREMOCK_TEST_URI}/dataservices
-  catalogUri: https://dataservice-harvester.staging.fellesdatakatalog.digdir.no/catalogs
+  catalogUri: https://dataservices.staging.fellesdatakatalog.digdir.no/catalogs
   harvestAdminRootUrl: ${WIREMOCK_TEST_URI}/api

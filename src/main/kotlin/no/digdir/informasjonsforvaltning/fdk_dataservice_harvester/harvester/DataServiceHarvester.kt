@@ -3,6 +3,7 @@ package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.harvester
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.DataServiceAdapter
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.HarvestAdminAdapter
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration.ApplicationProperties
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.dto.HarvestDataSource
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.CatalogFuseki
@@ -11,6 +12,8 @@ import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.JenaType
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createDataserviceModel
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createIdFromUri
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createModelOfTopLevelProperties
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.extractCatalogModelURI
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.extractDataServiceModelURI
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.extractMetaDataIdentifier
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.jenaTypeFromAcceptHeader
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.listOfCatalogResources
@@ -26,20 +29,26 @@ import org.apache.jena.vocabulary.DCTerms
 import org.apache.jena.vocabulary.RDF
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.util.MultiValueMap
 import java.util.*
+import javax.annotation.PostConstruct
 
 private val LOGGER = LoggerFactory.getLogger(DataServiceHarvester::class.java)
 
 @Service
 class DataServiceHarvester(
     private val adapter: DataServiceAdapter,
+    private val harvestAdminAdapter: HarvestAdminAdapter,
     private val dataServiceFuseki: DataServiceFuseki,
     private val catalogFuseki: CatalogFuseki,
     private val applicationProperties: ApplicationProperties
 ) {
 
-    fun initiateHarvest(sources: List<HarvestDataSource>) {
-        sources
+    @PostConstruct
+    private fun fullHarvestOnStartup() = initiateHarvest(null)
+
+    fun initiateHarvest(params: MultiValueMap<String, String>?) {
+        harvestAdminAdapter.getDataSources(params)
             .filter { it.dataType == "dataservice" }
             .forEach {
                 if (it.url != null) {
@@ -49,7 +58,7 @@ class DataServiceHarvester(
     }
 
     fun harvestDataServiceCatalog(source: HarvestDataSource, harvestDate: Calendar) {
-        LOGGER.info("Starting harvest of ${source.url}")
+        LOGGER.debug("Starting harvest of ${source.url}")
         val jenaWriterType = jenaTypeFromAcceptHeader(source.acceptHeaderValue)
 
         if (jenaWriterType == null || jenaWriterType == JenaType.NOT_JENA) {
@@ -59,8 +68,17 @@ class DataServiceHarvester(
                 ?.let { parseRDFResponse(it, jenaWriterType) }
                 ?.filterModifiedAndAddMetaData(harvestDate)
                 ?.run {
-                    catalogs.forEach { catalogFuseki.saveWithGraphName(it.extractMetaDataIdentifier(), it) }
-                    dataServices.forEach { dataServiceFuseki.saveWithGraphName(it.extractMetaDataIdentifier(), it) }
+                    catalogs.forEach {
+                        val modelId = it.extractMetaDataIdentifier()
+                        catalogFuseki.saveWithGraphName(modelId, it)
+                        LOGGER.debug("Updated catalog model ${it.extractCatalogModelURI()}, id: $modelId")
+                    }
+
+                    dataServices.forEach {
+                        val modelId = it.extractMetaDataIdentifier()
+                        dataServiceFuseki.saveWithGraphName(modelId, it)
+                        LOGGER.debug("Updated data service model ${it.extractDataServiceModelURI()}, id: $modelId")
+                    }
                 }
         }
     }
@@ -73,8 +91,10 @@ class DataServiceHarvester(
 
         val isModified = !harvestedIsIsomorphicWithDatabaseModel(dbModel, harvested, dbMetaData?.createModelOfTopLevelProperties())
 
-        val updatedModel = if (!isModified && dbModel != null) dbModel
-        else harvested.addCatalogMetaData(dbId, resource.uri, dbMetaData, harvestDate)
+        val updatedModel = if (!isModified && dbModel != null) {
+            LOGGER.debug("No changes detected in catalog model ${resource.uri}")
+            dbModel
+        } else harvested.addCatalogMetaData(dbId, resource.uri, dbMetaData, harvestDate)
 
         return HarvestedModel(updatedModel, isModified)
     }
@@ -87,8 +107,10 @@ class DataServiceHarvester(
 
         val isModified = !harvestedIsIsomorphicWithDatabaseModel(dbModel, harvested, dbMetaData?.createModelOfTopLevelProperties())
 
-        val updatedModel = if (!isModified && dbModel != null) dbModel
-        else harvested.addDataServiceMetaData(dbId, resource.uri, dbMetaData, harvestDate)
+        val updatedModel = if (!isModified && dbModel != null) {
+            LOGGER.debug("No changes detected in data service model ${resource.uri}")
+            dbModel
+        } else harvested.addDataServiceMetaData(dbId, resource.uri, dbMetaData, harvestDate)
 
         return HarvestedModel(updatedModel, isModified)
     }

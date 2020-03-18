@@ -3,7 +3,6 @@ package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rabbit
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.HarvestAdminAdapter
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.harvester.DataServiceHarvester
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.core.Message
@@ -16,7 +15,6 @@ private val logger = LoggerFactory.getLogger(RabbitMQListener::class.java)
 private val ALLOWED_FIELDS = listOf("publisherId", "dataType")
 
 class RabbitMQListener(
-    private val harvestAdminAdapter: HarvestAdminAdapter,
     private val objectMapper: ObjectMapper,
     private val harvester: DataServiceHarvester
 ) {
@@ -36,8 +34,7 @@ class RabbitMQListener(
         // convert from map to multivaluemap for UriComponentBuilder
         val params: MultiValueMap<String, String> = createQueryParams(body)
 
-        val sources = harvestAdminAdapter.getDataSources(params)
-        harvester.initiateHarvest(sources)
+        harvester.initiateHarvest(params)
     }
 
 }

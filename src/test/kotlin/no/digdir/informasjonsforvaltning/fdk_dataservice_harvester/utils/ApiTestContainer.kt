@@ -6,7 +6,6 @@ import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.Network
 import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.containers.wait.strategy.HttpWaitStrategy
-import org.testcontainers.containers.wait.strategy.Wait
 import java.io.IOException
 import java.time.Duration
 
@@ -37,7 +36,11 @@ abstract class ApiTestContainer {
             TEST_API = KGenericContainer(System.getProperty("testImageName") ?: "eu.gcr.io/fdk-infra/fdk-dataservice-harvester:latest")
                 .withExposedPorts(API_PORT)
                 .dependsOn(fusekiContainer)
-                .waitingFor(Wait.forHttp("/ready").forStatusCode(200))
+                .waitingFor(HttpWaitStrategy()
+                    .forPort(API_PORT)
+                    .forPath("/count")
+                    .forResponsePredicate { response -> response?.let { it.toLong() > 0 } ?: false }
+                    .withStartupTimeout(Duration.ofMinutes(1)))
                 .withNetwork(apiNetwork)
                 .withEnv(API_ENV_VALUES)
 

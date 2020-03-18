@@ -7,6 +7,7 @@ import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.DataServiceAdapter
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.HarvestAdminAdapter
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration.ApplicationProperties
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.CatalogFuseki
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.DataServiceFuseki
@@ -24,8 +25,9 @@ class HarvesterTest {
     private val catalogFuseki: CatalogFuseki = mock()
     private val valuesMock: ApplicationProperties = mock()
     private val adapter: DataServiceAdapter = mock()
+    private val adminAdapter: HarvestAdminAdapter = mock()
 
-    private val harvester = DataServiceHarvester(adapter, dataServiceFuseki, catalogFuseki, valuesMock)
+    private val harvester = DataServiceHarvester(adapter, adminAdapter, dataServiceFuseki, catalogFuseki, valuesMock)
 
     private val responseReader = TestResponseReader()
 
