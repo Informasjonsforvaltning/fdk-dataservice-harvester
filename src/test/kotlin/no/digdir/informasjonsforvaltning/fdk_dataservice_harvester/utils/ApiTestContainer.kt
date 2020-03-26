@@ -23,7 +23,7 @@ abstract class ApiTestContainer {
             Testcontainers.exposeHostPorts(LOCAL_SERVER_PORT)
             val apiNetwork = Network.newNetwork()
 
-            fusekiContainer = KGenericContainer("eu.gcr.io/digdir-fdk-infra/fdk-fuseki-service:staging_latest")
+            fusekiContainer = KGenericContainer("eu.gcr.io/digdir-fdk-infra/fdk-fuseki-service:latest")
                 .withExposedPorts(API_PORT)
                 .waitingFor(HttpWaitStrategy()
                     .forPort(API_PORT)
