@@ -60,7 +60,7 @@ public class Endpoint {
         }
 
         return Endpoint.builder()
-            .apiRef("https://fellesdatakatalog.brreg.no/apis/" + apiDocument.getId())
+            .apiRef("https://fellesdatakatalog.digdir.no/apis/" + apiDocument.getId())
             .orgNo(orgNo)
             .serviceType(apiDocument.getServiceType())
             .url(server.getUrl())

@@ -58,8 +58,8 @@ public class AcatApiApplication {
             "National API Directory Search API",
             "Provides a basic search api against the National API Directory of Norway",
             "1.0",
-            "https://fellesdatakatalog.brreg.no/about",
-            new Contact("Brønnøysundregistrene", "https://fellesdatakatalog.brreg.no", "fellesdatakatalog@brreg.no"),
+            "https://fellesdatakatalog.digdir.no/about",
+            new Contact("Brønnøysundregistrene", "https://fellesdatakatalog.digdir.no", "fellesdatakatalog@digdir.no"),
             "License of API", "http://data.norge.no/nlod/no/2.0", Collections.emptyList());
     }
 
