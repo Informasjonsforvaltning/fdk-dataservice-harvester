@@ -3,11 +3,11 @@ info:
   description: Provides a basic search api against the National API Directory of Norway
   version: '1.2'
   title: National API Directory Search API
-  termsOfService: 'https://fellesdatakatalog.brreg.no/about'
+  termsOfService: 'https://fellesdatakatalog.digdir.no/about'
   contact:
-    name: Brønnøysundregistrene
-    url: 'https://fellesdatakatalog.brreg.no'
-    email: fellesdatakatalog@brreg.no
+    name: Digitaliseringsdirektoratet
+    url: 'https://fellesdatakatalog.digdir.no'
+    email: fellesdatakatalog@digdir.no
   license:
     name: License of API
     url: 'http://data.norge.no/nlod/no/2.0'
@@ -15,7 +15,7 @@ externalDocs:
   description: Dokumentasjon på Informasjonsforvaltning GitHub
   url: https://informasjonsforvaltning.github.io/felles-datakatalog/api-katalog/api/
 servers:
-  - url: 'https://fellesdatakatalog.brreg.no/api/apis'
+  - url: 'https://fellesdatakatalog.digdir.no/api/apis'
     description: The production API server
 tags:
   - name: rest-controller
@@ -286,7 +286,7 @@ components:
         apiRef:
           type: string
           description: url to the the api-description in API-catalogue
-          example: "https://fellesdatakatalog.brreg.no/apis/cb6483b8-4d94-473d-a4b9-8ee64abb9b91"
+          example: "https://fellesdatakatalog.digdir.no/apis/cb6483b8-4d94-473d-a4b9-8ee64abb9b91"
         orgNo:
           type: string
           description: The organization number to the publisher of the API
