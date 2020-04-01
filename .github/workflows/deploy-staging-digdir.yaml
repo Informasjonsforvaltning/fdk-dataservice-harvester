@@ -3,7 +3,7 @@ name: Build and deploy to staging (digdir) when pull request is created
 on:
   pull_request:
     branches:
-      - master
+      - deploy/fdk-api-harvester
 
 jobs:
   build-and-deploy:
