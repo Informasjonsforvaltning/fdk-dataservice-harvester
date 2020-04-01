@@ -3,7 +3,7 @@ name: Build, test and deploy to production (digdir) on merge to master branch
 on:
   push:
     branches:
-      - master
+      - deploy/fdk-api-harvester
 
 jobs:
   build-test-and-deploy-production:
@@ -71,10 +71,3 @@ jobs:
         uses: pullreminders/slack-action@master
         with:
           args: '{\"channel\":\"C7NTH118T\",\"text\":\"Application: fdk-api-harvester deployed to digdir-production\"}'
-
-      - name: Trigger deploy to demo
-        uses: peter-evans/repository-dispatch@master
-        with:
-          token: ${{ secrets.DISPATCH_TOKEN }}
-          event-type: deploy-demo-digdir
-          client-payload: '{"sha": "${{ github.sha }}"}'
