@@ -29,7 +29,7 @@ class RabbitMQListener(
     @RabbitListener(queues = ["#{queue.name}"])
     fun receiveDataServiceHarvestTrigger(@Payload body: JsonNode?, message: Message) {
         val routingKey = message.extractRoutingKey()
-        logger.info(String.format("Received message from key: %s", routingKey))
+        logger.info("Received message from key: $routingKey")
 
         // convert from map to multivaluemap for UriComponentBuilder
         val params: MultiValueMap<String, String> = createQueryParams(body)

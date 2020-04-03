@@ -27,7 +27,7 @@ class HarvestAdminAdapter(private val applicationProperties: ApplicationProperti
     }
 
     fun getDataSources(queryParams: MultiValueMap<String, String>?): List<HarvestDataSource> {
-        val url = String.format("%s/datasources", applicationProperties.harvestAdminRootUrl)
+        val url = "${applicationProperties.harvestAdminRootUrl}/datasources"
         val uriBuilder = UriComponentsBuilder.fromHttpUrl(url).queryParams(queryParams)
         try {
             val response: ResponseEntity<List<HarvestDataSource>> = RestTemplate().exchange(
@@ -38,8 +38,7 @@ class HarvestAdminAdapter(private val applicationProperties: ApplicationProperti
 
             return response.body ?: emptyList()
         } catch (e: HttpClientErrorException) {
-            logger.error(String.format("Error fetching harvest urls from GET / %s. %s (%d)",
-                uriBuilder.toUriString(), e.statusText, e.statusCode.value()))
+            logger.error("Error fetching harvest urls from GET / ${uriBuilder.toUriString()}. ${e.statusText} (${e.statusCode.value()})")
         } catch (e: RestClientException) {
             logger.error(e.message)
         }
