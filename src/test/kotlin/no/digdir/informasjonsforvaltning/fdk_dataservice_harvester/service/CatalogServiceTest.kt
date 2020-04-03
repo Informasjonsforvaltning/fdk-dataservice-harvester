@@ -60,6 +60,8 @@ class CatalogServiceTest {
         fun answerWithEmptyListWhenNoModelsSavedInFuseki() {
             whenever(catalogFuseki.fetchCompleteModel())
                 .thenReturn(ModelFactory.createDefaultModel())
+            whenever(dataServiceFuseki.fetchCompleteModel())
+                .thenReturn(ModelFactory.createDefaultModel())
 
             val expected = responseReader.parseResponse("", "TURTLE")
 
@@ -77,17 +79,14 @@ class CatalogServiceTest {
 
             whenever(catalogFuseki.fetchCompleteModel())
                 .thenReturn(dbCatalog0.union(dbCatalog1))
-
-            whenever(dataServiceFuseki.fetchByGraphName(DATASERVICE_ID_0))
-                .thenReturn(dbDataService0)
-            whenever(dataServiceFuseki.fetchByGraphName(DATASERVICE_ID_1))
-                .thenReturn(dbDataService1)
+            whenever(dataServiceFuseki.fetchCompleteModel())
+                .thenReturn(dbDataService0.union(dbDataService1))
 
             val expected = dbCatalog0.union(dbCatalog1).union(dbDataService0).union(dbDataService1)
 
             val response = catalogService.getAllDataServiceCatalogs(JenaType.TURTLE)
 
-            assertTrue(expected.isIsomorphicWith(responseReader.parseResponse(response!!, "TURTLE")))
+            assertTrue(expected.isIsomorphicWith(responseReader.parseResponse(response, "TURTLE")))
         }
 
     }
