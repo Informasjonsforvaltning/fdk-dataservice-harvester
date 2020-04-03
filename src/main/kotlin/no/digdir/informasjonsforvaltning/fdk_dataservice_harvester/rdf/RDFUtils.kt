@@ -4,6 +4,7 @@ import org.apache.jena.rdf.model.Model
 import org.apache.jena.rdf.model.ModelFactory
 import org.apache.jena.rdf.model.Property
 import org.apache.jena.rdf.model.Resource
+import org.apache.jena.rdf.model.ResourceRequiredException
 import org.apache.jena.rdf.model.Statement
 import org.apache.jena.sparql.vocabulary.FOAF
 import org.apache.jena.vocabulary.DCAT
@@ -52,24 +53,29 @@ fun Model.listOfDataServiceResources(): List<Resource> =
     listResourcesWithProperty(RDF.type, DCAT.DataService)
         .toList()
 
-fun Resource.createModelOfTopLevelProperties(): Model {
-    val model = ModelFactory.createDefaultModel()
-    model.add(listProperties())
+fun Resource.createModel(): Model =
+    listProperties()
+        .toModel()
+        .addNonURIResources(this)
 
-    return model
+private fun Model.addNonURIResources(resource: Resource): Model {
+    add(resource.listProperties())
+
+    resource.listProperties()
+        .toList()
+        .filter { it.isResourceProperty() }
+        .filter { !it.resource.isURIResource }
+        .forEach { addNonURIResources(it.resource) }
+
+    return this
 }
 
-fun Resource.createDataserviceModel(): Model {
-    val model = ModelFactory.createDefaultModel()
-    model.add(listProperties())
-    model.add(extractProperty(DCAT.contactPoint)?.resource?.listProperties())
-
-    return model
-}
-
-private fun Resource.extractProperty(property: Property) : Statement? =
-    if (this.hasProperty(property)) this.getProperty(property)
-    else null
+private fun Statement.isResourceProperty(): Boolean =
+    try {
+        resource.isResource
+    } catch (ex: ResourceRequiredException) {
+        false
+    }
 
 fun Model.addDefaultPrefixes(): Model {
     setNsPrefix("dct", DCTerms.NS)
