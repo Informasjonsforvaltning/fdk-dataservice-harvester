@@ -33,7 +33,7 @@ abstract class ApiTestContainer {
                 .withNetwork(apiNetwork)
                 .withNetworkAliases(FUSEKI_NETWORK_NAME)
 
-            TEST_API = KGenericContainer(System.getProperty("testImageName") ?: "eu.gcr.io/fdk-infra/fdk-dataservice-harvester:latest")
+            TEST_API = KGenericContainer(System.getProperty("testImageName") ?: "eu.gcr.io/digdir-fdk-infra/fdk-dataservice-harvester:latest")
                 .withExposedPorts(API_PORT)
                 .dependsOn(fusekiContainer)
                 .waitingFor(HttpWaitStrategy()
