@@ -29,17 +29,20 @@ class CatalogService(
         catalogFuseki
             .fetchCompleteModel()
             .addDefaultPrefixes()
-            .addDataServiceModels()
+            .addAllDataServices()
             .createRDFResponse(returnType)
 
     fun getDataServiceCatalog(id: String, returnType: JenaType): String? =
         catalogFuseki
             .fetchByGraphName(id)
             ?.addDefaultPrefixes()
-            ?.addDataServiceModels()
+            ?.addDataServices()
             ?.createRDFResponse(returnType)
 
-    private fun Model.addDataServiceModels(): Model {
+    private fun Model.addAllDataServices(): Model =
+        union(dataServiceFuseki.fetchCompleteModel())
+
+    private fun Model.addDataServices(): Model {
 
         var unionModel = ModelFactory.createDefaultModel().union(this)
 
