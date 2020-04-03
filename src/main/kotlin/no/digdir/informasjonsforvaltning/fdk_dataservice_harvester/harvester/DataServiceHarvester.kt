@@ -6,9 +6,8 @@ import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.dto.HarvestDa
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.CatalogFuseki
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.DataServiceFuseki
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.JenaType
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createDataserviceModel
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createIdFromUri
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createModelOfTopLevelProperties
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createModel
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.extractCatalogModelURI
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.extractDataServiceModelURI
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.extractMetaDataIdentifier
@@ -70,7 +69,7 @@ class DataServiceHarvester(
 
         val dbMetaData: Resource? = dbModel?.extractMetaDataResource()
 
-        val isModified = !harvestedIsIsomorphicWithDatabaseModel(dbModel, harvested, dbMetaData?.createModelOfTopLevelProperties())
+        val isModified = !harvestedIsIsomorphicWithDatabaseModel(dbModel, harvested, dbMetaData?.listProperties()?.toModel())
 
         val updatedModel = if (!isModified && dbModel != null) {
             LOGGER.debug("No changes detected in catalog model ${resource.uri}")
@@ -86,7 +85,7 @@ class DataServiceHarvester(
 
         val dbMetaData: Resource? = dbModel?.extractMetaDataResource()
 
-        val isModified = !harvestedIsIsomorphicWithDatabaseModel(dbModel, harvested, dbMetaData?.createModelOfTopLevelProperties())
+        val isModified = !harvestedIsIsomorphicWithDatabaseModel(dbModel, harvested, dbMetaData?.listProperties()?.toModel())
 
         val updatedModel = if (!isModified && dbModel != null) {
             LOGGER.debug("No changes detected in data service model ${resource.uri}")
@@ -122,13 +121,13 @@ class DataServiceHarvester(
         val dataServiceModels = mutableListOf<HarvestedModel>()
 
         listOfCatalogResources().forEach {
-            val catalogModel = it.createModelOfTopLevelProperties()
+            val catalogModel = it.createModel()
             val modifiedModel = catalogModelWithMetaData(it, catalogModel, harvestDate)
             catalogModels.add(modifiedModel)
         }
 
         listOfDataServiceResources().forEach {
-            val dataServiceModel = it.createDataserviceModel()
+            val dataServiceModel = it.createModel()
             val modifiedModel = dataServiceWithMetaData(it, dataServiceModel, harvestDate)
             dataServiceModels.add(modifiedModel)
         }
