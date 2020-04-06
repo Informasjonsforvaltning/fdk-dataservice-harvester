@@ -44,6 +44,11 @@ public class ApiHarvester {
     @Value("${spring.rabbitmq.template.exchange}")
     private String exchange;
 
+    public ApiHarvester(AmqpTemplate rabbitTemplate,ApiDocumentBuilderService apiDocumentBuilderService) {
+        this.rabbitTemplate = rabbitTemplate;
+        this.apiDocumentBuilderService = apiDocumentBuilderService;
+    }
+
     public void harvestAll() {
 
         logger.info("harvestAll");
