@@ -61,11 +61,24 @@ public class ApiHarvester {
         try {
             List<String> idsToDelete = apiDocumentRepository.getApiDocumentIdsNotHarvested(idsHarvested);
             apiDocumentRepository.deleteApiDocumentByIds(idsToDelete);
+            updateSearch();
         } catch (Exception e) {
             logger.error("Error deleting {}", e.getMessage());
             logger.debug("Error stacktrace", e);
         }
     }
+
+    private void updateSearch() {
+        ObjectNode payload = JsonNodeFactory.instance.objectNode();
+
+        payload.put("updatesearch", "dataservices");
+
+        try {
+            rabbitTemplate.convertAndSend(payload);
+            logger.info("Successfully sent harvest message for publisher {}", publisherId);
+        } catch (AmqpException e) {
+            logger.error("Failed to send harvest message for publisher {}", publisherId, e);
+        }
 
     List<ApiRegistrationPublic> getApiRegistrations() {
 

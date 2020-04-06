@@ -18,6 +18,15 @@ elastic:
 management:
   endpoints.web.exposure.include: health, readiness
 
+rabbitmq:
+  host: rabbitmq
+  port: 5672
+  username: ${RABBIT_USERNAME}
+  password: ${RABBIT_PASSWORD}
+  template:
+    routing-key: 'dataservice.harvester.UpdateSearchTrigger'
+    exchange: 'updates'
+
 ---
 #Utv-miljø lokalt på egen PC
 spring:
