@@ -36,7 +36,7 @@ spring:
     username: admin
     password: admin
     template:
-      routing-key: 'dataservice.harvester.UpdateSearchTrigger'
+      routing-key: 'harvester.UpdateSearchTrigger'
       exchange: 'updates'
 application:
   apiRootUrl: http://localhost:8080/api
