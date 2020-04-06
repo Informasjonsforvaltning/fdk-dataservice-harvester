@@ -24,7 +24,6 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.beans.factory.annotation.Value;
 
 
 /*
@@ -41,18 +40,10 @@ public class ApiHarvester {
     private final AppProperties appProperties;
     private final AmqpTemplate rabbitTemplate;
 
-    @Value("${spring.rabbitmq.template.exchange}")
-    private String exchange;
-
-    public ApiHarvester(AmqpTemplate rabbitTemplate,ApiDocumentBuilderService apiDocumentBuilderService) {
-        this.rabbitTemplate = rabbitTemplate;
-        this.apiDocumentBuilderService = apiDocumentBuilderService;
-    }
 
     public void harvestAll() {
 
         logger.info("harvestAll");
-
         List<ApiRegistrationPublic> apiRegistrations = getApiRegistrations();
 
         int registrationCount = apiRegistrations != null ? apiRegistrations.size() : 0;
@@ -91,9 +82,9 @@ public class ApiHarvester {
 
         try {
             rabbitTemplate.convertAndSend(payload);
-            logger.info("Successfully sent harvest message for publisher {}");
+            logger.info("Successfully sent harvest message for publisher {}", payload);
         } catch (AmqpException e) {
-            logger.error("Failed to send harvest message for publisher {}", e);
+            logger.error("Failed to send harvest message for publisher {}", payload, e);
         }
     }
 
