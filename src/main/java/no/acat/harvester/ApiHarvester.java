@@ -75,9 +75,9 @@ public class ApiHarvester {
 
         try {
             rabbitTemplate.convertAndSend(payload);
-            logger.info("Successfully sent harvest message for publisher {}", publisherId);
+            logger.info("Successfully sent harvest message for publisher {}");
         } catch (AmqpException e) {
-            logger.error("Failed to send harvest message for publisher {}", publisherId, e);
+            logger.error("Failed to send harvest message for publisher {}", e);
         }
     }
 
