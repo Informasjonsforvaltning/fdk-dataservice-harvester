@@ -40,7 +40,6 @@ public class ApiHarvester {
     private final AppProperties appProperties;
     private final AmqpTemplate rabbitTemplate;
 
-
     public void harvestAll() {
 
         logger.info("harvestAll");
