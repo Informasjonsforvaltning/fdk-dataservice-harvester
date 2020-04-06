@@ -79,6 +79,7 @@ public class ApiHarvester {
         } catch (AmqpException e) {
             logger.error("Failed to send harvest message for publisher {}", publisherId, e);
         }
+    }
 
     List<ApiRegistrationPublic> getApiRegistrations() {
 
