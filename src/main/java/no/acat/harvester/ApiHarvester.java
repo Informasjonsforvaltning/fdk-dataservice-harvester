@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.beans.factory.annotation.Value;
 
 
 /*
@@ -39,6 +40,13 @@ public class ApiHarvester {
     private final ApiDocumentRepository apiDocumentRepository;
     private final AppProperties appProperties;
     private final AmqpTemplate rabbitTemplate;
+
+    @Value("${spring.rabbitmq.template.exchange}")
+    private String exchange;
+
+    public ApiHarvester(AmqpTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
+    }
 
     public void harvestAll() {
 
