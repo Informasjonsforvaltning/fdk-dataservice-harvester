@@ -2,6 +2,14 @@ spring:
   jackson:
     default-property-inclusion: non_null
     date-format: "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: ${RABBIT_USERNAME}
+    password: ${RABBIT_PASSWORD}
+    template:
+      routing-key: 'harvester.UpdateSearchTrigger'
+      exchange: 'updates'
 logging:
   level.root: WARN
   level.no: ${LOG_LEVEL:DEBUG}
@@ -22,6 +30,14 @@ management:
 #Utv-miljø lokalt på egen PC
 spring:
   profiles: develop, unit-integration
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin
+    template:
+      routing-key: 'harvester.UpdateSearchTrigger'
+      exchange: 'updates'
 application:
   apiRootUrl: http://localhost:8080/api
 elastic:

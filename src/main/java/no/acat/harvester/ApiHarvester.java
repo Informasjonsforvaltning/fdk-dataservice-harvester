@@ -20,6 +20,12 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.*;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.AmqpTemplate;
+
+
 /*
 The purpose of the harvester is to ensure that search index is synchronized to registrations.
  */
@@ -32,11 +38,11 @@ public class ApiHarvester {
     private final RegistrationApiClient registrationApiClient;
     private final ApiDocumentRepository apiDocumentRepository;
     private final AppProperties appProperties;
+    private final AmqpTemplate rabbitTemplate;
 
     public void harvestAll() {
 
         logger.info("harvestAll");
-
         List<ApiRegistrationPublic> apiRegistrations = getApiRegistrations();
 
         int registrationCount = apiRegistrations != null ? apiRegistrations.size() : 0;
@@ -61,9 +67,23 @@ public class ApiHarvester {
         try {
             List<String> idsToDelete = apiDocumentRepository.getApiDocumentIdsNotHarvested(idsHarvested);
             apiDocumentRepository.deleteApiDocumentByIds(idsToDelete);
+            updateSearch();
         } catch (Exception e) {
             logger.error("Error deleting {}", e.getMessage());
             logger.debug("Error stacktrace", e);
+        }
+    }
+
+    private void updateSearch() {
+        ObjectNode payload = JsonNodeFactory.instance.objectNode();
+
+        payload.put("updatesearch", "dataservices");
+
+        try {
+            rabbitTemplate.convertAndSend("harvester.UpdateSearchTrigger", payload);
+            logger.info("Successfully sent harvest message for publisher {}", payload);
+        } catch (AmqpException e) {
+            logger.error("Failed to send harvest message for publisher {}", payload, e);
         }
     }
 
