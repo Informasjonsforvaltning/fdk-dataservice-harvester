@@ -35,6 +35,9 @@
           },
           "lastChanged": {
             "type": "date"
+          },
+          "changed": {
+            "type": "date"
           }
         }
       },
