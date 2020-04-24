@@ -1,0 +1,12 @@
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+
+<https://testdirektoratet.no/model/dataservice/1>
+        a                         dcat:DataService ;
+        dct:description           "Description of service 1"@nb ;
+        dct:title                 "Error Service 0"@nb ;
+
+<https://testdirektoratet.no/model/dataservice-catalogs/0>
+        a              dcat:Catalog ;
+        dct:publisher  <https://organization-catalogue.fellesdatakatalog.brreg.no/organizations/123456789> ;
+        dcat:service   <https://testdirektoratet.no/model/dataservice/0> .

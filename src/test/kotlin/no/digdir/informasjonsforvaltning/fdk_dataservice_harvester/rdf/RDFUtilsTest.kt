@@ -39,10 +39,10 @@ class RDFUtils {
     fun rdfModelParser() {
         val rdfBody: String = javaClass.classLoader.getResourceAsStream("all_catalogs.ttl")!!.reader().readText()
 
-        val parsedRDFModel = parseRDFResponse(rdfBody, JenaType.TURTLE)
+        val parsedRDFModel = parseRDFResponse(rdfBody, JenaType.TURTLE, "test")
 
         val expected = responseReader.parseFile("all_catalogs.ttl", "TURTLE")
 
-        Assertions.assertTrue(parsedRDFModel.isIsomorphicWith(expected))
+        Assertions.assertTrue(parsedRDFModel!!.isIsomorphicWith(expected))
     }
 }

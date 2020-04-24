@@ -43,6 +43,7 @@ abstract class ApiTestContainer {
                     .withStartupTimeout(Duration.ofMinutes(1)))
                 .withNetwork(apiNetwork)
                 .withEnv(API_ENV_VALUES)
+                .withLogConsumer(Slf4jLogConsumer(logger).withPrefix("API"))
 
             fusekiContainer.start()
             TEST_API.start()
