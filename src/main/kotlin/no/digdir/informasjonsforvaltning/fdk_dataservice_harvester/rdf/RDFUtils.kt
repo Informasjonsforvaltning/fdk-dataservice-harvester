@@ -1,8 +1,8 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf
 
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.Application
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.rdf.model.ModelFactory
-import org.apache.jena.rdf.model.Property
 import org.apache.jena.rdf.model.Resource
 import org.apache.jena.rdf.model.ResourceRequiredException
 import org.apache.jena.rdf.model.Statement
@@ -12,9 +12,12 @@ import org.apache.jena.vocabulary.DCTerms
 import org.apache.jena.vocabulary.RDF
 import org.apache.jena.vocabulary.VCARD4
 import org.apache.jena.vocabulary.XSD
+import org.slf4j.LoggerFactory
 import java.io.ByteArrayOutputStream
 import java.io.StringReader
 import java.util.*
+
+private val logger = LoggerFactory.getLogger(Application::class.java)
 
 enum class JenaType(val value: String){
     TURTLE("TURTLE"),
@@ -39,9 +42,16 @@ fun jenaTypeFromAcceptHeader(accept: String?): JenaType? =
         else -> JenaType.NOT_JENA
     }
 
-fun parseRDFResponse(responseBody: String, rdfLanguage: JenaType): Model {
+fun parseRDFResponse(responseBody: String, rdfLanguage: JenaType, rdfSource: String?): Model? {
     val responseModel = ModelFactory.createDefaultModel()
-    responseModel.read(StringReader(responseBody), "", rdfLanguage.value)
+
+    try {
+        responseModel.read(StringReader(responseBody), "", rdfLanguage.value)
+    } catch (ex: Exception) {
+        logger.error("Parse from $rdfSource has failed: ${ex.message}")
+        return null
+    }
+
     return responseModel
 }
 
