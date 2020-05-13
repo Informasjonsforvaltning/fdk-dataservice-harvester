@@ -1,11 +1,30 @@
-[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
+# fdk-dataservice-harvester
 
-# Api-cat: Api Catalog Service  
+fdk-dataservice-harvester will harvest catalogs of dataservices according to the upcoming [DCAT-AP-NO v.0 specification](https://informasjonsforvaltning.github.io/dcat-ap-no/).
 
-## Overview
+The catalogs will then be stored and made available at a standardized endpoint.
 
-Module for harvesting and querying api specifications.
+## Requirements
+- maven
+- java 8
+- docker
+- docker-compose
 
-## Data types
+## Run tests
+```
+% mvn verify
+```
 
-### ApiDocument
+## Run locally
+```
+docker-compose up -d
+```
+
+Then in another terminal e.g.
+```
+% curl http://localhost:8081/catalogs
+% curl http://localhost:8081/dataservices
+```
+
+## Datastore
+To inspect the Fuseki triple store, open your browser at http://localhost:3030/fuseki/
