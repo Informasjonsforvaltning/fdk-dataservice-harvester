@@ -14,8 +14,8 @@
         <http://www.w3.org/ns/dcat#endpointDescription>
                 <https://testdirektoratet.no/openapi/dataservice/1.yaml> .
 
-<https://dataservice-harvester.staging.fellesdatakatalog.digdir.no/dataservices/4d69ecde-f1e8-3f28-8565-360746e8b5ef>
-        a       <http://www.w3.org/ns/dcat#record> ;
+<http://host.testcontainers.internal:5000/dataservices/4d69ecde-f1e8-3f28-8565-360746e8b5ef>
+        a       <http://www.w3.org/ns/dcat#CatalogRecord> ;
         <http://purl.org/dc/terms/identifier>
                 "4d69ecde-f1e8-3f28-8565-360746e8b5ef" ;
         <http://purl.org/dc/terms/issued>

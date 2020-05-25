@@ -33,15 +33,4 @@ class DataServicesContract : ApiTestContainer() {
         val response = apiGet("/dataservices/123", "text/turtle")
         assertEquals(HttpStatus.NOT_FOUND.value(), response["status"])
     }
-
-    @Test
-    fun findAll() {
-        val response = apiGet("/dataservices", "application/ld+json")
-        assumeTrue(HttpStatus.OK.value() == response["status"])
-
-        val expected = responseReader.parseFile("all_dataservices.ttl", "TURTLE")
-        val responseModel = responseReader.parseResponse(response["body"] as String, "JSONLD")
-
-        assertTrue(expected.isIsomorphicWith(responseModel))
-    }
 }

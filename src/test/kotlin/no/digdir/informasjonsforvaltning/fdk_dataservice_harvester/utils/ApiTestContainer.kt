@@ -27,7 +27,7 @@ abstract class ApiTestContainer {
                 .withExposedPorts(API_PORT)
                 .waitingFor(HttpWaitStrategy()
                     .forPort(API_PORT)
-                    .forPath("/fuseki/dataservice")
+                    .forPath("/fuseki/dataservice-meta")
                     .forStatusCode(200)
                     .withStartupTimeout(Duration.ofMinutes(1)))
                 .withNetwork(apiNetwork)
@@ -48,10 +48,11 @@ abstract class ApiTestContainer {
             fusekiContainer.start()
             TEST_API.start()
 
-            addTestDataToFuseki("src/test/resources/db_dataservice_0.json", "dataservice?graph=$DATASERVICE_ID_0")
-            addTestDataToFuseki("src/test/resources/db_dataservice_1.json", "dataservice?graph=$DATASERVICE_ID_1")
-            addTestDataToFuseki("src/test/resources/db_catalog_0.json", "dataservice-catalog?graph=$CATALOG_ID_0")
-            addTestDataToFuseki("src/test/resources/db_catalog_1.json", "dataservice-catalog?graph=$CATALOG_ID_1")
+            addTestDataToFuseki(HARVESTED, "dataservice-harvest?graph=$TEST_HARVEST_SOURCE_ID")
+            addTestDataToFuseki(DATASERVICE_META_0, "dataservice-meta?graph=$DATASERVICE_ID_0")
+            addTestDataToFuseki(DATASERVICE_META_1, "dataservice-meta?graph=$DATASERVICE_ID_1")
+            addTestDataToFuseki(CATALOG_META_0, "dataservice-meta?graph=$CATALOG_ID_0")
+            addTestDataToFuseki(CATALOG_META_1, "dataservice-meta?graph=$CATALOG_ID_1")
 
             try {
                 val result = TEST_API.execInContainer("wget", "-O", "-", "$WIREMOCK_TEST_HOST/ping")

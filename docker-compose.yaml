@@ -1,19 +1,9 @@
 version: "3"
 
 services:
-  fdk-dataservice-harvester:
-    build: .
-    environment:
-      - RABBIT_USERNAME=admin
-      - RABBIT_PASSWORD=admin
-    ports:
-      - "8081:8080"
-    depends_on:
-      - fdk-fuseki-service
-      - rabbitmq
 
   fdk-fuseki-service:
-    image: eu.gcr.io/digdir-fdk-infra/fdk-fuseki-service:staging_latest
+    image: eu.gcr.io/digdir-fdk-infra/fdk-fuseki-service:latest
     volumes:
       - /etc/fuseki/databases/
     ports:

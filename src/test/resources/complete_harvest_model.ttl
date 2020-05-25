@@ -20,9 +20,18 @@
         dct:title      "Dataservicekatalog for Testdirektoratet"@nb ;
         dcat:service   <https://testdirektoratet.no/model/dataservice/0> .
 
-<http://host.testcontainers.internal:5000/catalogs/e422e2a7-287f-349f-876a-dc3541676f21>
-        a                  dcat:CatalogRecord ;
-        dct:identifier     "e422e2a7-287f-349f-876a-dc3541676f21" ;
-        dct:issued         "2020-03-12T11:52:16.122Z"^^xsd:dateTime ;
-        dct:modified       "2020-03-12T11:52:16.122Z"^^xsd:dateTime ;
-        foaf:primaryTopic  <https://testdirektoratet.no/model/dataservice-catalogs/0> .
+<https://testdirektoratet.no/model/dataservice-catalogs/1>
+        a              dcat:Catalog ;
+        dct:publisher  <https://organization-catalogue.fellesdatakatalog.brreg.no/organizations/123456789> ;
+        dct:title      "Dataservicekatalog 1 for Testdirektoratet"@nb ;
+        dcat:service   <https://testdirektoratet.no/model/dataservice/1> .
+
+<https://testdirektoratet.no/model/dataservice/1>
+        a                         dcat:DataService ;
+        dct:description           "Description of service 1"@nb ;
+        dct:title                 "Test Service 1"@nb ;
+        dcat:contactPoint         [ a                          vcard:Organization ;
+                                    vcard:hasOrganizationName  "Testdirektoratet"@nb ;
+                                    vcard:hasURL               <https://testdirektoratet.no>
+                                  ] ;
+        dcat:endpointDescription  <https://testdirektoratet.no/openapi/dataservice/1.yaml> .

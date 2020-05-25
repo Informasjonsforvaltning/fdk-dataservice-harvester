@@ -18,6 +18,7 @@ import java.io.StringReader
 import java.util.*
 
 private val logger = LoggerFactory.getLogger(Application::class.java)
+const val BACKUP_BASE_URI = "http://example.com/"
 
 enum class JenaType(val value: String){
     TURTLE("TURTLE"),
@@ -46,7 +47,7 @@ fun parseRDFResponse(responseBody: String, rdfLanguage: JenaType, rdfSource: Str
     val responseModel = ModelFactory.createDefaultModel()
 
     try {
-        responseModel.read(StringReader(responseBody), "", rdfLanguage.value)
+        responseModel.read(StringReader(responseBody), BACKUP_BASE_URI, rdfLanguage.value)
     } catch (ex: Exception) {
         logger.error("Parse from $rdfSource has failed: ${ex.message}")
         return null
@@ -66,16 +67,15 @@ fun Model.listOfDataServiceResources(): List<Resource> =
 fun Resource.createModel(): Model =
     listProperties()
         .toModel()
-        .addNonURIResources(this)
+        .addResourceNodes(this)
 
-private fun Model.addNonURIResources(resource: Resource): Model {
+private fun Model.addResourceNodes(resource: Resource): Model {
     add(resource.listProperties())
 
     resource.listProperties()
         .toList()
         .filter { it.isResourceProperty() }
-        .filter { !it.resource.isURIResource }
-        .forEach { addNonURIResources(it.resource) }
+        .forEach { addResourceNodes(it.resource) }
 
     return this
 }
@@ -104,24 +104,26 @@ fun Model.createRDFResponse(responseType: JenaType): String =
         out.toString("UTF-8")
     }
 
-fun Model.extractMetaDataIdentifier(): String =
-    listResourcesWithProperty(RDF.type, DCAT.record)
+fun Model.extractMetaDataIdentifier(): String? =
+    listResourcesWithProperty(RDF.type, DCAT.CatalogRecord)
         .toList()
-        .first()
-        .getProperty(DCTerms.identifier).string
+        .firstOrNull()
+        ?.getProperty(DCTerms.identifier)
+        ?.string
 
 fun createIdFromUri(uri: String): String =
     UUID.nameUUIDFromBytes(uri.toByteArray())
         .toString()
 
-fun Model.extractCatalogModelURI(): String =
-    listResourcesWithProperty(RDF.type, DCAT.Catalog)
+fun Model.extractMetaDataTopic(): String? =
+    listResourcesWithProperty(RDF.type, DCAT.CatalogRecord)
         .toList()
-        .first()
-        .uri
+        .firstOrNull()
+        ?.getPropertyResourceValue(FOAF.primaryTopic)
+        ?.uri
 
-fun Model.extractDataServiceModelURI(): String =
-    listResourcesWithProperty(RDF.type, DCAT.DataService)
-        .toList()
-        .first()
-        .uri
+fun queryToGetMetaDataByUri(uri: String): String =
+    """PREFIX foaf: <${FOAF.NS}>
+       DESCRIBE * WHERE { 
+           ?s foaf:primaryTopic <$uri> 
+       }""".trimIndent()

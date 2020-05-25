@@ -4,6 +4,7 @@ import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.CATALOG
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.CATALOG_ID_1
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.DATASERVICE_ID_0
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.DATASERVICE_ID_1
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.HARVESTED
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.TestResponseReader
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Tag
@@ -24,10 +25,10 @@ class RDFUtils {
 
     @Test
     fun extractIdFromModel() {
-        val catalogModel0 = responseReader.parseFile("db_catalog_0.json", "JSONLD")
-        val catalogModel1 = responseReader.parseFile("db_catalog_1.json", "JSONLD")
-        val dataserviceModel0 = responseReader.parseFile("db_dataservice_0.json", "JSONLD")
-        val dataserviceModel1 = responseReader.parseFile("db_dataservice_1.json", "JSONLD")
+        val catalogModel0 = responseReader.parseFile("no_prefix_catalog_meta_0.ttl", "TURTLE")
+        val catalogModel1 = responseReader.parseFile("no_prefix_catalog_meta_1.ttl", "TURTLE")
+        val dataserviceModel0 = responseReader.parseFile("no_prefix_dataservice_meta_0.ttl", "TURTLE")
+        val dataserviceModel1 = responseReader.parseFile("no_prefix_dataservice_meta_1.ttl", "TURTLE")
 
         assertEquals(CATALOG_ID_0, catalogModel0.extractMetaDataIdentifier())
         assertEquals(CATALOG_ID_1, catalogModel1.extractMetaDataIdentifier())
@@ -37,11 +38,9 @@ class RDFUtils {
 
     @Test
     fun rdfModelParser() {
-        val rdfBody: String = javaClass.classLoader.getResourceAsStream("all_catalogs.ttl")!!.reader().readText()
+        val parsedRDFModel = parseRDFResponse(HARVESTED, JenaType.TURTLE, "test")
 
-        val parsedRDFModel = parseRDFResponse(rdfBody, JenaType.TURTLE, "test")
-
-        val expected = responseReader.parseFile("all_catalogs.ttl", "TURTLE")
+        val expected = responseReader.parseResponse(HARVESTED, "TURTLE")
 
         Assertions.assertTrue(parsedRDFModel!!.isIsomorphicWith(expected))
     }
