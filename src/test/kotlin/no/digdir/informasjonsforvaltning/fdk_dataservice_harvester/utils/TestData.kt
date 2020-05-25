@@ -1,6 +1,7 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils
 
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.dto.HarvestDataSource
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createIdFromUri
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.ApiTestContainer.Companion.TEST_API
 import java.util.*
 
@@ -45,3 +46,5 @@ val ERROR_HARVEST_SOURCE = HarvestDataSource(
     dataType = "dataservice",
     dataSourceType = "DCAT-AP-NO"
 )
+
+val TEST_HARVEST_SOURCE_ID = createIdFromUri("$WIREMOCK_TEST_URI/harvest")

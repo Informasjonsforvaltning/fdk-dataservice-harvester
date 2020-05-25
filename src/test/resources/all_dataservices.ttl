@@ -14,8 +14,8 @@
                                   ] ;
         dcat:endpointDescription  <https://testdirektoratet.no/openapi/dataservice/0.yaml> .
 
-<https://dataservice-harvester.staging.fellesdatakatalog.digdir.no/dataservices/ea51178e-f843-3025-98c5-7d02ce887f90>
-        a                  dcat:record ;
+<http://host.testcontainers.internal:5000/dataservices/ea51178e-f843-3025-98c5-7d02ce887f90>
+        a                  dcat:CatalogRecord ;
         dct:identifier     "ea51178e-f843-3025-98c5-7d02ce887f90" ;
         dct:issued         "2020-03-12T11:52:16.122Z"^^xsd:dateTime ;
         dct:modified       "2020-03-12T11:52:16.122Z"^^xsd:dateTime ;
@@ -31,8 +31,8 @@
                                   ] ;
         dcat:endpointDescription  <https://testdirektoratet.no/openapi/dataservice/1.yaml> .
 
-<https://dataservice-harvester.staging.fellesdatakatalog.digdir.no/dataservices/4d69ecde-f1e8-3f28-8565-360746e8b5ef>
-        a                  dcat:record ;
+<http://host.testcontainers.internal:5000/dataservices/4d69ecde-f1e8-3f28-8565-360746e8b5ef>
+        a                  dcat:CatalogRecord ;
         dct:identifier     "4d69ecde-f1e8-3f28-8565-360746e8b5ef" ;
         dct:issued         "2020-03-12T11:52:16.122Z"^^xsd:dateTime ;
         dct:modified       "2020-03-12T11:52:16.122Z"^^xsd:dateTime ;

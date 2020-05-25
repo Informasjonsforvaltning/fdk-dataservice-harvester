@@ -1,6 +1,7 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki
 
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration.FusekiProperties
+import org.apache.jena.query.Query
 import org.apache.jena.query.ReadWrite
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.rdfconnection.RDFConnection
@@ -8,7 +9,7 @@ import org.apache.jena.rdfconnection.RDFConnectionFuseki
 import org.springframework.stereotype.Service
 
 @Service
-class DataServiceFuseki(private val fusekiProperties: FusekiProperties) {
+class HarvestFuseki(private val fusekiProperties: FusekiProperties) {
 
     private fun dataServiceConnection(): RDFConnection =
         RDFConnectionFuseki.create()
@@ -28,6 +29,16 @@ class DataServiceFuseki(private val fusekiProperties: FusekiProperties) {
             it.begin(ReadWrite.READ)
             return try {
                 it.fetch(graphName)
+            } catch (ex: Exception) {
+                null
+            }
+        }
+
+    fun queryDescribe(query: String): Model? =
+        dataServiceConnection().use {
+            it.begin(ReadWrite.READ)
+            return try {
+                it.queryDescribe(query)
             } catch (ex: Exception) {
                 null
             }

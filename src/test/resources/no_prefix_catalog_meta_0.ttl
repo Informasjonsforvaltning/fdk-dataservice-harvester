@@ -8,12 +8,3 @@
                 "2020-03-12T11:52:16.122Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
         <http://xmlns.com/foaf/0.1/primaryTopic>
                 <https://testdirektoratet.no/model/dataservice-catalogs/0> .
-
-<https://testdirektoratet.no/model/dataservice-catalogs/0>
-        a       <http://www.w3.org/ns/dcat#Catalog> ;
-        <http://purl.org/dc/terms/publisher>
-                <https://organization-catalogue.fellesdatakatalog.brreg.no/organizations/123456789> ;
-        <http://purl.org/dc/terms/title>
-                "Dataservicekatalog for Testdirektoratet"@nb ;
-        <http://www.w3.org/ns/dcat#service>
-                <https://testdirektoratet.no/model/dataservice/0> .

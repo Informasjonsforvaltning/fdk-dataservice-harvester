@@ -4,8 +4,8 @@
 @prefix dcat:  <http://www.w3.org/ns/dcat#> .
 @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
 
-<https://dataservice-harvester.staging.fellesdatakatalog.digdir.no/dataservices/ea51178e-f843-3025-98c5-7d02ce887f90>
-        a                  dcat:record ;
+<http://host.testcontainers.internal:5000/dataservices/ea51178e-f843-3025-98c5-7d02ce887f90>
+        a                  dcat:CatalogRecord ;
         dct:identifier     "ea51178e-f843-3025-98c5-7d02ce887f90" ;
         dct:issued         "2020-03-12T11:52:16.122Z"^^xsd:dateTime ;
         dct:modified       "2020-03-12T11:52:16.122Z"^^xsd:dateTime ;
