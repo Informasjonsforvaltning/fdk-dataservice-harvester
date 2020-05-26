@@ -122,3 +122,4 @@ Id,OrgNr,OrgName,ApiSpecUrl,ApiDocUrl,NationalComponent,DatasetRefs,ServiceType
 122,995268841,Bluestep Bank AB Filial Oslo,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Bluestep_Bank_AB_Filial_Oslo_995268841_Accounts-API.json,,,,Kontoopplysninger
 123,991682511,Ekspress Bank,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Ekspress_Bank_991682511_Accounts-API.json,,,,Kontoopplysninger
 124,916573154,Nordax Bank AB (PUBL),https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/Nordax_Bank_AB_916573154_Accounts-API.json,,,,Kontoopplysninger
+125,913460715,BRAbank ASA,https://raw.githubusercontent.com/Informasjonsforvaltning/dsop-api-spesifikasjoner/master/specs/BRAbank_ASA_913460715_Accounts-API.json,,,,Kontoopplysninger
