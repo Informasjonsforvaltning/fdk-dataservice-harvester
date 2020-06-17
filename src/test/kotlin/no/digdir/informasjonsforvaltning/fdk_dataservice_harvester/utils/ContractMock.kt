@@ -17,7 +17,7 @@ fun startMockServer() {
             .willReturn(okJson(jacksonObjectMapper().writeValueAsString(listOf(TEST_HARVEST_SOURCE, ERROR_HARVEST_SOURCE))))
         )
         mockserver.stubFor(get(urlMatching("/harvest"))
-            .willReturn(ok(File("src/test/resources/harvest_response.ttl").readText())))
+            .willReturn(ok(HARVESTED)))
         mockserver.stubFor(get(urlMatching("/error-harvest"))
             .willReturn(ok(File("src/test/resources/harvest_response_with_errors.ttl").readText())))
 

@@ -3,6 +3,7 @@ logging:
   level.no: ${LOG_LEVEL:DEBUG}
   level.org.springframework: WARN
   level.org.springframework.web: WARN
+  level.org.apache.jena.riot: ERROR
 server:
   port: 8080
 fuseki:
@@ -39,14 +40,12 @@ application:
 spring:
   profiles: contract-test
   rabbitmq:
-    host: ${WIREMOCK_TEST_HOST}
-    port: ${WIREMOCK_TEST_PORT}
+    host: localhost
+    port: 5000
     username: admin
     password: admin
-fuseki:
-  dataserviceUri: ${FUSEKI_TEST_URI}/fuseki/dataservice-harvest
-  metaUri: ${FUSEKI_TEST_URI}/fuseki/dataservice-meta
 application:
-  dataserviceUri: ${WIREMOCK_TEST_URI}/dataservices
-  catalogUri: ${WIREMOCK_TEST_URI}/catalogs
-  harvestAdminRootUrl: ${WIREMOCK_TEST_URI}/api
+  dataserviceUri: http://localhost:5000/dataservices
+  catalogUri: http://localhost:5000/catalogs
+  harvestAdminRootUrl: http://localhost:5000/api
+server.port: 5555

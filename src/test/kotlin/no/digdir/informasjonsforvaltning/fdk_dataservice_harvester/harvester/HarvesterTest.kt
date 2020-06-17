@@ -39,9 +39,9 @@ class HarvesterTest {
             .thenReturn(javaClass.classLoader.getResourceAsStream("harvest_response.ttl").reader().readText())
 
         whenever(valuesMock.catalogUri)
-            .thenReturn("http://host.testcontainers.internal:5000/catalogs")
+            .thenReturn("http://localhost:5000/catalogs")
         whenever(valuesMock.dataserviceUri)
-            .thenReturn("http://host.testcontainers.internal:5000/dataservices")
+            .thenReturn("http://localhost:5000/dataservices")
 
         whenever(metaFuseki.queryDescribe(queryToGetMetaDataByUri("https://testdirektoratet.no/model/dataservice-catalogs/0")))
             .thenReturn(responseReader.parseFile("no_prefix_catalog_meta_0_pre_harvest.ttl", "TURTLE"))
@@ -70,9 +70,9 @@ class HarvesterTest {
             .thenReturn(javaClass.classLoader.getResourceAsStream("harvest_response_with_errors.ttl").reader().readText())
 
         whenever(valuesMock.catalogUri)
-            .thenReturn("http://host.testcontainers.internal:5000/catalogs")
+            .thenReturn("http://localhost:5000/catalogs")
         whenever(valuesMock.dataserviceUri)
-            .thenReturn("http://host.testcontainers.internal:5000/dataservices")
+            .thenReturn("http://localhost:5000/dataservices")
 
         whenever(metaFuseki.queryDescribe(queryToGetMetaDataByUri("https://testdirektoratet.no/model/dataservice-catalogs/0")))
             .thenReturn(responseReader.parseFile("no_prefix_catalog_meta_0_pre_harvest.ttl", "TURTLE"))

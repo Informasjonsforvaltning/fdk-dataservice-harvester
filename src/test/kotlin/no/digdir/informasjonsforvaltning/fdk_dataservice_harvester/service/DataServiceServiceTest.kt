@@ -98,11 +98,11 @@ class DataServiceServiceTest {
         @Test
         fun responseIsNullWhenNotFoundInMetaDataDB() {
 
-            whenever(metaFuseki.queryDescribe("DESCRIBE <http://host.testcontainers.internal:5000/catalogs/$CATALOG_ID_0>"))
+            whenever(metaFuseki.queryDescribe("DESCRIBE <http://localhost:5000/catalogs/$CATALOG_ID_0>"))
                 .thenReturn(ModelFactory.createDefaultModel())
 
             whenever(valuesMock.catalogUri)
-                .thenReturn("http://host.testcontainers.internal:5000/catalogs")
+                .thenReturn("http://localhost:5000/catalogs")
 
             val response = dataServiceService.getCatalogById("123", JenaType.TURTLE)
 
@@ -114,11 +114,11 @@ class DataServiceServiceTest {
             val dbMeta = responseReader.parseFile("no_prefix_catalog_meta_0.ttl", "TURTLE")
             val completeHarvestModel = responseReader.parseResponse(HARVESTED, "TURTLE")
 
-            whenever(metaFuseki.queryDescribe("DESCRIBE <http://host.testcontainers.internal:5000/catalogs/$CATALOG_ID_0>"))
+            whenever(metaFuseki.queryDescribe("DESCRIBE <http://localhost:5000/catalogs/$CATALOG_ID_0>"))
                 .thenReturn(dbMeta)
 
             whenever(valuesMock.catalogUri)
-                .thenReturn("http://host.testcontainers.internal:5000/catalogs")
+                .thenReturn("http://localhost:5000/catalogs")
 
             whenever(harvestFuseki.fetchCompleteModel())
                 .thenReturn(completeHarvestModel)
@@ -135,14 +135,14 @@ class DataServiceServiceTest {
             val catalog1 = responseReader.parseFile("no_prefix_catalog_1.ttl", "TURTLE")
             val dataservice1 = responseReader.parseFile("no_prefix_dataservice_1.ttl", "TURTLE")
 
-            whenever(metaFuseki.queryDescribe("DESCRIBE <http://host.testcontainers.internal:5000/catalogs/$CATALOG_ID_0>"))
+            whenever(metaFuseki.queryDescribe("DESCRIBE <http://localhost:5000/catalogs/$CATALOG_ID_0>"))
                 .thenReturn(dbMeta)
 
             whenever(harvestFuseki.fetchCompleteModel())
                 .thenReturn(catalog1.union(dataservice1))
 
             whenever(valuesMock.catalogUri)
-                .thenReturn("http://host.testcontainers.internal:5000/catalogs")
+                .thenReturn("http://localhost:5000/catalogs")
 
             val response = dataServiceService.getCatalogById(CATALOG_ID_0, JenaType.TURTLE)
 
@@ -155,11 +155,11 @@ class DataServiceServiceTest {
 
         @Test
         fun responseIsNullWhenNotFoundInMetaDataDB() {
-            whenever(metaFuseki.queryDescribe("DESCRIBE <http://host.testcontainers.internal:5000/dataservices/123>"))
+            whenever(metaFuseki.queryDescribe("DESCRIBE <http://localhost:5000/dataservices/123>"))
                 .thenReturn(ModelFactory.createDefaultModel())
 
             whenever(valuesMock.dataserviceUri)
-                .thenReturn("http://host.testcontainers.internal:5000/dataservices")
+                .thenReturn("http://localhost:5000/dataservices")
 
             val response = dataServiceService.getDataserviceById("123", JenaType.TURTLE)
 
@@ -169,11 +169,11 @@ class DataServiceServiceTest {
         @Test
         fun responseIsIsomorphicWithExpected() {
             val dbMeta = responseReader.parseResponse(DATASERVICE_META_0, "TURTLE")
-            whenever(metaFuseki.queryDescribe("DESCRIBE <http://host.testcontainers.internal:5000/dataservices/$DATASERVICE_ID_0>"))
+            whenever(metaFuseki.queryDescribe("DESCRIBE <http://localhost:5000/dataservices/$DATASERVICE_ID_0>"))
                 .thenReturn(dbMeta)
 
             whenever(valuesMock.dataserviceUri)
-                .thenReturn("http://host.testcontainers.internal:5000/dataservices")
+                .thenReturn("http://localhost:5000/dataservices")
 
             whenever(harvestFuseki.fetchCompleteModel())
                 .thenReturn(responseReader.parseFile("complete_harvest_model.ttl", "TURTLE"))

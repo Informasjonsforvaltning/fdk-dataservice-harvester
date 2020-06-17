@@ -2,18 +2,18 @@ package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils
 
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.JenaType
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createRDFResponse
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.ApiTestContainer.Companion.TEST_API
-import org.apache.jena.rdf.model.Model
+import org.slf4j.LoggerFactory
 import java.io.BufferedReader
 import java.net.URL
 import org.springframework.http.HttpStatus
-import java.io.File
 import java.net.HttpURLConnection
+
+private val logger = LoggerFactory.getLogger(ApiTestContext::class.java)
 
 fun apiGet(endpoint: String, acceptHeader: String?): Map<String,Any> {
 
     return try {
-        val connection = URL(getApiAddress(endpoint)).openConnection() as HttpURLConnection
+        val connection = URL("$API_TEST_URI$endpoint").openConnection() as HttpURLConnection
         if(acceptHeader != null) connection.setRequestProperty("Accept", acceptHeader)
         connection.connect()
 
@@ -39,12 +39,19 @@ fun apiGet(endpoint: String, acceptHeader: String?): Map<String,Any> {
     }
 }
 
-fun addTestDataToFuseki(turtleBody: String, endpoint: String) {
+fun addTestDataToFuseki(turtleBody: String, endpoint: String, port: Int) {
     val rdfReader = TestResponseReader()
-    val body = rdfReader.parseResponse(turtleBody, "TURTLE").createRDFResponse(JenaType.JSON_LD)
-    val header = "Content-Type:application/ld+json"
-    val url = "http://fdk-fuseki-service:8080/fuseki/$endpoint"
-    TEST_API.execInContainer("curl", "-i", "-H", header, "-X", "PUT", "--data", body, url)
+    val body = rdfReader.parseResponse(turtleBody, "TURTLE").createRDFResponse(JenaType.JSON_LD).toByteArray()
+    with(URL("http://localhost:$port/fuseki/$endpoint").openConnection() as HttpURLConnection) {
+        setRequestProperty("Content-Type", "application/ld+json")
+        requestMethod = "PUT"
+        doOutput = true
+        val os = outputStream
+        os.write(body)
+        os.close()
+        connect()
+        if (!isOK(responseCode)) logger.error("fuseki add to $endpoint failed: $responseCode")
+    }
 }
 
 private fun isOK(response: Int?): Boolean =

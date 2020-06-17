@@ -1,4 +1,4 @@
-<http://host.testcontainers.internal:5000/dataservices/4d69ecde-f1e8-3f28-8565-360746e8b5ef>
+<http://localhost:5000/dataservices/4d69ecde-f1e8-3f28-8565-360746e8b5ef>
         a       <http://www.w3.org/ns/dcat#CatalogRecord> ;
         <http://purl.org/dc/terms/identifier>
                 "4d69ecde-f1e8-3f28-8565-360746e8b5ef" ;

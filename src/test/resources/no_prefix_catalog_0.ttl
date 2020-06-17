@@ -1,4 +1,4 @@
-<http://host.testcontainers.internal:5000/catalogs/e422e2a7-287f-349f-876a-dc3541676f21>
+<http://localhost:5000/catalogs/e422e2a7-287f-349f-876a-dc3541676f21>
         a       <http://www.w3.org/ns/dcat#CatalogRecord> ;
         <http://purl.org/dc/terms/identifier>
                 "e422e2a7-287f-349f-876a-dc3541676f21" ;
