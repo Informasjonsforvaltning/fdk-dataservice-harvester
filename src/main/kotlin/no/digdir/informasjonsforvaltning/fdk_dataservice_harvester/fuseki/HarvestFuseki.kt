@@ -1,12 +1,14 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki
 
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration.FusekiProperties
-import org.apache.jena.query.Query
 import org.apache.jena.query.ReadWrite
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.rdfconnection.RDFConnection
 import org.apache.jena.rdfconnection.RDFConnectionFuseki
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+
+private val LOGGER = LoggerFactory.getLogger(HarvestFuseki::class.java)
 
 @Service
 class HarvestFuseki(private val fusekiProperties: FusekiProperties) {
@@ -40,6 +42,7 @@ class HarvestFuseki(private val fusekiProperties: FusekiProperties) {
             return try {
                 it.queryDescribe(query)
             } catch (ex: Exception) {
+                LOGGER.error("sparql exception: $ex")
                 null
             }
         }

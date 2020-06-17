@@ -20,7 +20,7 @@
         dct:title      "Dataservicekatalog for Testdirektoratet"@nb ;
         dcat:service   <https://testdirektoratet.no/model/dataservice/0> .
 
-<http://host.testcontainers.internal:5000/catalogs/e422e2a7-287f-349f-876a-dc3541676f21>
+<http://localhost:5000/catalogs/e422e2a7-287f-349f-876a-dc3541676f21>
         a                  dcat:CatalogRecord ;
         dct:identifier     "e422e2a7-287f-349f-876a-dc3541676f21" ;
         dct:issued         "2020-03-12T11:52:16.122Z"^^xsd:dateTime ;

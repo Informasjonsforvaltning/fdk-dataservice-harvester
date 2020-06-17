@@ -1,7 +1,7 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils
 
 val DATASERVICE_META_0 = """
-<http://host.testcontainers.internal:5000/dataservices/ea51178e-f843-3025-98c5-7d02ce887f90>
+<http://localhost:5000/dataservices/ea51178e-f843-3025-98c5-7d02ce887f90>
         a       <http://www.w3.org/ns/dcat#CatalogRecord> ;
         <http://purl.org/dc/terms/identifier>
                 "ea51178e-f843-3025-98c5-7d02ce887f90" ;
@@ -14,7 +14,7 @@ val DATASERVICE_META_0 = """
 """.trim()
 
 val DATASERVICE_META_1 = """
-<http://host.testcontainers.internal:5000/dataservices/4d69ecde-f1e8-3f28-8565-360746e8b5ef>
+<http://localhost:5000/dataservices/4d69ecde-f1e8-3f28-8565-360746e8b5ef>
         a       <http://www.w3.org/ns/dcat#CatalogRecord> ;
         <http://purl.org/dc/terms/identifier>
                 "4d69ecde-f1e8-3f28-8565-360746e8b5ef" ;
@@ -27,7 +27,7 @@ val DATASERVICE_META_1 = """
 """.trim()
 
 val CATALOG_META_0 = """
-<http://host.testcontainers.internal:5000/catalogs/e422e2a7-287f-349f-876a-dc3541676f21>
+<http://localhost:5000/catalogs/e422e2a7-287f-349f-876a-dc3541676f21>
         a       <http://www.w3.org/ns/dcat#CatalogRecord> ;
         <http://purl.org/dc/terms/identifier>
                 "e422e2a7-287f-349f-876a-dc3541676f21" ;
@@ -40,7 +40,7 @@ val CATALOG_META_0 = """
 """.trim()
 
 val CATALOG_META_1 = """
-<http://host.testcontainers.internal:5000/catalogs/65555cdb-6809-3cc4-bff1-aaa6d9426311>
+<http://localhost:5000/catalogs/65555cdb-6809-3cc4-bff1-aaa6d9426311>
         a       <http://www.w3.org/ns/dcat#CatalogRecord> ;
         <http://purl.org/dc/terms/identifier>
                 "65555cdb-6809-3cc4-bff1-aaa6d9426311" ;
