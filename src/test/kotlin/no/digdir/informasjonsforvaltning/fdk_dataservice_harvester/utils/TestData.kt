@@ -1,6 +1,6 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils
 
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.dto.HarvestDataSource
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.HarvestDataSource
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createIdFromUri
 import java.util.*
 

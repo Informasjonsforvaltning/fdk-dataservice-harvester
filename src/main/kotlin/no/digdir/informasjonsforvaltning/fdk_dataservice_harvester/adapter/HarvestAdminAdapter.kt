@@ -1,7 +1,7 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter
 
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration.ApplicationProperties
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.dto.HarvestDataSource
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.HarvestDataSource
 import org.slf4j.LoggerFactory
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpEntity

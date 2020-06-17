@@ -1,15 +1,15 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service
 
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration.ApplicationProperties
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.controller.DataservicesController
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.HarvestFuseki
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.MetaFuseki
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.MissingHarvestException
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.JenaType
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.addDefaultPrefixes
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createModel
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createRDFResponse
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.extractMetaDataTopic
 import org.apache.jena.rdf.model.Model
+import org.apache.jena.rdf.model.ModelFactory
 import org.apache.jena.vocabulary.DCAT
 import org.apache.jena.vocabulary.RDF
 import org.slf4j.LoggerFactory
@@ -62,9 +62,15 @@ class DataServiceService(
             ?.createRDFResponse(returnType)
     }
 
-    private fun getByURI(uri: String): Model =
-        harvestFuseki.fetchCompleteModel()
-            .getResource(uri)
-            .createModel()
+    private fun getByURI(uri: String): Model {
+        val literalsQuery = "DESCRIBE <$uri>"
+        val propertiesQuery = "DESCRIBE * WHERE { <$uri> ?p ?o }"
+
+        val harvestedData = harvestFuseki.queryDescribe(literalsQuery)
+            ?.union(harvestFuseki.queryDescribe(propertiesQuery) ?: ModelFactory.createDefaultModel())
+
+        if (harvestedData == null) throw MissingHarvestException()
+        else return harvestedData
+    }
 
 }

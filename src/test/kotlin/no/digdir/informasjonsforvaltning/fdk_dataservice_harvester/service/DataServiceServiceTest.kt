@@ -5,6 +5,7 @@ import com.nhaarman.mockitokotlin2.whenever
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration.ApplicationProperties
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.HarvestFuseki
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.MetaFuseki
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.MissingHarvestException
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.JenaType
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.queryToGetMetaDataByUri
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.CATALOG_ID_0
@@ -16,6 +17,7 @@ import org.apache.jena.rdf.model.ModelFactory
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -112,7 +114,8 @@ class DataServiceServiceTest {
         @Test
         fun responseIsIsomorphicWithExpected() {
             val dbMeta = responseReader.parseFile("no_prefix_catalog_meta_0.ttl", "TURTLE")
-            val completeHarvestModel = responseReader.parseResponse(HARVESTED, "TURTLE")
+            val dbCatalog = responseReader.parseFile("catalog_0_no_uri_properties.ttl", "TURTLE")
+            val dbDataService = responseReader.parseFile("dataservice_0_no_uri_properties.ttl", "TURTLE")
 
             whenever(metaFuseki.queryDescribe("DESCRIBE <http://localhost:5000/catalogs/$CATALOG_ID_0>"))
                 .thenReturn(dbMeta)
@@ -120,8 +123,11 @@ class DataServiceServiceTest {
             whenever(valuesMock.catalogUri)
                 .thenReturn("http://localhost:5000/catalogs")
 
-            whenever(harvestFuseki.fetchCompleteModel())
-                .thenReturn(completeHarvestModel)
+            whenever(harvestFuseki.queryDescribe("DESCRIBE <https://testdirektoratet.no/model/dataservice-catalogs/0>"))
+                .thenReturn(dbCatalog)
+
+            whenever(harvestFuseki.queryDescribe("DESCRIBE * WHERE { <https://testdirektoratet.no/model/dataservice-catalogs/0> ?p ?o }"))
+                .thenReturn(dbDataService)
 
             val response = dataServiceService.getCatalogById(CATALOG_ID_0, JenaType.TURTLE)
             val expected = responseReader.parseFile("catalog_0.ttl", "TURTLE")
@@ -130,23 +136,16 @@ class DataServiceServiceTest {
         }
 
         @Test
-        fun handlesNotBeingPresentInHarvestData() {
+        fun exceptionWhenNoHarvestDataFound() {
             val dbMeta = responseReader.parseFile("no_prefix_catalog_meta_0.ttl", "TURTLE")
-            val catalog1 = responseReader.parseFile("no_prefix_catalog_1.ttl", "TURTLE")
-            val dataservice1 = responseReader.parseFile("no_prefix_dataservice_1.ttl", "TURTLE")
 
             whenever(metaFuseki.queryDescribe("DESCRIBE <http://localhost:5000/catalogs/$CATALOG_ID_0>"))
                 .thenReturn(dbMeta)
 
-            whenever(harvestFuseki.fetchCompleteModel())
-                .thenReturn(catalog1.union(dataservice1))
-
             whenever(valuesMock.catalogUri)
                 .thenReturn("http://localhost:5000/catalogs")
 
-            val response = dataServiceService.getCatalogById(CATALOG_ID_0, JenaType.TURTLE)
-
-            assertTrue(dbMeta.isIsomorphicWith(responseReader.parseResponse(response!!, "TURTLE")))
+            assertThrows<MissingHarvestException> { dataServiceService.getCatalogById(CATALOG_ID_0, JenaType.TURTLE) }
         }
     }
 
@@ -169,14 +168,19 @@ class DataServiceServiceTest {
         @Test
         fun responseIsIsomorphicWithExpected() {
             val dbMeta = responseReader.parseResponse(DATASERVICE_META_0, "TURTLE")
+            val dbDataService = responseReader.parseFile("dataservice_0_no_uri_properties.ttl", "TURTLE")
+
             whenever(metaFuseki.queryDescribe("DESCRIBE <http://localhost:5000/dataservices/$DATASERVICE_ID_0>"))
                 .thenReturn(dbMeta)
 
             whenever(valuesMock.dataserviceUri)
                 .thenReturn("http://localhost:5000/dataservices")
 
-            whenever(harvestFuseki.fetchCompleteModel())
-                .thenReturn(responseReader.parseFile("complete_harvest_model.ttl", "TURTLE"))
+            whenever(harvestFuseki.queryDescribe("DESCRIBE <https://testdirektoratet.no/model/dataservice/0>"))
+                .thenReturn(dbDataService)
+
+            whenever(harvestFuseki.queryDescribe("DESCRIBE * WHERE { <https://testdirektoratet.no/model/dataservice/0> ?p ?o }"))
+                .thenReturn(ModelFactory.createDefaultModel())
 
 
             val response = dataServiceService.getDataserviceById(DATASERVICE_ID_0, JenaType.TURTLE)
