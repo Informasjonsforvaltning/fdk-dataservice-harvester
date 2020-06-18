@@ -48,7 +48,7 @@ class HarvesterTest {
 
         val expectedSavedHarvest = responseReader.parseFile("harvest_response.ttl", "TURTLE")
         val expectedCatalogMetaData = responseReader.parseFile("no_prefix_catalog_meta_0_post_harvest.ttl", "TURTLE")
-        val expectedDataServiceMetaData = responseReader.parseResponse(DATASERVICE_META_0, "TURTLE")
+        val expectedDataServiceMetaData = responseReader.parseFile("no_prefix_dataservice_meta_0.ttl", "TURTLE")
 
         harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE)
 

@@ -7,8 +7,10 @@ import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.Harves
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.MetaFuseki
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.MissingHarvestException
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.JenaType
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.queryToGetMetaDataByCatalogUri
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.queryToGetMetaDataByUri
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.CATALOG_ID_0
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.CATALOG_META_0
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.DATASERVICE_ID_0
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.DATASERVICE_META_0
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.HARVESTED
@@ -113,12 +115,16 @@ class DataServiceServiceTest {
 
         @Test
         fun responseIsIsomorphicWithExpected() {
-            val dbMeta = responseReader.parseFile("no_prefix_catalog_meta_0.ttl", "TURTLE")
+            val catalogMeta = responseReader.parseResponse(CATALOG_META_0, "TURTLE")
+            val serviceMeta = responseReader.parseResponse(DATASERVICE_META_0, "TURTLE")
             val dbCatalog = responseReader.parseFile("catalog_0_no_uri_properties.ttl", "TURTLE")
             val dbDataService = responseReader.parseFile("dataservice_0_no_uri_properties.ttl", "TURTLE")
 
             whenever(metaFuseki.queryDescribe("DESCRIBE <http://localhost:5000/catalogs/$CATALOG_ID_0>"))
-                .thenReturn(dbMeta)
+                .thenReturn(catalogMeta)
+
+            whenever(metaFuseki.queryDescribe(queryToGetMetaDataByCatalogUri("http://localhost:5000/catalogs/$CATALOG_ID_0")))
+                .thenReturn(serviceMeta)
 
             whenever(valuesMock.catalogUri)
                 .thenReturn("http://localhost:5000/catalogs")
@@ -184,7 +190,7 @@ class DataServiceServiceTest {
 
 
             val response = dataServiceService.getDataserviceById(DATASERVICE_ID_0, JenaType.TURTLE)
-            val expected = responseReader.parseFile("no_prefix_dataservice_0.ttl", "TURTLE")
+            val expected = responseReader.parseFile("dataservice_0.ttl", "TURTLE")
 
             assertTrue(expected.isIsomorphicWith(responseReader.parseResponse(response!!, "TURTLE")))
         }

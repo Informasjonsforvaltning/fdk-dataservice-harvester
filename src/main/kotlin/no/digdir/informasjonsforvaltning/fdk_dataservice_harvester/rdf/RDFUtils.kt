@@ -127,3 +127,9 @@ fun queryToGetMetaDataByUri(uri: String): String =
        DESCRIBE * WHERE { 
            ?s foaf:primaryTopic <$uri> 
        }""".trimIndent()
+
+fun queryToGetMetaDataByCatalogUri(uri: String): String =
+    """PREFIX dct: <${DCTerms.NS}>
+       DESCRIBE * WHERE { 
+           ?s dct:isPartOf <$uri> 
+       }""".trimIndent()

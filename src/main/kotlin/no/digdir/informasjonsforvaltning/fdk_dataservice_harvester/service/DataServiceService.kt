@@ -8,6 +8,7 @@ import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.JenaType
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.addDefaultPrefixes
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createRDFResponse
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.extractMetaDataTopic
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.queryToGetMetaDataByCatalogUri
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.rdf.model.ModelFactory
 import org.apache.jena.vocabulary.DCAT
@@ -54,8 +55,16 @@ class DataServiceService(
         LOGGER.info(query)
         return metaFuseki.queryDescribe(query)
             ?.let { metaData ->
+
+                val metaDatasets: Model = metaFuseki
+                    .queryDescribe(queryToGetMetaDataByCatalogUri("${applicationProperties.catalogUri}/$id"))
+                    ?: ModelFactory.createDefaultModel()
+
                 val topicURI = metaData.extractMetaDataTopic()
-                if (topicURI != null) metaData.union(getByURI(topicURI))
+                if (topicURI != null) {
+                    metaData.union(getByURI(topicURI))
+                        .union(metaDatasets)
+                }
                 else null
             }
             ?.addDefaultPrefixes()

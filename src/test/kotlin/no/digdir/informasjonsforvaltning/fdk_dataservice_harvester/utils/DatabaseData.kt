@@ -9,6 +9,8 @@ val DATASERVICE_META_0 = """
                 "2020-03-12T11:52:16.122Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
         <http://purl.org/dc/terms/modified>
                 "2020-03-12T11:52:16.122Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        <http://purl.org/dc/terms/isPartOf>
+                <http://localhost:5000/catalogs/e422e2a7-287f-349f-876a-dc3541676f21> ;
         <http://xmlns.com/foaf/0.1/primaryTopic>
                 <https://testdirektoratet.no/model/dataservice/0> .
 """.trim()
@@ -22,6 +24,8 @@ val DATASERVICE_META_1 = """
                 "2020-03-12T11:52:16.122Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
         <http://purl.org/dc/terms/modified>
                 "2020-03-12T11:52:16.122Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        <http://purl.org/dc/terms/isPartOf>
+                <http://localhost:5000/catalogs/65555cdb-6809-3cc4-bff1-aaa6d9426311> ;
         <http://xmlns.com/foaf/0.1/primaryTopic>
                 <https://testdirektoratet.no/model/dataservice/1> .
 """.trim()
