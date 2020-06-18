@@ -6,5 +6,7 @@
                 "2020-03-12T11:52:16.122Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
         <http://purl.org/dc/terms/modified>
                 "2020-03-12T11:52:16.122Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        <http://purl.org/dc/terms/isPartOf>
+                <http://localhost:5000/catalogs/e2a7e422-7f28-9f34-6a87-676f21dc3541> ;
         <http://xmlns.com/foaf/0.1/primaryTopic>
                 <https://testdirektoratet.no/model/dataservice/0> .
