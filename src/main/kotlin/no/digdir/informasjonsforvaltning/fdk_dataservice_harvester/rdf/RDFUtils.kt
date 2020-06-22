@@ -3,6 +3,7 @@ package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.Application
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.rdf.model.ModelFactory
+import org.apache.jena.rdf.model.Property
 import org.apache.jena.rdf.model.Resource
 import org.apache.jena.rdf.model.ResourceRequiredException
 import org.apache.jena.rdf.model.Statement
@@ -56,28 +57,16 @@ fun parseRDFResponse(responseBody: String, rdfLanguage: JenaType, rdfSource: Str
     return responseModel
 }
 
-fun Model.listOfCatalogResources(): List<Resource> =
-    listResourcesWithProperty(RDF.type, DCAT.Catalog)
-        .toList()
+fun Resource.modelOfResourceProperties(property: Property): Model {
+    val model = ModelFactory.createDefaultModel()
 
-fun Model.listOfDataServiceResources(): List<Resource> =
-    listResourcesWithProperty(RDF.type, DCAT.DataService)
-        .toList()
-
-fun Resource.createModel(): Model =
-    listProperties()
-        .toModel()
-        .addResourceNodes(this)
-
-private fun Model.addResourceNodes(resource: Resource): Model {
-    add(resource.listProperties())
-
-    resource.listProperties()
+    listProperties(property)
         .toList()
         .filter { it.isResourceProperty() }
-        .forEach { addResourceNodes(it.resource) }
+        .map { it.resource }
+        .forEach { model.add(it.listProperties()) }
 
-    return this
+    return model
 }
 
 private fun Statement.isResourceProperty(): Boolean =
