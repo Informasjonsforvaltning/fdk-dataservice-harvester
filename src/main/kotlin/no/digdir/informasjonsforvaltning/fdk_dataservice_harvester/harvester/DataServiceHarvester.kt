@@ -6,12 +6,11 @@ import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.Harvest
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.MetaFuseki
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.HarvestFuseki
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.JenaType
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.catalogLiteralsDiffers
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.changedCatalogAndDataServices
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createIdFromUri
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createModel
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.extractMetaDataIdentifier
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.jenaTypeFromAcceptHeader
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.listOfCatalogResources
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.listOfDataServiceResources
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.parseRDFResponse
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.queryToGetMetaDataByUri
 import org.apache.jena.rdf.model.Literal
@@ -65,16 +64,25 @@ class DataServiceHarvester(
     }
 
     private fun updateMetaData(harvested: Model, oldData: Model?, harvestDate: Calendar) {
-        harvested.listOfCatalogResources()
-            .forEach {
-                val catalogModel = it.createModel()
-                if(!catalogModel.isIsomorphicWithOldData(it.uri, oldData)) {
-                    it.updateCatalogMetaData(harvestDate, catalogModel, oldData)
-                }
+        val changed = changedCatalogAndDataServices(harvested, oldData)
+
+        changed.keys.forEach { catalogURI ->
+            val catalogHasChanges = oldData == null ||
+                changed[catalogURI]?.isNotEmpty() ?: false ||
+                catalogLiteralsDiffers(catalogURI, harvested, oldData)
+
+            if (catalogHasChanges) {
+                val changedServices = changed[catalogURI]
+                    ?.map { harvested.getResource(it) }
+                    ?: emptyList()
+
+                harvested.getResource(catalogURI)
+                    .updateCatalogMetaData(harvestDate, changedServices)
             }
+        }
     }
 
-    private fun Resource.updateCatalogMetaData(harvestDate: Calendar, catalogModel: Model, oldData: Model?) {
+    private fun Resource.updateCatalogMetaData(harvestDate: Calendar, changedServices: List<Resource>) {
         val dbModel = metaFuseki.queryDescribe(queryToGetMetaDataByUri(uri))
         val dbId = dbModel?.extractMetaDataIdentifier() ?: createIdFromUri(uri)
         val resourceUri = "${applicationProperties.catalogUri}/$dbId"
@@ -91,12 +99,9 @@ class DataServiceHarvester(
 
         metaFuseki.saveWithGraphName(dbId, metaModel)
 
-        catalogModel.listResourcesWithProperty(RDF.type, DCAT.DataService)
-            .forEach {
-                if(!it.isIsomorphicWithOldData(oldData)) {
-                    it.updateDataServiceMetaData(harvestDate, resourceUri)
-                }
-            }
+        changedServices.forEach { service ->
+            service.updateDataServiceMetaData(harvestDate, resourceUri)
+        }
     }
 
     private fun Resource.updateDataServiceMetaData(harvestDate: Calendar, catalogURI: String) {
@@ -119,16 +124,6 @@ class DataServiceHarvester(
     }
 
 }
-
-private fun Resource.isIsomorphicWithOldData(fullModelFromDB: Model?): Boolean =
-    fullModelFromDB?.getResource(uri)?.let {
-        createModel().isIsomorphicWith(it.createModel())
-    } ?: false
-
-private fun Model.isIsomorphicWithOldData(uri: String, fullModelFromDB: Model?): Boolean =
-    fullModelFromDB?.getResource(uri)?.let {
-        isIsomorphicWith(it.createModel())
-    } ?: false
 
 private fun Model.issuedDate(dbResource: Resource?, harvestDate: Calendar): Literal =
     dbResource?.listProperties(DCTerms.issued)

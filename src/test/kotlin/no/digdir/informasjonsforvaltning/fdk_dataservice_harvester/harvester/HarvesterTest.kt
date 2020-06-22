@@ -11,6 +11,7 @@ import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.MetaFuseki
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.HarvestFuseki
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.JenaType
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createIdFromUri
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createRDFResponse
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.queryToGetMetaDataByUri
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.DATASERVICE_META_0
@@ -34,7 +35,7 @@ class HarvesterTest {
     private val responseReader = TestResponseReader()
 
     @Test
-    fun harvestDataSource() {
+    fun harvestDataSourceSavedWhenDBIsEmpty() {
         whenever(adapter.getDataServices(TEST_HARVEST_SOURCE))
             .thenReturn(javaClass.classLoader.getResourceAsStream("harvest_response.ttl").reader().readText())
 
@@ -43,11 +44,8 @@ class HarvesterTest {
         whenever(valuesMock.dataserviceUri)
             .thenReturn("http://localhost:5000/dataservices")
 
-        whenever(metaFuseki.queryDescribe(queryToGetMetaDataByUri("https://testdirektoratet.no/model/dataservice-catalogs/0")))
-            .thenReturn(responseReader.parseFile("no_prefix_catalog_meta_0_pre_harvest.ttl", "TURTLE"))
-
         val expectedSavedHarvest = responseReader.parseFile("harvest_response.ttl", "TURTLE")
-        val expectedCatalogMetaData = responseReader.parseFile("no_prefix_catalog_meta_0_post_harvest.ttl", "TURTLE")
+        val expectedCatalogMetaData = responseReader.parseFile("no_prefix_catalog_meta_0.ttl", "TURTLE")
         val expectedDataServiceMetaData = responseReader.parseFile("no_prefix_dataservice_meta_0.ttl", "TURTLE")
 
         harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE)
@@ -62,6 +60,97 @@ class HarvesterTest {
             verify(harvestFuseki, times(1)).saveWithGraphName(any(), capture())
             assertTrue(firstValue.isIsomorphicWith(expectedSavedHarvest))
         }
+    }
+
+    @Test
+    fun harvestDataSourceNotPersistedWhenNoChangesFromDB() {
+        whenever(adapter.getDataServices(TEST_HARVEST_SOURCE))
+            .thenReturn(javaClass.classLoader.getResourceAsStream("harvest_response.ttl").reader().readText())
+
+        whenever(harvestFuseki.fetchByGraphName(createIdFromUri("http://localhost:5000/harvest")))
+            .thenReturn(responseReader.parseFile("harvest_response.ttl", "TURTLE"))
+
+        whenever(valuesMock.catalogUri)
+            .thenReturn("http://localhost:5000/catalogs")
+        whenever(valuesMock.dataserviceUri)
+            .thenReturn("http://localhost:5000/dataservices")
+
+        harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE)
+
+        argumentCaptor<Model>().apply {
+            verify(metaFuseki, times(0)).saveWithGraphName(any(), capture())
+        }
+
+        argumentCaptor<Model>().apply {
+            verify(harvestFuseki, times(0)).saveWithGraphName(any(), capture())
+        }
+
+    }
+
+    @Test
+    fun onlyCatalogMetaUpdatedWhenOnlyCatalogDataChangedFromDB() {
+        whenever(adapter.getDataServices(TEST_HARVEST_SOURCE))
+            .thenReturn(javaClass.classLoader.getResourceAsStream("harvest_response.ttl").reader().readText())
+
+        whenever(harvestFuseki.fetchByGraphName(createIdFromUri("http://localhost:5000/harvest")))
+            .thenReturn(responseReader.parseFile("harvest_response_catalog_diff.ttl", "TURTLE"))
+
+        whenever(metaFuseki.queryDescribe(queryToGetMetaDataByUri("https://testdirektoratet.no/model/dataservice-catalogs/0")))
+            .thenReturn(responseReader.parseFile("no_prefix_catalog_meta_0_pre_harvest.ttl", "TURTLE"))
+
+        whenever(valuesMock.catalogUri)
+            .thenReturn("http://localhost:5000/catalogs")
+        whenever(valuesMock.dataserviceUri)
+            .thenReturn("http://localhost:5000/dataservices")
+
+        val expectedCatalogMetaData = responseReader.parseFile("no_prefix_catalog_meta_0_post_harvest.ttl", "TURTLE")
+
+        harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE)
+
+        argumentCaptor<Model>().apply {
+            verify(metaFuseki, times(1)).saveWithGraphName(any(), capture())
+            assertTrue(firstValue.isIsomorphicWith(expectedCatalogMetaData))
+        }
+
+        argumentCaptor<Model>().apply {
+            verify(harvestFuseki, times(1)).saveWithGraphName(any(), capture())
+        }
+
+    }
+
+    @Test
+    fun relevantMetaUpdatedWhenOneDatasetChangedFromDB() {
+        whenever(adapter.getDataServices(TEST_HARVEST_SOURCE))
+            .thenReturn(javaClass.classLoader.getResourceAsStream("harvest_response.ttl").reader().readText())
+
+        whenever(harvestFuseki.fetchByGraphName(createIdFromUri("http://localhost:5000/harvest")))
+            .thenReturn(responseReader.parseFile("harvest_response_dataservice_diff.ttl", "TURTLE"))
+
+        whenever(metaFuseki.queryDescribe(queryToGetMetaDataByUri("https://testdirektoratet.no/model/dataservice-catalogs/0")))
+            .thenReturn(responseReader.parseFile("no_prefix_catalog_meta_0_pre_harvest.ttl", "TURTLE"))
+        whenever(metaFuseki.queryDescribe(queryToGetMetaDataByUri("https://testdirektoratet.no/model/dataservice/0")))
+            .thenReturn(responseReader.parseFile("no_prefix_dataservice_meta_0_pre_harvest.ttl", "TURTLE"))
+
+        val expectedCatalogMetaData = responseReader.parseFile("no_prefix_catalog_meta_0_post_harvest.ttl", "TURTLE")
+        val expectedDatasetMetaData = responseReader.parseFile("no_prefix_dataservice_meta_0_post_harvest.ttl", "TURTLE")
+
+        whenever(valuesMock.catalogUri)
+            .thenReturn("http://localhost:5000/catalogs")
+        whenever(valuesMock.dataserviceUri)
+            .thenReturn("http://localhost:5000/dataservices")
+
+        harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE)
+
+        argumentCaptor<Model>().apply {
+            verify(metaFuseki, times(2)).saveWithGraphName(any(), capture())
+            assertTrue(firstValue.isIsomorphicWith(expectedCatalogMetaData))
+            assertTrue(lastValue.isIsomorphicWith(expectedDatasetMetaData))
+        }
+
+        argumentCaptor<Model>().apply {
+            verify(harvestFuseki, times(1)).saveWithGraphName(any(), capture())
+        }
+
     }
 
     @Test
