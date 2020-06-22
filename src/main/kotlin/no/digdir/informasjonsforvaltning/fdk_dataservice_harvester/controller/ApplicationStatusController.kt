@@ -10,20 +10,12 @@ import org.springframework.web.bind.annotation.RestController
 class ApplicationStatusController(private val dataServiceService: DataServiceService) {
 
     @GetMapping("/ping")
-    fun ping(): ResponseEntity<Void> {
-        return ResponseEntity.ok().build()
-    }
+    fun ping(): ResponseEntity<Void> =
+        ResponseEntity.ok().build()
 
     @GetMapping("/ready")
-    fun ready(): ResponseEntity<Void> {
-        try {
-            dataServiceService.countMetaData()
-            return ResponseEntity.ok().build()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build()
-    }
+    fun ready(): ResponseEntity<Void> =
+        ResponseEntity.ok().build()
 
     @GetMapping("/count")
     fun count(): ResponseEntity<Int> {
