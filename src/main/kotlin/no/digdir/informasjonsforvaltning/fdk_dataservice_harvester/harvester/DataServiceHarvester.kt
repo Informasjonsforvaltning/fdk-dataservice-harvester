@@ -3,8 +3,9 @@ package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.harvester
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.DataServiceAdapter
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration.ApplicationProperties
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.HarvestDataSource
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.MetaFuseki
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.HarvestFuseki
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.MetaFuseki
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rabbit.RabbitMQPublisher
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.JenaType
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.catalogLiteralsDiffers
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.changedCatalogAndDataServices
@@ -36,7 +37,7 @@ class DataServiceHarvester(
 ) {
 
     fun harvestDataServiceCatalog(source: HarvestDataSource, harvestDate: Calendar) {
-        if(source.url != null) {
+        if (source.url != null) {
             LOGGER.debug("Starting harvest of ${source.url}")
             val jenaWriterType = jenaTypeFromAcceptHeader(source.acceptHeaderValue)
 
@@ -65,7 +66,6 @@ class DataServiceHarvester(
 
     private fun updateMetaData(harvested: Model, oldData: Model?, harvestDate: Calendar) {
         val changed = changedCatalogAndDataServices(harvested, oldData)
-
         changed.keys.forEach { catalogURI ->
             val catalogHasChanges = oldData == null ||
                 changed[catalogURI]?.isNotEmpty() ?: false ||
@@ -117,7 +117,7 @@ class DataServiceHarvester(
             .addProperty(DCTerms.identifier, dbId)
             .addProperty(FOAF.primaryTopic, metaModel.createResource(uri))
             .addProperty(DCTerms.isPartOf,  metaModel.createResource(catalogURI))
-            .addProperty(DCTerms.issued,  metaModel.issuedDate(dbMetaData, harvestDate))
+            .addProperty(DCTerms.issued, metaModel.issuedDate(dbMetaData, harvestDate))
             .addModified(dbMetaData, harvestDate)
 
         metaFuseki.saveWithGraphName(dbId, metaModel)

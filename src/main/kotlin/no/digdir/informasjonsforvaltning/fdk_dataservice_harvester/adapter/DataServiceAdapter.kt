@@ -19,7 +19,7 @@ class DataServiceAdapter {
             connection.setRequestProperty("Accept", source.acceptHeaderValue)
 
             if (connection.responseCode != HttpStatus.OK.value()) {
-                LOGGER.error("Harvest from ${source.url} has failed")
+                LOGGER.error("${source.url} responded with ${connection.responseCode}, harvest will be aborted")
                 null
             } else {
                 connection
@@ -29,7 +29,7 @@ class DataServiceAdapter {
             }
 
         } catch (ex: Exception) {
-            LOGGER.error("Error when harvesting from ${source.url}: ${ex.message}")
+            LOGGER.error("Error when harvesting from ${source.url}", ex)
             null
         }
 

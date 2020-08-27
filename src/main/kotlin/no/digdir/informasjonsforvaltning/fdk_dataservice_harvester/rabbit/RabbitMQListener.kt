@@ -8,12 +8,14 @@ import org.slf4j.LoggerFactory
 import org.springframework.amqp.core.Message
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.messaging.handler.annotation.Payload
+import org.springframework.stereotype.Service
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 
 private val logger = LoggerFactory.getLogger(RabbitMQListener::class.java)
 private val ALLOWED_FIELDS = listOf("publisherId", "dataType")
 
+@Service
 class RabbitMQListener(
     private val objectMapper: ObjectMapper,
     private val harvesterActivity: HarvesterActivity
@@ -26,7 +28,7 @@ class RabbitMQListener(
         return params
     }
 
-    @RabbitListener(queues = ["#{queue.name}"])
+    @RabbitListener(queues = ["#{receiverQueue.name}"])
     fun receiveDataServiceHarvestTrigger(@Payload body: JsonNode?, message: Message) {
         val routingKey = message.extractRoutingKey()
         logger.info("Received message from key: $routingKey")
