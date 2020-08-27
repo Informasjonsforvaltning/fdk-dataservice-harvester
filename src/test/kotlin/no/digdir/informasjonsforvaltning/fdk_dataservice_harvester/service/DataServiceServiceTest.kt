@@ -8,7 +8,6 @@ import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.MetaFu
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.MissingHarvestException
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.JenaType
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.queryToGetMetaDataByCatalogUri
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.queryToGetMetaDataByUri
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.CATALOG_ID_0
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.CATALOG_META_0
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.DATASERVICE_ID_0
