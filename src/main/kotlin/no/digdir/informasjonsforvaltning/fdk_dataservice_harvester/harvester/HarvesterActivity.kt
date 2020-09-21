@@ -24,8 +24,8 @@ class HarvesterActivity(
     @PostConstruct
     private fun fullHarvestOnStartup() = initiateHarvest(null)
 
-    fun initiateHarvest(params: MultiValueMap<String, String>?) {
-        if (params == null) LOGGER.debug("starting harvest of all data services")
+    fun initiateHarvest(params: Map<String, String>?) {
+        if (params == null || params.isEmpty()) LOGGER.debug("starting harvest of all data services")
         else LOGGER.debug("starting harvest with parameters $params")
 
         val harvest = launch {
@@ -44,7 +44,8 @@ class HarvesterActivity(
 
         launch {
             harvest.join()
-            LOGGER.debug("completed harvest with parameters $params")
+            if (params == null || params.isEmpty()) LOGGER.debug("completed harvest of all data services")
+            else LOGGER.debug("completed harvest with parameters $params")
 
             publisher.send(HARVEST_ALL_ID)
         }

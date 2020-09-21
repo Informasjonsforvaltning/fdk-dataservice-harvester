@@ -1,46 +1,48 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration.ApplicationProperties
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.HarvestDataSource
 import org.slf4j.LoggerFactory
-import org.springframework.core.ParameterizedTypeReference
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
-import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
+import org.springframework.http.*
 import org.springframework.stereotype.Service
-import org.springframework.util.MultiValueMap
-import org.springframework.web.client.HttpClientErrorException
-import org.springframework.web.client.RestClientException
-import org.springframework.web.client.RestTemplate
-import org.springframework.web.util.UriComponentsBuilder
+import java.io.BufferedReader
+import java.net.HttpURLConnection
+import java.net.URL
 
 private val logger = LoggerFactory.getLogger(HarvestAdminAdapter::class.java)
 
 @Service
 class HarvestAdminAdapter(private val applicationProperties: ApplicationProperties) {
 
-    private val defaultHeaders: HttpHeaders = HttpHeaders().apply {
-        accept = listOf(MediaType.APPLICATION_JSON)
-        contentType = MediaType.APPLICATION_JSON
+    fun urlWithParameters(params: Map<String, String>?): URL {
+        val paramString: String = if (params != null && params.isNotEmpty()) {
+            val paramList = mutableListOf<String>()
+            params.forEach { paramList.add("${it.key}=${it.value}") }
+
+            "?${paramList.joinToString("&")}"
+        } else ""
+
+        return URL("${applicationProperties.harvestAdminRootUrl}/datasources$paramString")
     }
 
-    fun getDataSources(queryParams: MultiValueMap<String, String>?): List<HarvestDataSource> {
-        val url = "${applicationProperties.harvestAdminRootUrl}/datasources"
-        val uriBuilder = UriComponentsBuilder.fromHttpUrl(url).queryParams(queryParams)
+    fun getDataSources(queryParams: Map<String, String>?): List<HarvestDataSource> {
+        val url = urlWithParameters(queryParams)
         try {
-            val response: ResponseEntity<List<HarvestDataSource>> = RestTemplate().exchange(
-                uriBuilder.toUriString(),
-                HttpMethod.GET,
-                HttpEntity<Any>(defaultHeaders),
-                object : ParameterizedTypeReference<List<HarvestDataSource>>() {})
+            with(url.openConnection() as HttpURLConnection) {
+                setRequestProperty("Accept", MediaType.APPLICATION_JSON.toString())
+                setRequestProperty("Content-type", MediaType.APPLICATION_JSON.toString())
 
-            return response.body ?: emptyList()
-        } catch (e: HttpClientErrorException) {
-            logger.error("Error fetching harvest urls from GET / ${uriBuilder.toUriString()}. ${e.statusText} (${e.statusCode.value()})")
-        } catch (e: RestClientException) {
-            logger.error(e.message)
+                if (HttpStatus.valueOf(responseCode).is2xxSuccessful) {
+                    val body = inputStream.bufferedReader().use(BufferedReader::readText)
+                    return jacksonObjectMapper().readValue(body)
+                } else {
+                    logger.error("Fetch of harvest urls from $url failed, status: $responseCode")
+                }
+            }
+        } catch (ex: Exception) {
+            logger.error("Error fetching harvest urls from $url", ex)
         }
         return emptyList()
     }

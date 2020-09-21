@@ -9,8 +9,6 @@ import org.springframework.amqp.core.Message
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.stereotype.Service
-import org.springframework.util.LinkedMultiValueMap
-import org.springframework.util.MultiValueMap
 
 private val logger = LoggerFactory.getLogger(RabbitMQListener::class.java)
 private val ALLOWED_FIELDS = listOf("publisherId", "dataType")
@@ -21,25 +19,17 @@ class RabbitMQListener(
     private val harvesterActivity: HarvesterActivity
 ) {
 
-    private fun createQueryParams(body: JsonNode?): MultiValueMap<String, String> {
-        val params = LinkedMultiValueMap<String, String>()
-        val fields = objectMapper.convertValue(body, object : TypeReference<Map<String, String>>() {})
-        params.setAll( fields.filter { ALLOWED_FIELDS.contains(it.key) } )
-        return params
-    }
+    private fun createQueryParams(body: JsonNode?): Map<String, String> =
+        objectMapper.convertValue(body, object : TypeReference<Map<String, String>>() {})
+            .filter { ALLOWED_FIELDS.contains(it.key) }
 
     @RabbitListener(queues = ["#{receiverQueue.name}"])
     fun receiveDataServiceHarvestTrigger(@Payload body: JsonNode?, message: Message) {
-        val routingKey = message.extractRoutingKey()
-        logger.info("Received message from key: $routingKey")
+        logger.info("Received message with key ${message.messageProperties.receivedRoutingKey}")
 
-        // convert from map to multivaluemap for UriComponentBuilder
-        val params: MultiValueMap<String, String> = createQueryParams(body)
+        val params: Map<String, String> = createQueryParams(body)
 
         harvesterActivity.initiateHarvest(params)
     }
 
 }
-
-private fun Message.extractRoutingKey(): String =
-    messageProperties.receivedRoutingKey.split("\\.".toRegex()).toTypedArray()[0]
