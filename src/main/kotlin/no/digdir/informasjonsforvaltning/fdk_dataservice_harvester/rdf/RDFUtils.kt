@@ -32,15 +32,15 @@ enum class JenaType(val value: String){
 }
 
 fun jenaTypeFromAcceptHeader(accept: String?): JenaType? =
-    when (accept) {
-        "text/turtle" -> JenaType.TURTLE
-        "application/rdf+xml" -> JenaType.RDF_XML
-        "application/rdf+json" -> JenaType.RDF_JSON
-        "application/ld+json" -> JenaType.JSON_LD
-        "application/n-triples" -> JenaType.NTRIPLES
-        "text/n3" -> JenaType.N3
-        "*/*" -> null
-        null -> null
+    when {
+        accept == null -> null
+        accept.contains("text/turtle") -> JenaType.TURTLE
+        accept.contains("application/rdf+xml") -> JenaType.RDF_XML
+        accept.contains("application/rdf+json") -> JenaType.RDF_JSON
+        accept.contains("application/ld+json") -> JenaType.JSON_LD
+        accept.contains("application/n-triples") -> JenaType.NTRIPLES
+        accept.contains("text/n3") -> JenaType.N3
+        accept.contains("*/*") -> null
         else -> JenaType.NOT_JENA
     }
 
