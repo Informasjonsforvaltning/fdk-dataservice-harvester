@@ -9,6 +9,9 @@ import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.addDefaul
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createRDFResponse
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.extractMetaDataTopic
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.queryToGetMetaDataByCatalogUri
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.CatalogRepository
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.DataServiceRepository
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.MiscellaneousRepository
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.rdf.model.ModelFactory
 import org.apache.jena.vocabulary.DCAT
@@ -20,6 +23,9 @@ private val LOGGER = LoggerFactory.getLogger(DataServiceService::class.java)
 
 @Service
 class DataServiceService(
+    private val catalogRepository: CatalogRepository,
+    private val datasetRepository: DataServiceRepository,
+    private val miscellaneousRepository: MiscellaneousRepository,
     private val harvestFuseki: HarvestFuseki,
     private val metaFuseki: MetaFuseki,
     private val applicationProperties: ApplicationProperties
