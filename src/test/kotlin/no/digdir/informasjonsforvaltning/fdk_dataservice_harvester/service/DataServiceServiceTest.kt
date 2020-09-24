@@ -8,6 +8,9 @@ import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.MetaFu
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.MissingHarvestException
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.JenaType
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.queryToGetMetaDataByCatalogUri
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.CatalogRepository
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.DataServiceRepository
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.MiscellaneousRepository
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.CATALOG_ID_0
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.CATALOG_META_0
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.DATASERVICE_ID_0
@@ -25,10 +28,13 @@ import kotlin.test.assertTrue
 
 @Tag("unit")
 class DataServiceServiceTest {
+    private val catalogRepository: CatalogRepository = mock()
+    private val dataServiceRepository: DataServiceRepository = mock()
+    private val miscRepository: MiscellaneousRepository = mock()
     private val harvestFuseki: HarvestFuseki = mock()
     private val metaFuseki: MetaFuseki = mock()
     private val valuesMock: ApplicationProperties = mock()
-    private val dataServiceService = DataServiceService(harvestFuseki, metaFuseki, valuesMock)
+    private val dataServiceService = DataServiceService(catalogRepository, dataServiceRepository, miscRepository, harvestFuseki, metaFuseki, valuesMock)
 
     private val responseReader = TestResponseReader()
 

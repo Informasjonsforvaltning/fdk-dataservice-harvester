@@ -14,6 +14,9 @@ class TestResponseReader {
         return InputStreamReader(javaClass.classLoader.getResourceAsStream(resourceName)!!, StandardCharsets.UTF_8)
     }
 
+    fun readFile(filename: String): String =
+        resourceAsReader(filename).readText()
+
     fun parseFile(filename: String, lang: String): Model {
         val expected = ModelFactory.createDefaultModel()
         expected.read(resourceAsReader(filename), "", lang)
