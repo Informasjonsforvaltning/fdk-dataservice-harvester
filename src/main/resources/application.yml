@@ -9,6 +9,7 @@ server:
 fuseki:
   dataserviceUri: ${FDK_FUSEKI_SERVICE_URI:http://fdk-fuseki-service:8080/fuseki}/dataservice-harvest
   metaUri: ${FDK_FUSEKI_SERVICE_URI:http://fdk-fuseki-service:8080/fuseki}/dataservice-meta
+  unionGraphUri: ${FDK_FUSEKI_SERVICE_URI:http://fdk-fuseki-service:8080/fuseki}/harvested?graph=dataservices
 application:
   dataserviceUri: ${FDK_DATASERVICE_HARVESTER_URI:https://dataservices.staging.fellesdatakatalog.digdir.no}/dataservices
   catalogUri: ${FDK_DATASERVICE_HARVESTER_URI:https://dataservices.staging.fellesdatakatalog.digdir.no}/catalogs
@@ -19,7 +20,7 @@ spring:
     port: 5672
     username: ${RABBIT_USERNAME}
     password: ${RABBIT_PASSWORD}
-    data.mongodb.uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongodb:27017/dataServiceHarvester?authSource=admin&authMechanism=SCRAM-SHA-1
+  data.mongodb.uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongodb:27017/dataServiceHarvester?authSource=admin&authMechanism=SCRAM-SHA-1
 
 ---
 spring:
@@ -29,10 +30,11 @@ spring:
     port: 5672
     username: admin
     password: admin
-    data.mongodb.uri: mongodb://admin:admin@localhost:27017/dataServiceHarvester?authSource=admin&authMechanism=SCRAM-SHA-1
+  data.mongodb.uri: mongodb://admin:admin@localhost:27017/dataServiceHarvester?authSource=admin&authMechanism=SCRAM-SHA-1
 fuseki:
   dataserviceUri: http://localhost:3030/fuseki/dataservice-harvest
   metaUri: http://localhost:3030/fuseki/dataservice-meta
+  unionGraphUri: http://localhost:3030/fuseki/harvested?graph=dataservices
 application:
   dataserviceUri: https://dataservices.staging.fellesdatakatalog.digdir.no/dataservices
   catalogUri: https://dataservices.staging.fellesdatakatalog.digdir.no/catalogs

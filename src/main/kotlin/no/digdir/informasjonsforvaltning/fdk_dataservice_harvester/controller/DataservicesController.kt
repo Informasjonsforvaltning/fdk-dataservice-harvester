@@ -10,10 +10,10 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import javax.servlet.http.HttpServletRequest
 
-private val LOGGER = LoggerFactory.getLogger(DataservicesController::class.java)
+private val LOGGER = LoggerFactory.getLogger(DataServicesController::class.java)
 
 @Controller
-open class DataservicesController(private val dataServiceService: DataServiceService) : DcatApNoDataservicesApi {
+open class DataServicesController(private val dataServiceService: DataServiceService) : DcatApNoDataservicesApi {
 
     override fun getDataServiceById(httpServletRequest: HttpServletRequest, id: String): ResponseEntity<String> {
         LOGGER.info("get DataService with id $id")
@@ -21,7 +21,7 @@ open class DataservicesController(private val dataServiceService: DataServiceSer
 
         return if (returnType == JenaType.NOT_JENA) ResponseEntity(HttpStatus.NOT_ACCEPTABLE)
         else {
-            dataServiceService.getDataserviceById(id, returnType ?: JenaType.TURTLE)
+            dataServiceService.getDataServiceById(id, returnType ?: JenaType.TURTLE)
                 ?.let { ResponseEntity(it, HttpStatus.OK) }
                 ?: ResponseEntity(HttpStatus.NOT_FOUND)
         }

@@ -2,101 +2,65 @@ package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service
 
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration.ApplicationProperties
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.HarvestFuseki
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.MetaFuseki
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.MissingHarvestException
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.*
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.JenaType
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.queryToGetMetaDataByCatalogUri
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.CatalogRepository
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.DataServiceRepository
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.MiscellaneousRepository
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.CATALOG_ID_0
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.CATALOG_META_0
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.DATASERVICE_ID_0
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.DATASERVICE_META_0
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.HARVESTED
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.TestResponseReader
-import org.apache.jena.rdf.model.ModelFactory
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.*
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
-import kotlin.test.assertEquals
+import java.util.*
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @Tag("unit")
-class DataServiceServiceTest {
+class DatasetServiceTest {
     private val catalogRepository: CatalogRepository = mock()
-    private val dataServiceRepository: DataServiceRepository = mock()
+    private val serviceRepository: DataServiceRepository = mock()
     private val miscRepository: MiscellaneousRepository = mock()
-    private val harvestFuseki: HarvestFuseki = mock()
-    private val metaFuseki: MetaFuseki = mock()
-    private val valuesMock: ApplicationProperties = mock()
-    private val dataServiceService = DataServiceService(catalogRepository, dataServiceRepository, miscRepository, harvestFuseki, metaFuseki, valuesMock)
+    private val dataServiceService = DataServiceService(catalogRepository, serviceRepository, miscRepository)
 
     private val responseReader = TestResponseReader()
-
-    @Nested
-    internal inner class CountMetaData {
-
-        @Test
-        fun handlesCountOfEmptyDB() {
-            whenever(metaFuseki.fetchCompleteModel())
-                .thenReturn(ModelFactory.createDefaultModel())
-
-            val response = dataServiceService.countMetaData()
-
-            assertEquals(0, response)
-        }
-
-        @Test
-        fun countsCorrectly() {
-            val metaModels = responseReader.parseFile("complete_meta_model.ttl", "TURTLE")
-
-            whenever(metaFuseki.fetchCompleteModel())
-                .thenReturn(metaModels)
-
-            val response = dataServiceService.countMetaData()
-
-            assertEquals(4, response)
-        }
-
-    }
 
     @Nested
     internal inner class AllCatalogs {
 
         @Test
-        fun answerWithEmptyListWhenNoModelsSavedInFuseki() {
-            whenever(metaFuseki.fetchCompleteModel())
-                .thenReturn(ModelFactory.createDefaultModel())
-            whenever(harvestFuseki.fetchCompleteModel())
-                .thenReturn(ModelFactory.createDefaultModel())
+        fun responseIsometricWithEmptyModelForEmptyDB() {
+            whenever(miscRepository.findById(UNION_ID))
+                .thenReturn(Optional.empty())
 
             val expected = responseReader.parseResponse("", "TURTLE")
 
-            val response = dataServiceService.getAll(JenaType.TURTLE)
+            val responseTurtle = dataServiceService.getAll(JenaType.TURTLE)
+            val responseJsonLD = dataServiceService.getAll(JenaType.JSON_LD)
 
-            assertTrue(expected.isIsomorphicWith(responseReader.parseResponse(response, "TURTLE")))
+            assertTrue(expected.isIsomorphicWith(responseReader.parseResponse(responseTurtle, "TURTLE")))
+            assertTrue(expected.isIsomorphicWith(responseReader.parseResponse(responseJsonLD, "JSON-LD")))
         }
 
         @Test
-        fun responseIsIsomorphicWithUnionOfModelsFromFuseki() {
-            val harvestModel = responseReader.parseResponse(HARVESTED, "TURTLE")
-            val metaModel = responseReader.parseFile("complete_meta_model.ttl", "TURTLE")
+        fun getAllHandlesTurtleAndOtherRDF() {
+            val allCatalogs = MiscellaneousTurtle(
+                id = UNION_ID,
+                isHarvestedSource = false,
+                turtle = gzip(javaClass.classLoader.getResource("all_catalogs.ttl")!!.readText())
+            )
 
-            whenever(metaFuseki.fetchCompleteModel())
-                .thenReturn(metaModel)
-            whenever(harvestFuseki.fetchCompleteModel())
-                .thenReturn(harvestModel)
+            whenever(miscRepository.findById(UNION_ID))
+                .thenReturn(Optional.of(allCatalogs))
 
-            val expected = metaModel.union(harvestModel)
+            val expected = responseReader.parseFile("all_catalogs.ttl", "TURTLE")
 
-            val response = dataServiceService.getAll(JenaType.TURTLE)
+            val responseTurtle = dataServiceService.getAll(JenaType.TURTLE)
+            val responseN3 = dataServiceService.getAll(JenaType.N3)
+            val responseNTriples = dataServiceService.getAll(JenaType.NTRIPLES)
 
-            assertTrue(expected.isIsomorphicWith(responseReader.parseResponse(response, "TURTLE")))
+            assertTrue(expected.isIsomorphicWith(responseReader.parseResponse(responseTurtle, "TURTLE")))
+            assertTrue(expected.isIsomorphicWith(responseReader.parseResponse(responseN3, "N3")))
+            assertTrue(expected.isIsomorphicWith(responseReader.parseResponse(responseNTriples, "N-TRIPLES")))
         }
 
     }
@@ -105,99 +69,56 @@ class DataServiceServiceTest {
     internal inner class CatalogById {
 
         @Test
-        fun responseIsNullWhenNotFoundInMetaDataDB() {
+        fun responseIsNullWhenNoCatalogIsFound() {
+            whenever(catalogRepository.findOneByFdkId("123"))
+                .thenReturn(null)
 
-            whenever(metaFuseki.queryDescribe("DESCRIBE <http://localhost:5000/catalogs/$CATALOG_ID_0>"))
-                .thenReturn(ModelFactory.createDefaultModel())
-
-            whenever(valuesMock.catalogUri)
-                .thenReturn("http://localhost:5000/catalogs")
-
-            val response = dataServiceService.getCatalogById("123", JenaType.TURTLE)
+            val response = dataServiceService.getDataServiceById("123", JenaType.TURTLE)
 
             assertNull(response)
         }
 
         @Test
-        fun responseIsIsomorphicWithExpected() {
-            val catalogMeta = responseReader.parseResponse(CATALOG_META_0, "TURTLE")
-            val serviceMeta = responseReader.parseResponse(DATASERVICE_META_0, "TURTLE")
-            val dbCatalog = responseReader.parseFile("catalog_0_no_uri_properties.ttl", "TURTLE")
-            val dbDataService = responseReader.parseFile("dataservice_0_no_uri_properties.ttl", "TURTLE")
+        fun responseIsIsomorphicWithExpectedModel() {
+            whenever(catalogRepository.findOneByFdkId(CATALOG_ID_0))
+                .thenReturn(CATALOG_DBO_0)
 
-            whenever(metaFuseki.queryDescribe("DESCRIBE <http://localhost:5000/catalogs/$CATALOG_ID_0>"))
-                .thenReturn(catalogMeta)
+            val responseTurtle = dataServiceService.getCatalogById(CATALOG_ID_0, JenaType.TURTLE)
+            val responseJsonRDF = dataServiceService.getCatalogById(CATALOG_ID_0, JenaType.RDF_JSON)
 
-            whenever(metaFuseki.queryDescribe(queryToGetMetaDataByCatalogUri("http://localhost:5000/catalogs/$CATALOG_ID_0")))
-                .thenReturn(serviceMeta)
-
-            whenever(valuesMock.catalogUri)
-                .thenReturn("http://localhost:5000/catalogs")
-
-            whenever(harvestFuseki.queryDescribe("DESCRIBE <https://testdirektoratet.no/model/dataservice-catalogs/0>"))
-                .thenReturn(dbCatalog)
-
-            whenever(harvestFuseki.queryDescribe("DESCRIBE * WHERE { <https://testdirektoratet.no/model/dataservice-catalogs/0> ?p ?o }"))
-                .thenReturn(dbDataService)
-
-            val response = dataServiceService.getCatalogById(CATALOG_ID_0, JenaType.TURTLE)
             val expected = responseReader.parseFile("catalog_0.ttl", "TURTLE")
 
-            assertTrue(expected.isIsomorphicWith(responseReader.parseResponse(response!!, "TURTLE")))
+            assertTrue(expected.isIsomorphicWith(responseReader.parseResponse(responseTurtle!!, "TURTLE")))
+            assertTrue(expected.isIsomorphicWith(responseReader.parseResponse(responseJsonRDF!!, "RDF/JSON")))
         }
 
-        @Test
-        fun exceptionWhenNoHarvestDataFound() {
-            val dbMeta = responseReader.parseFile("no_prefix_catalog_meta_0.ttl", "TURTLE")
-
-            whenever(metaFuseki.queryDescribe("DESCRIBE <http://localhost:5000/catalogs/$CATALOG_ID_0>"))
-                .thenReturn(dbMeta)
-
-            whenever(valuesMock.catalogUri)
-                .thenReturn("http://localhost:5000/catalogs")
-
-            assertThrows<MissingHarvestException> { dataServiceService.getCatalogById(CATALOG_ID_0, JenaType.TURTLE) }
-        }
     }
 
     @Nested
-    internal inner class DataServiceById {
+    internal inner class DatasetById {
 
         @Test
-        fun responseIsNullWhenNotFoundInMetaDataDB() {
-            whenever(metaFuseki.queryDescribe("DESCRIBE <http://localhost:5000/dataservices/123>"))
-                .thenReturn(ModelFactory.createDefaultModel())
+        fun responseIsNullWhenNoCatalogIsFound() {
+            whenever(serviceRepository.findOneByFdkId("123"))
+                .thenReturn(null)
 
-            whenever(valuesMock.dataserviceUri)
-                .thenReturn("http://localhost:5000/dataservices")
-
-            val response = dataServiceService.getDataserviceById("123", JenaType.TURTLE)
+            val response = dataServiceService.getDataServiceById("123", JenaType.TURTLE)
 
             assertNull(response)
         }
 
         @Test
-        fun responseIsIsomorphicWithExpected() {
-            val dbMeta = responseReader.parseResponse(DATASERVICE_META_0, "TURTLE")
-            val dbDataService = responseReader.parseFile("dataservice_0_no_uri_properties.ttl", "TURTLE")
+        fun responseIsIsomorphicWithExpectedModel() {
+            whenever(serviceRepository.findOneByFdkId(DATASERVICE_ID_0))
+                .thenReturn(DATA_SERVICE_DBO_0)
 
-            whenever(metaFuseki.queryDescribe("DESCRIBE <http://localhost:5000/dataservices/$DATASERVICE_ID_0>"))
-                .thenReturn(dbMeta)
+            val responseTurtle = dataServiceService.getDataServiceById(DATASERVICE_ID_0, JenaType.TURTLE)
+            val responseRDFXML = dataServiceService.getDataServiceById(DATASERVICE_ID_0, JenaType.RDF_XML)
 
-            whenever(valuesMock.dataserviceUri)
-                .thenReturn("http://localhost:5000/dataservices")
-
-            whenever(harvestFuseki.queryDescribe("DESCRIBE <https://testdirektoratet.no/model/dataservice/0>"))
-                .thenReturn(dbDataService)
-
-            whenever(harvestFuseki.queryDescribe("DESCRIBE * WHERE { <https://testdirektoratet.no/model/dataservice/0> ?p ?o }"))
-                .thenReturn(ModelFactory.createDefaultModel())
-
-
-            val response = dataServiceService.getDataserviceById(DATASERVICE_ID_0, JenaType.TURTLE)
             val expected = responseReader.parseFile("dataservice_0.ttl", "TURTLE")
 
-            assertTrue(expected.isIsomorphicWith(responseReader.parseResponse(response!!, "TURTLE")))
+            assertTrue(expected.isIsomorphicWith(responseReader.parseResponse(responseTurtle!!, "TURTLE")))
+            assertTrue(expected.isIsomorphicWith(responseReader.parseResponse(responseRDFXML!!, "RDF/XML")))
         }
 
     }

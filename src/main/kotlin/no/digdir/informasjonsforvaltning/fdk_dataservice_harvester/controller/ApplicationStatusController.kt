@@ -18,7 +18,7 @@ class ApplicationStatusController(private val dataServiceService: DataServiceSer
         ResponseEntity.ok().build()
 
     @GetMapping("/count")
-    fun count(): ResponseEntity<Int> {
+    fun count(): ResponseEntity<Long> {
         try {
             return ResponseEntity.ok(dataServiceService.countMetaData())
         } catch (e: Exception) {
