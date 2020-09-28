@@ -69,7 +69,7 @@ fun Resource.modelOfResourceProperties(property: Property): Model {
     return model
 }
 
-private fun Statement.isResourceProperty(): Boolean =
+fun Statement.isResourceProperty(): Boolean =
     try {
         resource.isResource
     } catch (ex: ResourceRequiredException) {

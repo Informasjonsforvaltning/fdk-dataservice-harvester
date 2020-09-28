@@ -1,19 +1,18 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.harvester
 
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.DataServiceAdapter
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.FusekiAdapter
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration.ApplicationProperties
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.HarvestDataSource
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.HarvestFuseki
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.MetaFuseki
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.*
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rabbit.RabbitMQPublisher
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.JenaType
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.catalogLiteralsDiffers
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.changedCatalogAndDataServices
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createIdFromUri
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.extractMetaDataIdentifier
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.jenaTypeFromAcceptHeader
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.parseRDFResponse
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.queryToGetMetaDataByUri
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.*
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.CatalogRepository
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.DataServiceRepository
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.MiscellaneousRepository
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.gzip
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.ungzip
 import org.apache.jena.rdf.model.Literal
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.rdf.model.ModelFactory
@@ -23,6 +22,7 @@ import org.apache.jena.vocabulary.DCAT
 import org.apache.jena.vocabulary.DCTerms
 import org.apache.jena.vocabulary.RDF
 import org.slf4j.LoggerFactory
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -31,111 +31,185 @@ private val LOGGER = LoggerFactory.getLogger(DataServiceHarvester::class.java)
 @Service
 class DataServiceHarvester(
     private val adapter: DataServiceAdapter,
+    private val fusekiAdapter: FusekiAdapter,
     private val harvestFuseki: HarvestFuseki,
     private val metaFuseki: MetaFuseki,
+    private val catalogRepository: CatalogRepository,
+    private val dataServiceRepository: DataServiceRepository,
+    private val miscRepository: MiscellaneousRepository,
     private val applicationProperties: ApplicationProperties
 ) {
 
-    fun harvestDataServiceCatalog(source: HarvestDataSource, harvestDate: Calendar) {
+    fun updateUnionModel() {
+        var unionModel = ModelFactory.createDefaultModel()
+
+        catalogRepository.findAll()
+            .map { parseRDFResponse(ungzip(it.turtleCatalog), JenaType.TURTLE, null) }
+            .forEach { unionModel = unionModel.union(it) }
+
+        fusekiAdapter.storeUnionModel(unionModel)
+
+        miscRepository.save(
+            MiscellaneousTurtle(
+                id = UNION_ID,
+                isHarvestedSource = false,
+                turtle = gzip(unionModel.createRDFResponse(JenaType.TURTLE))
+            )
+        )
+    }
+
+    fun harvestDataServiceCatalog(source: HarvestDataSource, harvestDate: Calendar) =
         if (source.url != null) {
             LOGGER.debug("Starting harvest of ${source.url}")
             val jenaWriterType = jenaTypeFromAcceptHeader(source.acceptHeaderValue)
 
-            if (jenaWriterType == null || jenaWriterType == JenaType.NOT_JENA) {
-                LOGGER.error("Not able to harvest from ${source.url}, header ${source.acceptHeaderValue} is not acceptable ")
-            } else {
-                val harvested = adapter.getDataServices(source)
-                    ?.let { parseRDFResponse(it, jenaWriterType, source.url) }
+            val harvested = when (jenaWriterType) {
+                null -> null
+                JenaType.NOT_JENA -> null
+                else -> adapter.getDataServices(source)?.let { parseRDFResponse(it, jenaWriterType, source.url) }
+            }
 
-                if (harvested == null) LOGGER.info("Not able to harvest ${source.url}")
-                else {
-                    val dbId = createIdFromUri(source.url)
-                    val dbData = harvestFuseki.fetchByGraphName(dbId)
+            when {
+                jenaWriterType == null -> LOGGER.error("Not able to harvest from ${source.url}, no accept header supplied")
+                jenaWriterType == JenaType.NOT_JENA -> LOGGER.error("Not able to harvest from ${source.url}, header ${source.acceptHeaderValue} is not acceptable ")
+                harvested == null -> LOGGER.info("Not able to harvest ${source.url}")
+                else -> checkHarvestedContainsChanges(harvested, source.url, harvestDate)
+            }
+        } else LOGGER.error("Harvest source is not defined")
 
-                    if (dbData != null && harvested.isIsomorphicWith(dbData)) LOGGER.info("No changes from last harvest of ${source.url}")
-                    else {
-                        LOGGER.info("Changes detected, saving data from ${source.url} on graph $dbId, and updating FDK meta data")
-                        harvestFuseki.saveWithGraphName(dbId, harvested)
+    private fun checkHarvestedContainsChanges(harvested: Model, sourceURL: String, harvestDate: Calendar) {
+        val dbId = createIdFromUri(sourceURL)
+        val dbData = miscRepository
+            .findByIdOrNull(sourceURL)
+            ?.let { parseRDFResponse(ungzip(it.turtle), JenaType.TURTLE, null) }
 
-                        updateMetaData(harvested, dbData, harvestDate)
+        if (dbData != null && harvested.isIsomorphicWith(dbData)) {
+            LOGGER.info("No changes from last harvest of $sourceURL")
+        } else {
+            LOGGER.info("Changes detected, saving data from $sourceURL on graph $dbId, and updating FDK meta data")
+            miscRepository.save(
+                MiscellaneousTurtle(
+                    id = sourceURL,
+                    isHarvestedSource = true,
+                    turtle = gzip(harvested.createRDFResponse(JenaType.TURTLE))
+                )
+            )
+            val fusekiModel = harvestFuseki.fetchByGraphName(dbId)
+
+            val differsFromFuseki = if (fusekiModel != null) !harvested.isIsomorphicWith(fusekiModel) else true
+
+            updateDB(harvested, harvestDate, differsFromFuseki)
+        }
+    }
+
+    fun updateDB(harvested: Model, harvestDate: Calendar, differsFromFuseki: Boolean) {
+        val catalogsToSave = mutableListOf<CatalogDBO>()
+        val servicesToSave = mutableListOf<DataServiceDBO>()
+
+        splitCatalogsFromModel(harvested)
+            .map { Pair(it, catalogRepository.findByIdOrNull(it.resource.uri)) }
+            .filter { it.first.catalogDiffersFromDB(it.second) }
+            .forEach {
+                val catalogURI = it.first.resource.uri
+
+                val fusekiModel = metaFuseki.queryDescribe(queryToGetMetaDataByUri(catalogURI))
+
+                val fdkId = it.second?.fdkId ?: fusekiModel?.extractMetaDataIdentifier() ?: createIdFromUri(catalogURI)
+                val fdkUri = "${applicationProperties.catalogUri}/$fdkId"
+
+                val fusekiMetaData = fusekiModel?.getResource(fdkUri)
+
+                val issued = it.second?.issued
+                    ?.let { timestamp -> calendarFromTimestamp(timestamp) }
+                    ?: fusekiMetaData?.parsePropertyToCalendar(DCTerms.issued)?.firstOrNull()
+                    ?: harvestDate
+
+                val fusekiModified = fusekiMetaData?.parsePropertyToCalendar(DCTerms.modified)?.firstOrNull()
+                val modified = if (differsFromFuseki || fusekiModified == null) harvestDate else fusekiModified
+
+                var catalogModel = it.first.harvestedCatalogWithoutDatasets
+
+                catalogModel.createResource(fdkUri)
+                    .addProperty(RDF.type, DCAT.CatalogRecord)
+                    .addProperty(DCTerms.identifier, fdkId)
+                    .addProperty(FOAF.primaryTopic, catalogModel.createResource(catalogURI))
+                    .addProperty(DCTerms.issued, catalogModel.createTypedLiteral(issued))
+                    .addProperty(DCTerms.modified, catalogModel.createTypedLiteral(modified))
+
+                val servicesWithChanges = it.first.services
+                    .map { dataService ->
+                        val dbDataset = dataServiceRepository.findByIdOrNull(dataService.resource.uri)
+                        if (dbDataset == null || dataService.differsFromDB(dbDataset)) {
+                            Pair(dataService.mapToUpdatedDBO(harvestDate, fdkUri, dbDataset, differsFromFuseki), true)
+                        } else {
+                            Pair(dbDataset, false)
+                        }
                     }
-                }
+
+                servicesWithChanges
+                    .map { pair -> pair.first }
+                    .map { dataset -> parseRDFResponse(ungzip(dataset.turtleDataService), JenaType.TURTLE, null) }
+                    .forEach { model -> catalogModel = catalogModel.union(model) }
+
+                servicesWithChanges
+                    .filter { dsWithChanged -> dsWithChanged.second }
+                    .forEach { dsPair -> servicesToSave.add(dsPair.first) }
+
+                catalogsToSave.add(
+                    CatalogDBO(
+                        uri = catalogURI,
+                        fdkId = fdkId,
+                        issued = issued.timeInMillis,
+                        modified = modified.timeInMillis,
+                        turtleHarvested = gzip(it.first.harvestedCatalog.createRDFResponse(JenaType.TURTLE)),
+                        turtleCatalog = gzip(catalogModel.createRDFResponse(JenaType.TURTLE))
+                    )
+                )
             }
-        }
+
+        catalogRepository.saveAll(catalogsToSave)
+        dataServiceRepository.saveAll(servicesToSave)
     }
 
-    private fun updateMetaData(harvested: Model, oldData: Model?, harvestDate: Calendar) {
-        val changed = changedCatalogAndDataServices(harvested, oldData)
-        changed.keys.forEach { catalogURI ->
-            val catalogHasChanges = oldData == null ||
-                changed[catalogURI]?.isNotEmpty() ?: false ||
-                catalogLiteralsDiffers(catalogURI, harvested, oldData)
-
-            if (catalogHasChanges) {
-                val changedServices = changed[catalogURI]
-                    ?.map { harvested.getResource(it) }
-                    ?: emptyList()
-
-                harvested.getResource(catalogURI)
-                    .updateCatalogMetaData(harvestDate, changedServices)
-            }
-        }
-    }
-
-    private fun Resource.updateCatalogMetaData(harvestDate: Calendar, changedServices: List<Resource>) {
-        val dbModel = metaFuseki.queryDescribe(queryToGetMetaDataByUri(uri))
-        val dbId = dbModel?.extractMetaDataIdentifier() ?: createIdFromUri(uri)
-        val resourceUri = "${applicationProperties.catalogUri}/$dbId"
-        val dbMetaData = dbModel?.getResource(resourceUri)
+    private fun DataServiceModel.mapToUpdatedDBO(
+        harvestDate: Calendar,
+        catalogURI: String,
+        dbService: DataServiceDBO?,
+        differsFromFuseki: Boolean
+    ): DataServiceDBO {
+        val fusekiModel = metaFuseki.queryDescribe(queryToGetMetaDataByUri(resource.uri))
+        val fdkId = dbService?.fdkId ?: fusekiModel?.extractMetaDataIdentifier() ?: createIdFromUri(resource.uri)
+        val fdkUri = "${applicationProperties.dataserviceUri}/$fdkId"
 
         val metaModel = ModelFactory.createDefaultModel()
+        metaModel.addDefaultPrefixes()
 
-        metaModel.createResource(resourceUri)
+        val fusekiMetaData = fusekiModel?.getResource(fdkUri)
+
+        val issued: Calendar = dbService?.issued
+            ?.let { timestamp -> calendarFromTimestamp(timestamp) }
+            ?: fusekiMetaData?.parsePropertyToCalendar(DCTerms.issued)?.firstOrNull()
+            ?: harvestDate
+
+        val fusekiModified = fusekiMetaData?.parsePropertyToCalendar(DCTerms.modified)?.firstOrNull()
+        val modified = if (differsFromFuseki || fusekiModified == null) harvestDate else fusekiModified
+
+        metaModel.createResource(fdkUri)
             .addProperty(RDF.type, DCAT.CatalogRecord)
-            .addProperty(DCTerms.identifier, dbId)
-            .addProperty(FOAF.primaryTopic, metaModel.createResource(uri))
-            .addProperty(DCTerms.issued, metaModel.issuedDate(dbMetaData, harvestDate))
-            .addModified(dbMetaData, harvestDate)
+            .addProperty(DCTerms.identifier, fdkId)
+            .addProperty(FOAF.primaryTopic, metaModel.createResource(resource.uri))
+            .addProperty(DCTerms.isPartOf, metaModel.createResource(catalogURI))
+            .addProperty(DCTerms.issued, metaModel.createTypedLiteral(issued))
+            .addProperty(DCTerms.modified, metaModel.createTypedLiteral(modified))
 
-        metaFuseki.saveWithGraphName(dbId, metaModel)
-
-        changedServices.forEach { service ->
-            service.updateDataServiceMetaData(harvestDate, resourceUri)
-        }
+        return DataServiceDBO(
+            uri = resource.uri,
+            fdkId = fdkId,
+            isPartOf = catalogURI,
+            issued = issued.timeInMillis,
+            modified = modified.timeInMillis,
+            turtleHarvested = gzip(harvestedService.createRDFResponse(JenaType.TURTLE)),
+            turtleDataService = gzip(metaModel.union(harvestedService).createRDFResponse(JenaType.TURTLE))
+        )
     }
-
-    private fun Resource.updateDataServiceMetaData(harvestDate: Calendar, catalogURI: String) {
-        val dbModel = metaFuseki.queryDescribe(queryToGetMetaDataByUri(uri))
-        val dbId = dbModel?.extractMetaDataIdentifier() ?: createIdFromUri(uri)
-        val resourceUri = "${applicationProperties.dataserviceUri}/$dbId"
-        val dbMetaData = dbModel?.getResource(resourceUri)
-
-        val metaModel = ModelFactory.createDefaultModel()
-
-        metaModel.createResource(resourceUri)
-            .addProperty(RDF.type, DCAT.CatalogRecord)
-            .addProperty(DCTerms.identifier, dbId)
-            .addProperty(FOAF.primaryTopic, metaModel.createResource(uri))
-            .addProperty(DCTerms.isPartOf,  metaModel.createResource(catalogURI))
-            .addProperty(DCTerms.issued, metaModel.issuedDate(dbMetaData, harvestDate))
-            .addModified(dbMetaData, harvestDate)
-
-        metaFuseki.saveWithGraphName(dbId, metaModel)
-    }
-
-}
-
-private fun Model.issuedDate(dbResource: Resource?, harvestDate: Calendar): Literal =
-    dbResource?.listProperties(DCTerms.issued)
-        ?.toList()
-        ?.firstOrNull()
-        ?.literal
-        ?: createTypedLiteral(harvestDate)
-
-private fun Resource.addModified(dbResource: Resource?, harvestDate: Calendar) {
-    addProperty(DCTerms.modified, model.createTypedLiteral(harvestDate))
-
-    dbResource?.listProperties(DCTerms.modified)
-        ?.toList()
-        ?.forEach { addProperty(DCTerms.modified, it.string) }
 }

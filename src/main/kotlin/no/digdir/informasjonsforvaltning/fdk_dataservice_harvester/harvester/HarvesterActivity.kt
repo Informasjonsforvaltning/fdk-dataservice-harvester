@@ -2,6 +2,7 @@ package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.harvester
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.HarvestAdminAdapter
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rabbit.RabbitMQPublisher
@@ -42,12 +43,19 @@ class HarvesterActivity(
                 }
         }
 
-        launch {
+        val onHarvestCompletion = launch {
             harvest.join()
+            harvester.updateUnionModel()
+
             if (params == null || params.isEmpty()) LOGGER.debug("completed harvest of all data services")
             else LOGGER.debug("completed harvest with parameters $params")
 
             publisher.send(HARVEST_ALL_ID)
+
+            harvest.cancelChildren()
+            harvest.cancel()
         }
+
+        onHarvestCompletion.invokeOnCompletion { onHarvestCompletion.cancel() }
     }
 }
