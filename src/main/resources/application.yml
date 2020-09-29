@@ -9,7 +9,7 @@ server:
 fuseki:
   dataserviceUri: ${FDK_FUSEKI_SERVICE_URI:http://fdk-fuseki-service:8080/fuseki}/dataservice-harvest
   metaUri: ${FDK_FUSEKI_SERVICE_URI:http://fdk-fuseki-service:8080/fuseki}/dataservice-meta
-  unionGraphUri: ${FDK_FUSEKI_SERVICE_URI:http://fdk-fuseki-service:8080/fuseki}/harvested?graph=dataservices
+  unionGraphUri: ${FDK_FUSEKI_SERVICE_URI:http://fdk-fuseki-service:8080/fuseki}/harvested?graph=https://dataservices.fellesdatakatalog.digdir.no
 application:
   dataserviceUri: ${FDK_DATASERVICE_HARVESTER_URI:https://dataservices.staging.fellesdatakatalog.digdir.no}/dataservices
   catalogUri: ${FDK_DATASERVICE_HARVESTER_URI:https://dataservices.staging.fellesdatakatalog.digdir.no}/catalogs
@@ -34,7 +34,7 @@ spring:
 fuseki:
   dataserviceUri: http://localhost:3030/fuseki/dataservice-harvest
   metaUri: http://localhost:3030/fuseki/dataservice-meta
-  unionGraphUri: http://localhost:3030/fuseki/harvested?graph=dataservices
+  unionGraphUri: http://localhost:3030/fuseki/harvested?graph=https://dataservices.fellesdatakatalog.digdir.no
 application:
   dataserviceUri: https://dataservices.staging.fellesdatakatalog.digdir.no/dataservices
   catalogUri: https://dataservices.staging.fellesdatakatalog.digdir.no/catalogs
