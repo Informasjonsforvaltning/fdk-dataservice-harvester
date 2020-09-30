@@ -4,30 +4,21 @@ import com.nhaarman.mockitokotlin2.*
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.DataServiceAdapter
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.FusekiAdapter
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration.ApplicationProperties
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.MetaFuseki
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.fuseki.HarvestFuseki
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.CatalogDBO
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.DataServiceDBO
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.MiscellaneousTurtle
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createIdFromUri
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.queryToGetMetaDataByUri
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.CatalogRepository
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.DataServiceRepository
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.MiscellaneousRepository
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.gzip
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.*
-import org.apache.jena.rdf.model.Model
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import java.util.*
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 @Tag("unit")
 class HarvesterTest {
-    private val harvestFuseki: HarvestFuseki = mock()
-    private val metaFuseki: MetaFuseki = mock()
     private val catalogRepository: CatalogRepository = mock()
     private val dataServiceRepository: DataServiceRepository = mock()
     private val miscRepository: MiscellaneousRepository = mock()
@@ -36,7 +27,7 @@ class HarvesterTest {
     private val fusekiAdapter: FusekiAdapter = mock()
 
     private val harvester = DataServiceHarvester(
-        adapter, fusekiAdapter, harvestFuseki, metaFuseki, catalogRepository,
+        adapter, fusekiAdapter, catalogRepository,
         dataServiceRepository, miscRepository, valuesMock
     )
 

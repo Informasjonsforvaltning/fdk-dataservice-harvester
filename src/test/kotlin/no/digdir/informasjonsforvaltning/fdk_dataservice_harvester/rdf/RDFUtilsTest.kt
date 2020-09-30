@@ -4,7 +4,6 @@ import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.CATALOG
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.CATALOG_ID_1
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.DATASERVICE_ID_0
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.DATASERVICE_ID_1
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.HARVESTED
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.TestResponseReader
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Tag
@@ -38,9 +37,9 @@ class RDFUtils {
 
     @Test
     fun rdfModelParser() {
-        val parsedRDFModel = parseRDFResponse(HARVESTED, JenaType.TURTLE, "test")
+        val parsedRDFModel = parseRDFResponse(responseReader.readFile("harvest_response.ttl"), JenaType.TURTLE, "test")
 
-        val expected = responseReader.parseResponse(HARVESTED, "TURTLE")
+        val expected = responseReader.parseFile("harvest_response.ttl", "TURTLE")
 
         Assertions.assertTrue(parsedRDFModel!!.isIsomorphicWith(expected))
     }

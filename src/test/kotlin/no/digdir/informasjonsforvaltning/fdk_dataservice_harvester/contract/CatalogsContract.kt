@@ -45,9 +45,7 @@ class CatalogsContract : ApiTestContext() {
         val response = apiGet("/catalogs", "text/turtle")
         assumeTrue(HttpStatus.OK.value() == response["status"])
 
-        val harvestedData = responseReader.parseFile("complete_harvest_model.ttl", "TURTLE")
-        val metaData = responseReader.parseFile("complete_meta_model.ttl", "TURTLE")
-        val expected = harvestedData.union(metaData)
+        val expected = responseReader.parseFile("all_catalogs.ttl", "TURTLE")
         val responseModel = responseReader.parseResponse(response["body"] as String, "TURTLE")
 
         assertTrue(expected.isIsomorphicWith(responseModel))
