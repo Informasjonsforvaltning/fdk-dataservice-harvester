@@ -7,8 +7,6 @@ logging:
 server:
   port: 8080
 fuseki:
-  dataserviceUri: ${FDK_FUSEKI_SERVICE_URI:http://fdk-fuseki-service:8080/fuseki}/dataservice-harvest
-  metaUri: ${FDK_FUSEKI_SERVICE_URI:http://fdk-fuseki-service:8080/fuseki}/dataservice-meta
   unionGraphUri: ${FDK_FUSEKI_SERVICE_URI:http://fdk-fuseki-service:8080/fuseki}/harvested?graph=https://dataservices.fellesdatakatalog.digdir.no
 application:
   dataserviceUri: ${FDK_DATASERVICE_HARVESTER_URI:https://dataservices.staging.fellesdatakatalog.digdir.no}/dataservices
@@ -52,4 +50,5 @@ application:
   dataserviceUri: http://localhost:5000/dataservices
   catalogUri: http://localhost:5000/catalogs
   harvestAdminRootUrl: http://localhost:5000/api
+fuseki.unionGraphUri: http://localhost:5000/fuseki/harvested?graph=https://dataservices.fellesdatakatalog.digdir.no
 server.port: 5555

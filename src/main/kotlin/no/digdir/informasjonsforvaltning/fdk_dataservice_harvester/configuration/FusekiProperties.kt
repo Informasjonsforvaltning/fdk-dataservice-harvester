@@ -6,7 +6,5 @@ import org.springframework.boot.context.properties.ConstructorBinding
 @ConstructorBinding
 @ConfigurationProperties("fuseki")
 data class FusekiProperties(
-    val dataserviceUri: String,
-    val metaUri: String,
     val unionGraphUri: String
 )
