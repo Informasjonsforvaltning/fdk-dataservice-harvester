@@ -30,7 +30,7 @@
         <!--end standard properties-->
 
         <kotlin.version>1.4.10</kotlin.version>
-        <testcontainers.version>1.14.3</testcontainers.version>
+        <testcontainers.version>1.15.1</testcontainers.version>
         <jena.version>3.16.0</jena.version>
 
         <start-class>no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.Application</start-class>
