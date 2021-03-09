@@ -2,15 +2,12 @@ package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.harvester
 
 import com.nhaarman.mockitokotlin2.*
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.DataServiceAdapter
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.FusekiAdapter
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration.ApplicationProperties
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.CatalogMeta
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.DataServiceMeta
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.CatalogRepository
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.DataServiceRepository
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.TurtleRepository
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.TurtleService
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.gzip
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.*
 import org.apache.jena.rdf.model.Model
 import org.junit.jupiter.api.Assertions
