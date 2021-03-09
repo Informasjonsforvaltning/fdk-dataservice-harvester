@@ -15,6 +15,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      # Setup java jdk
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '15'
+
       - name: Setup gcloud CLI
         uses: google-github-actions/setup-gcloud@master
         with:
@@ -28,7 +33,7 @@ jobs:
         run: mvn clean install --no-transfer-progress
 
       - name: Build Docker image with GitHub commit sha tag
-        run: docker build -f Dockerfile.prod . -t eu.gcr.io/digdir-fdk-infra/fdk-dataservice-harvester:$GITHUB_SHA -t eu.gcr.io/digdir-fdk-infra/fdk-dataservice-harvester:staging_latest
+        run: docker build . -t eu.gcr.io/digdir-fdk-infra/fdk-dataservice-harvester:$GITHUB_SHA -t eu.gcr.io/digdir-fdk-infra/fdk-dataservice-harvester:staging_latest
 
       - name: Publish docker image to Google Cloud
         run: docker -- push eu.gcr.io/digdir-fdk-infra/fdk-dataservice-harvester -a
