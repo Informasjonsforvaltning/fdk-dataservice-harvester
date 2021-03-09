@@ -5,7 +5,7 @@ import com.nhaarman.mockitokotlin2.whenever
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.*
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.CatalogRepository
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.DataServiceRepository
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.MiscellaneousRepository
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.TurtleRepository
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.*
 import org.apache.jena.riot.Lang
 import org.junit.jupiter.api.Nested
@@ -17,10 +17,8 @@ import kotlin.test.assertTrue
 
 @Tag("unit")
 class DatasetServiceTest {
-    private val catalogRepository: CatalogRepository = mock()
-    private val serviceRepository: DataServiceRepository = mock()
-    private val miscRepository: MiscellaneousRepository = mock()
-    private val dataServiceService = DataServiceService(catalogRepository, serviceRepository, miscRepository)
+    private val turtleService: TurtleService = mock()
+    private val dataServiceService = DataServiceService(turtleService)
 
     private val responseReader = TestResponseReader()
 
@@ -29,8 +27,8 @@ class DatasetServiceTest {
 
         @Test
         fun responseIsometricWithEmptyModelForEmptyDB() {
-            whenever(miscRepository.findById(UNION_ID))
-                .thenReturn(Optional.empty())
+            whenever(turtleService.getCatalogUnion())
+                .thenReturn(null)
 
             val expected = responseReader.parseResponse("", "TURTLE")
 
@@ -43,14 +41,8 @@ class DatasetServiceTest {
 
         @Test
         fun getAllHandlesTurtleAndOtherRDF() {
-            val allCatalogs = MiscellaneousTurtle(
-                id = UNION_ID,
-                isHarvestedSource = false,
-                turtle = gzip(javaClass.classLoader.getResource("all_catalogs.ttl")!!.readText())
-            )
-
-            whenever(miscRepository.findById(UNION_ID))
-                .thenReturn(Optional.of(allCatalogs))
+            whenever(turtleService.getCatalogUnion())
+                .thenReturn(javaClass.classLoader.getResource("all_catalogs.ttl")!!.readText())
 
             val expected = responseReader.parseFile("all_catalogs.ttl", "TURTLE")
 
@@ -70,7 +62,7 @@ class DatasetServiceTest {
 
         @Test
         fun responseIsNullWhenNoCatalogIsFound() {
-            whenever(catalogRepository.findOneByFdkId("123"))
+            whenever(turtleService.getCatalog("123", true))
                 .thenReturn(null)
 
             val response = dataServiceService.getDataServiceById("123", Lang.TURTLE)
@@ -80,8 +72,8 @@ class DatasetServiceTest {
 
         @Test
         fun responseIsIsomorphicWithExpectedModel() {
-            whenever(catalogRepository.findOneByFdkId(CATALOG_ID_0))
-                .thenReturn(CATALOG_DBO_0)
+            whenever(turtleService.getCatalog(CATALOG_ID_0, true))
+                .thenReturn(javaClass.classLoader.getResource("catalog_0.ttl")!!.readText())
 
             val responseTurtle = dataServiceService.getCatalogById(CATALOG_ID_0, Lang.TURTLE)
             val responseJsonRDF = dataServiceService.getCatalogById(CATALOG_ID_0, Lang.RDFJSON)
@@ -99,7 +91,7 @@ class DatasetServiceTest {
 
         @Test
         fun responseIsNullWhenNoCatalogIsFound() {
-            whenever(serviceRepository.findOneByFdkId("123"))
+            whenever(turtleService.getDataService("123", true))
                 .thenReturn(null)
 
             val response = dataServiceService.getDataServiceById("123", Lang.TURTLE)
@@ -109,8 +101,8 @@ class DatasetServiceTest {
 
         @Test
         fun responseIsIsomorphicWithExpectedModel() {
-            whenever(serviceRepository.findOneByFdkId(DATASERVICE_ID_0))
-                .thenReturn(DATA_SERVICE_DBO_0)
+            whenever(turtleService.getDataService(DATASERVICE_ID_0, true))
+                .thenReturn(javaClass.classLoader.getResource("dataservice_0.ttl")!!.readText())
 
             val responseTurtle = dataServiceService.getDataServiceById(DATASERVICE_ID_0, Lang.TURTLE)
             val responseRDFXML = dataServiceService.getDataServiceById(DATASERVICE_ID_0, Lang.RDFXML)

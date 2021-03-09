@@ -1,6 +1,6 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rabbit
 
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.dto.UpdateSearchMessage
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.UpdateSearchMessage
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.AmqpException
 import org.springframework.amqp.rabbit.core.RabbitTemplate

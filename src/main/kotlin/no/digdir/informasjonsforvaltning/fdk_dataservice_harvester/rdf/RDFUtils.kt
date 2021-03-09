@@ -1,6 +1,8 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf
 
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.Application
+import org.apache.jena.query.QueryExecutionFactory
+import org.apache.jena.query.QueryFactory
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.rdf.model.ModelFactory
 import org.apache.jena.rdf.model.Property
@@ -48,18 +50,6 @@ fun parseRDFResponse(responseBody: String, rdfLanguage: Lang, rdfSource: String?
     return responseModel
 }
 
-fun Resource.modelOfResourceProperties(property: Property): Model {
-    val model = ModelFactory.createDefaultModel()
-
-    listProperties(property)
-        .toList()
-        .filter { it.isResourceProperty() }
-        .map { it.resource }
-        .forEach { model.add(it.listProperties()) }
-
-    return model
-}
-
 fun Statement.isResourceProperty(): Boolean =
     try {
         resource.isResource
@@ -84,32 +74,19 @@ fun Model.createRDFResponse(responseType: Lang): String =
         out.toString("UTF-8")
     }
 
-fun Model.extractMetaDataIdentifier(): String? =
-    listResourcesWithProperty(RDF.type, DCAT.CatalogRecord)
-        .toList()
-        .firstOrNull()
-        ?.getProperty(DCTerms.identifier)
-        ?.string
-
 fun createIdFromUri(uri: String): String =
     UUID.nameUUIDFromBytes(uri.toByteArray())
         .toString()
 
-fun Model.extractMetaDataTopic(): String? =
-    listResourcesWithProperty(RDF.type, DCAT.CatalogRecord)
-        .toList()
-        .firstOrNull()
-        ?.getPropertyResourceValue(FOAF.primaryTopic)
-        ?.uri
+fun calendarFromTimestamp(timestamp: Long): Calendar {
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = timestamp
+    return calendar
+}
 
-fun queryToGetMetaDataByUri(uri: String): String =
-    """PREFIX foaf: <${FOAF.NS}>
-       DESCRIBE * WHERE { 
-           ?s foaf:primaryTopic <$uri> 
-       }""".trimIndent()
+fun Model.containsTriple(subj: String, pred: String, obj: String): Boolean {
+    val askQuery = "ASK { $subj $pred $obj }"
 
-fun queryToGetMetaDataByCatalogUri(uri: String): String =
-    """PREFIX dct: <${DCTerms.NS}>
-       DESCRIBE * WHERE { 
-           ?s dct:isPartOf <$uri> 
-       }""".trimIndent()
+    val query = QueryFactory.create(askQuery)
+    return QueryExecutionFactory.create(query, this).execAsk()
+}
