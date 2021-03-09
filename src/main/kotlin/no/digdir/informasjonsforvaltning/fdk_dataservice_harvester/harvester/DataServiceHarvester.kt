@@ -12,6 +12,7 @@ import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.gzip
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.ungzip
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.rdf.model.ModelFactory
+import org.apache.jena.riot.Lang
 import org.apache.jena.sparql.vocabulary.FOAF
 import org.apache.jena.vocabulary.DCAT
 import org.apache.jena.vocabulary.DCTerms
@@ -37,7 +38,7 @@ class DataServiceHarvester(
         var unionModel = ModelFactory.createDefaultModel()
 
         catalogRepository.findAll()
-            .map { parseRDFResponse(ungzip(it.turtleCatalog), JenaType.TURTLE, null) }
+            .map { parseRDFResponse(ungzip(it.turtleCatalog), Lang.TURTLE, null) }
             .forEach { unionModel = unionModel.union(it) }
 
         fusekiAdapter.storeUnionModel(unionModel)
@@ -46,7 +47,7 @@ class DataServiceHarvester(
             MiscellaneousTurtle(
                 id = UNION_ID,
                 isHarvestedSource = false,
-                turtle = gzip(unionModel.createRDFResponse(JenaType.TURTLE))
+                turtle = gzip(unionModel.createRDFResponse(Lang.TURTLE))
             )
         )
     }
@@ -58,13 +59,13 @@ class DataServiceHarvester(
 
             val harvested = when (jenaWriterType) {
                 null -> null
-                JenaType.NOT_JENA -> null
+                Lang.RDFNULL -> null
                 else -> adapter.getDataServices(source)?.let { parseRDFResponse(it, jenaWriterType, source.url) }
             }
 
             when {
                 jenaWriterType == null -> LOGGER.error("Not able to harvest from ${source.url}, no accept header supplied")
-                jenaWriterType == JenaType.NOT_JENA -> LOGGER.error("Not able to harvest from ${source.url}, header ${source.acceptHeaderValue} is not acceptable ")
+                jenaWriterType == Lang.RDFNULL -> LOGGER.error("Not able to harvest from ${source.url}, header ${source.acceptHeaderValue} is not acceptable ")
                 harvested == null -> LOGGER.info("Not able to harvest ${source.url}")
                 else -> checkHarvestedContainsChanges(harvested, source.url, harvestDate)
             }
@@ -74,7 +75,7 @@ class DataServiceHarvester(
         val dbId = createIdFromUri(sourceURL)
         val dbData = miscRepository
             .findByIdOrNull(sourceURL)
-            ?.let { parseRDFResponse(ungzip(it.turtle), JenaType.TURTLE, null) }
+            ?.let { parseRDFResponse(ungzip(it.turtle), Lang.TURTLE, null) }
 
         if (dbData != null && harvested.isIsomorphicWith(dbData)) {
             LOGGER.info("No changes from last harvest of $sourceURL")
@@ -84,7 +85,7 @@ class DataServiceHarvester(
                 MiscellaneousTurtle(
                     id = sourceURL,
                     isHarvestedSource = true,
-                    turtle = gzip(harvested.createRDFResponse(JenaType.TURTLE))
+                    turtle = gzip(harvested.createRDFResponse(Lang.TURTLE))
                 )
             )
 
@@ -130,7 +131,7 @@ class DataServiceHarvester(
 
                 servicesWithChanges
                     .map { pair -> pair.first }
-                    .map { dataset -> parseRDFResponse(ungzip(dataset.turtleDataService), JenaType.TURTLE, null) }
+                    .map { dataset -> parseRDFResponse(ungzip(dataset.turtleDataService), Lang.TURTLE, null) }
                     .forEach { model -> catalogModel = catalogModel.union(model) }
 
                 servicesWithChanges
@@ -143,8 +144,8 @@ class DataServiceHarvester(
                         fdkId = fdkId,
                         issued = issued.timeInMillis,
                         modified = harvestDate.timeInMillis,
-                        turtleHarvested = gzip(it.first.harvestedCatalog.createRDFResponse(JenaType.TURTLE)),
-                        turtleCatalog = gzip(catalogModel.createRDFResponse(JenaType.TURTLE))
+                        turtleHarvested = gzip(it.first.harvestedCatalog.createRDFResponse(Lang.TURTLE)),
+                        turtleCatalog = gzip(catalogModel.createRDFResponse(Lang.TURTLE))
                     )
                 )
             }
@@ -182,8 +183,8 @@ class DataServiceHarvester(
             isPartOf = catalogURI,
             issued = issued.timeInMillis,
             modified = harvestDate.timeInMillis,
-            turtleHarvested = gzip(harvestedService.createRDFResponse(JenaType.TURTLE)),
-            turtleDataService = gzip(metaModel.union(harvestedService).createRDFResponse(JenaType.TURTLE))
+            turtleHarvested = gzip(harvestedService.createRDFResponse(Lang.TURTLE)),
+            turtleDataService = gzip(metaModel.union(harvestedService).createRDFResponse(Lang.TURTLE))
         )
     }
 }

@@ -1,8 +1,8 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model
 
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.JenaType
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.parseRDFResponse
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.ungzip
+import org.apache.jena.riot.Lang
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
@@ -124,8 +124,8 @@ data class MiscellaneousTurtle (
 }
 
 private fun zippedModelsAreIsometric(zip0: String, zip1: String): Boolean {
-    val model0 = parseRDFResponse(ungzip(zip0), JenaType.TURTLE, null)
-    val model1 = parseRDFResponse(ungzip(zip1), JenaType.TURTLE, null)
+    val model0 = parseRDFResponse(ungzip(zip0), Lang.TURTLE, null)
+    val model1 = parseRDFResponse(ungzip(zip1), Lang.TURTLE, null)
 
     return when {
         model0 != null && model1 != null -> model0.isIsomorphicWith(model1)

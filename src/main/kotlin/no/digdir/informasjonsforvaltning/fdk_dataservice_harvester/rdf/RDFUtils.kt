@@ -7,6 +7,7 @@ import org.apache.jena.rdf.model.Property
 import org.apache.jena.rdf.model.Resource
 import org.apache.jena.rdf.model.ResourceRequiredException
 import org.apache.jena.rdf.model.Statement
+import org.apache.jena.riot.Lang
 import org.apache.jena.sparql.vocabulary.FOAF
 import org.apache.jena.vocabulary.DCAT
 import org.apache.jena.vocabulary.DCTerms
@@ -21,34 +22,24 @@ import java.util.*
 private val logger = LoggerFactory.getLogger(Application::class.java)
 const val BACKUP_BASE_URI = "http://example.com/"
 
-enum class JenaType(val value: String){
-    TURTLE("TURTLE"),
-    RDF_XML("RDF/XML"),
-    RDF_JSON("RDF/JSON"),
-    JSON_LD("JSON-LD"),
-    NTRIPLES("N-TRIPLES"),
-    N3("N3"),
-    NOT_JENA("NOT-JENA")
-}
-
-fun jenaTypeFromAcceptHeader(accept: String?): JenaType? =
+fun jenaTypeFromAcceptHeader(accept: String?): Lang? =
     when {
         accept == null -> null
-        accept.contains("text/turtle") -> JenaType.TURTLE
-        accept.contains("application/rdf+xml") -> JenaType.RDF_XML
-        accept.contains("application/rdf+json") -> JenaType.RDF_JSON
-        accept.contains("application/ld+json") -> JenaType.JSON_LD
-        accept.contains("application/n-triples") -> JenaType.NTRIPLES
-        accept.contains("text/n3") -> JenaType.N3
+        accept.contains("text/turtle") -> Lang.TURTLE
+        accept.contains("application/rdf+xml") -> Lang.RDFXML
+        accept.contains("application/rdf+json") -> Lang.RDFJSON
+        accept.contains("application/ld+json") -> Lang.JSONLD
+        accept.contains("application/n-triples") -> Lang.NTRIPLES
+        accept.contains("text/n3") -> Lang.N3
         accept.contains("*/*") -> null
-        else -> JenaType.NOT_JENA
+        else -> Lang.RDFNULL
     }
 
-fun parseRDFResponse(responseBody: String, rdfLanguage: JenaType, rdfSource: String?): Model? {
+fun parseRDFResponse(responseBody: String, rdfLanguage: Lang, rdfSource: String?): Model? {
     val responseModel = ModelFactory.createDefaultModel()
 
     try {
-        responseModel.read(StringReader(responseBody), BACKUP_BASE_URI, rdfLanguage.value)
+        responseModel.read(StringReader(responseBody), BACKUP_BASE_URI, rdfLanguage.name)
     } catch (ex: Exception) {
         logger.error("Parse from $rdfSource has failed: ${ex.message}")
         return null
@@ -86,9 +77,9 @@ fun Model.addDefaultPrefixes(): Model {
     return this
 }
 
-fun Model.createRDFResponse(responseType: JenaType): String =
+fun Model.createRDFResponse(responseType: Lang): String =
     ByteArrayOutputStream().use{ out ->
-        write(out, responseType.value)
+        write(out, responseType.name)
         out.flush()
         out.toString("UTF-8")
     }

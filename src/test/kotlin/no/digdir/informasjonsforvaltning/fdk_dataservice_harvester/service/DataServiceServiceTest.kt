@@ -3,11 +3,11 @@ package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.*
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.JenaType
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.CatalogRepository
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.DataServiceRepository
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.MiscellaneousRepository
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.*
+import org.apache.jena.riot.Lang
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -34,8 +34,8 @@ class DatasetServiceTest {
 
             val expected = responseReader.parseResponse("", "TURTLE")
 
-            val responseTurtle = dataServiceService.getAll(JenaType.TURTLE)
-            val responseJsonLD = dataServiceService.getAll(JenaType.JSON_LD)
+            val responseTurtle = dataServiceService.getAll(Lang.TURTLE)
+            val responseJsonLD = dataServiceService.getAll(Lang.JSONLD)
 
             assertTrue(expected.isIsomorphicWith(responseReader.parseResponse(responseTurtle, "TURTLE")))
             assertTrue(expected.isIsomorphicWith(responseReader.parseResponse(responseJsonLD, "JSON-LD")))
@@ -54,9 +54,9 @@ class DatasetServiceTest {
 
             val expected = responseReader.parseFile("all_catalogs.ttl", "TURTLE")
 
-            val responseTurtle = dataServiceService.getAll(JenaType.TURTLE)
-            val responseN3 = dataServiceService.getAll(JenaType.N3)
-            val responseNTriples = dataServiceService.getAll(JenaType.NTRIPLES)
+            val responseTurtle = dataServiceService.getAll(Lang.TURTLE)
+            val responseN3 = dataServiceService.getAll(Lang.N3)
+            val responseNTriples = dataServiceService.getAll(Lang.NTRIPLES)
 
             assertTrue(expected.isIsomorphicWith(responseReader.parseResponse(responseTurtle, "TURTLE")))
             assertTrue(expected.isIsomorphicWith(responseReader.parseResponse(responseN3, "N3")))
@@ -73,7 +73,7 @@ class DatasetServiceTest {
             whenever(catalogRepository.findOneByFdkId("123"))
                 .thenReturn(null)
 
-            val response = dataServiceService.getDataServiceById("123", JenaType.TURTLE)
+            val response = dataServiceService.getDataServiceById("123", Lang.TURTLE)
 
             assertNull(response)
         }
@@ -83,8 +83,8 @@ class DatasetServiceTest {
             whenever(catalogRepository.findOneByFdkId(CATALOG_ID_0))
                 .thenReturn(CATALOG_DBO_0)
 
-            val responseTurtle = dataServiceService.getCatalogById(CATALOG_ID_0, JenaType.TURTLE)
-            val responseJsonRDF = dataServiceService.getCatalogById(CATALOG_ID_0, JenaType.RDF_JSON)
+            val responseTurtle = dataServiceService.getCatalogById(CATALOG_ID_0, Lang.TURTLE)
+            val responseJsonRDF = dataServiceService.getCatalogById(CATALOG_ID_0, Lang.RDFJSON)
 
             val expected = responseReader.parseFile("catalog_0.ttl", "TURTLE")
 
@@ -102,7 +102,7 @@ class DatasetServiceTest {
             whenever(serviceRepository.findOneByFdkId("123"))
                 .thenReturn(null)
 
-            val response = dataServiceService.getDataServiceById("123", JenaType.TURTLE)
+            val response = dataServiceService.getDataServiceById("123", Lang.TURTLE)
 
             assertNull(response)
         }
@@ -112,8 +112,8 @@ class DatasetServiceTest {
             whenever(serviceRepository.findOneByFdkId(DATASERVICE_ID_0))
                 .thenReturn(DATA_SERVICE_DBO_0)
 
-            val responseTurtle = dataServiceService.getDataServiceById(DATASERVICE_ID_0, JenaType.TURTLE)
-            val responseRDFXML = dataServiceService.getDataServiceById(DATASERVICE_ID_0, JenaType.RDF_XML)
+            val responseTurtle = dataServiceService.getDataServiceById(DATASERVICE_ID_0, Lang.TURTLE)
+            val responseRDFXML = dataServiceService.getDataServiceById(DATASERVICE_ID_0, Lang.RDFXML)
 
             val expected = responseReader.parseFile("dataservice_0.ttl", "TURTLE")
 
