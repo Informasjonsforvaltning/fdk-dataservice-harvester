@@ -29,7 +29,7 @@
         <maven.exec.skip>false</maven.exec.skip>
         <!--end standard properties-->
 
-        <kotlin.version>1.4.30</kotlin.version>
+        <kotlin.version>1.4.31</kotlin.version>
         <testcontainers.version>1.15.1</testcontainers.version>
         <jena.version>3.17.0</jena.version>
 
@@ -56,39 +56,6 @@
             <version>3.1.1</version>
         </dependency>
 
-        <!-- Generated code dependencies -->
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-xml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-kotlin</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.openapitools</groupId>
-            <artifactId>jackson-databind-nullable</artifactId>
-            <version>0.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-        </dependency>
-
         <!-- Kotlin dependencies -->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -104,6 +71,10 @@
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-coroutines-core</artifactId>
             <version>1.4.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-kotlin</artifactId>
         </dependency>
 
         <dependency>
@@ -217,38 +188,6 @@
             </plugin>
 
             <plugin>
-                <groupId>org.openapitools</groupId>
-                <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>4.3.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/specification/fdk-dataservice-harvester.yaml</inputSpec>
-                            <generatorName>spring</generatorName>
-                            <templateDirectory>${project.basedir}/src/main/resources/openAPI/openapi-generator-maven-plugin/templates/JavaSpring</templateDirectory>
-                            <output>${project.build.directory}/generated-sources/openapi</output>
-                            <invokerPackage>no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.generated</invokerPackage>
-                            <apiPackage>no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.generated.api</apiPackage>
-                            <modelPackage>no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.generated.model</modelPackage>
-                            <configOptions>
-                                <allowUnicodeIdentifiers>true</allowUnicodeIdentifiers>
-                                <sourceFolder>src/main/java/gen</sourceFolder>
-                                <hideGenerationTimestamp>true</hideGenerationTimestamp>
-                                <dateLibrary>java8</dateLibrary>
-                                <library>spring-boot</library>
-                                <delegatePattern>false</delegatePattern>
-                                <useTags>true</useTags>
-                            </configOptions>
-                            <generateSupportingFiles>true</generateSupportingFiles>
-                            <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <version>${kotlin.version}</version>
@@ -261,7 +200,6 @@
                             <sourceDirs>
                                 <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
                                 <sourceDir>${project.basedir}/src/main/java</sourceDir>
-                                <sourceDir>${project.basedir}/target/generated-sources/openapi/src/main/java/gen</sourceDir>
                             </sourceDirs>
                         </configuration>
                     </execution>
