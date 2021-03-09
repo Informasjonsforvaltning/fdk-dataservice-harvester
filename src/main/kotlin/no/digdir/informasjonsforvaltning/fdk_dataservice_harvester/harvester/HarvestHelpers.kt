@@ -2,7 +2,6 @@ package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.harvester
 
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.CatalogDBO
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.DataServiceDBO
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.JenaType
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.addDefaultPrefixes
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.isResourceProperty
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.parseRDFResponse
@@ -10,6 +9,7 @@ import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.ungzi
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.rdf.model.Property
 import org.apache.jena.rdf.model.Resource
+import org.apache.jena.riot.Lang
 import org.apache.jena.vocabulary.DCAT
 import org.apache.jena.vocabulary.RDF
 import java.time.LocalDateTime
@@ -20,10 +20,10 @@ import java.util.*
 
 fun CatalogAndDataServiceModels.catalogDiffersFromDB(dbo: CatalogDBO?): Boolean =
     if (dbo == null) true
-    else !harvestedCatalog.isIsomorphicWith(parseRDFResponse(ungzip(dbo.turtleHarvested), JenaType.TURTLE, null))
+    else !harvestedCatalog.isIsomorphicWith(parseRDFResponse(ungzip(dbo.turtleHarvested), Lang.TURTLE, null))
 
 fun DataServiceModel.differsFromDB(dbo: DataServiceDBO): Boolean =
-    !harvestedService.isIsomorphicWith(parseRDFResponse(ungzip(dbo.turtleHarvested), JenaType.TURTLE, null))
+    !harvestedService.isIsomorphicWith(parseRDFResponse(ungzip(dbo.turtleHarvested), Lang.TURTLE, null))
 
 fun Resource.parsePropertyToCalendar(property: Property): List<Calendar>? =
     listProperties(property)
