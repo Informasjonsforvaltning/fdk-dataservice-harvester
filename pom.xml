@@ -8,7 +8,7 @@
     <groupId>no.digdir.informasjonsforvaltning</groupId>
     <artifactId>fdk-dataservice-harvester</artifactId>
     <name>FDK DataService Harvester</name>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <parent>
@@ -32,8 +32,6 @@
         <kotlin.version>1.4.31</kotlin.version>
         <testcontainers.version>1.15.1</testcontainers.version>
         <jena.version>3.17.0</jena.version>
-
-        <start-class>no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.Application</start-class>
     </properties>
 
     <dependencies>
