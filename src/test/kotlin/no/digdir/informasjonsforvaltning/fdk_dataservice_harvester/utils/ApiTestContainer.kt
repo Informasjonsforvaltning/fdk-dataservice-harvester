@@ -2,6 +2,7 @@ package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils
 
 import org.slf4j.LoggerFactory
 import org.springframework.boot.test.util.TestPropertyValues
+import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.context.ApplicationContextInitializer
 import org.springframework.context.ConfigurableApplicationContext
 import org.testcontainers.containers.GenericContainer
@@ -13,6 +14,9 @@ import java.net.URL
 import java.time.Duration
 
 abstract class ApiTestContext {
+
+    @LocalServerPort
+    var port: Int = 0
 
     internal class Initializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
         override fun initialize(configurableApplicationContext: ConfigurableApplicationContext) {

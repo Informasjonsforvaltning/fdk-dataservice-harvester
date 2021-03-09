@@ -125,3 +125,23 @@ paths:
                 type: string
         '404':
           description: DataService with requested id does not exist
+  '/update/meta':
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - update
+      description: Updates stored turtle files with current meta data
+      operationId: updateMetaData
+      responses:
+        '204':
+          description: No Content
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: [ ]

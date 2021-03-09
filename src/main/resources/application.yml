@@ -13,6 +13,9 @@ application:
   catalogUri: ${FDK_DATASERVICE_HARVESTER_URI:https://dataservices.staging.fellesdatakatalog.digdir.no}/catalogs
   harvestAdminRootUrl: ${HARVEST_ADMIN_ROOT_URL:http://fdk-harvest-admin:8080/api}
 spring:
+  security.oauth2.resourceserver.jwt:
+    jwk-set-uri: ${SSO_HOST:https://sso.staging.fellesdatakatalog.digdir.no}/auth/realms/fdk/protocol/openid-connect/certs
+    issuer-uri: ${SSO_HOST:https://sso.staging.fellesdatakatalog.digdir.no}/auth/realms/fdk
   rabbitmq:
     host: rabbitmq
     port: 5672
@@ -41,6 +44,9 @@ application:
 ---
 spring:
   config.activate.on-profile: contract-test
+  security.oauth2.resourceserver.jwt:
+    jwk-set-uri: http://localhost:5000/auth/realms/fdk/protocol/openid-connect/certs
+    issuer-uri: http://localhost:5000/auth/realms/fdk
   rabbitmq:
     host: localhost
     port: 5000

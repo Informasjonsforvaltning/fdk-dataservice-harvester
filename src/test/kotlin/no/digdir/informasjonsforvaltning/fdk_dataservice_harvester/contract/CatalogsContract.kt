@@ -17,7 +17,7 @@ import kotlin.test.assertTrue
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(
     properties = ["spring.profiles.active=contract-test"],
-    webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(initializers = [ApiTestContext.Initializer::class])
 @Tag("contract")
 class CatalogsContract : ApiTestContext() {
@@ -25,7 +25,7 @@ class CatalogsContract : ApiTestContext() {
 
     @Test
     fun findSpecific() {
-        val response = apiGet("/catalogs/$CATALOG_ID_0", "application/rdf+xml")
+        val response = apiGet(port, "/catalogs/$CATALOG_ID_0", "application/rdf+xml")
         assumeTrue(HttpStatus.OK.value() == response["status"])
 
         val expected = responseReader.parseFile("catalog_0.ttl", "TURTLE")
@@ -36,13 +36,13 @@ class CatalogsContract : ApiTestContext() {
 
     @Test
     fun idDoesNotExist() {
-        val response = apiGet("/catalogs/123", "text/turtle")
+        val response = apiGet(port, "/catalogs/123", "text/turtle")
         assertEquals(HttpStatus.NOT_FOUND.value(), response["status"])
     }
 
     @Test
     fun findAll() {
-        val response = apiGet("/catalogs", "text/turtle")
+        val response = apiGet(port, "/catalogs", "text/turtle")
         assumeTrue(HttpStatus.OK.value() == response["status"])
 
         val expected = responseReader.parseFile("all_catalogs.ttl", "TURTLE")
