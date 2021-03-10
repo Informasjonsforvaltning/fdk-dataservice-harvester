@@ -36,9 +36,9 @@ class UpdateTest: ApiTestContext() {
 
     @Test
     fun noChangesWhenRunOnCorrectMeta() {
-        val all = apiGet(port, "/events", "text/turtle")
-        val catalog = apiGet(port, "/events/$CATALOG_ID_0", "text/turtle")
-        val dataservice = apiGet(port, "/events/$DATASERVICE_ID_0", "text/turtle")
+        val all = apiGet(port, "/catalogs", "text/turtle")
+        val catalog = apiGet(port, "/catalogs/$CATALOG_ID_0", "text/turtle")
+        val dataservice = apiGet(port, "/dataservices/$DATASERVICE_ID_0", "text/turtle")
 
         val response = authorizedPost(port, "/update/meta", JwtToken(Access.ROOT).toString(), mapOf(Pair("X-API-KEY", "fdk-api-key")))
 
@@ -48,9 +48,9 @@ class UpdateTest: ApiTestContext() {
         val expectedCatalog = responseReader.parseResponse(catalog["body"] as String, "TURTLE")
         val expectedInfoModel = responseReader.parseResponse(dataservice["body"] as String, "TURTLE")
 
-        val allAfterUpdate = apiGet(port, "/events", "text/turtle")
-        val catalogAfterUpdate = apiGet(port, "/events/$CATALOG_ID_0", "text/turtle")
-        val infoModelAfterUpdate = apiGet(port, "/events/$DATASERVICE_ID_0", "text/turtle")
+        val allAfterUpdate = apiGet(port, "/catalogs", "text/turtle")
+        val catalogAfterUpdate = apiGet(port, "/catalogs/$CATALOG_ID_0", "text/turtle")
+        val infoModelAfterUpdate = apiGet(port, "/dataservices/$DATASERVICE_ID_0", "text/turtle")
 
         val actualAll = responseReader.parseResponse(allAfterUpdate["body"] as String, "TURTLE")
         val actualCatalog = responseReader.parseResponse(catalogAfterUpdate["body"] as String, "TURTLE")

@@ -36,13 +36,8 @@ class HarvesterTest {
     fun harvestDataSourceSavedWhenDBIsEmpty() {
         whenever(adapter.getDataServices(TEST_HARVEST_SOURCE))
             .thenReturn(responseReader.readFile("harvest_response.ttl"))
-        whenever(dataServiceRepository.findAllByIsPartOf("http://localhost:5000/catalogs/$CATALOG_ID_0"))
-            .thenReturn(listOf(DATA_SERVICE_DBO_0))
         whenever(dataServiceRepository.findById(DATASERVICE_ID_0))
             .thenReturn(Optional.of(DATA_SERVICE_DBO_0))
-
-        whenever(turtleService.getDataService(DATASERVICE_ID_0, true))
-            .thenReturn(responseReader.readFile("dataservice_0.ttl"))
 
         whenever(valuesMock.catalogUri)
             .thenReturn("http://localhost:5000/catalogs")
@@ -132,10 +127,7 @@ class HarvesterTest {
         whenever(catalogRepository.findById(CATALOG_DBO_0.uri))
             .thenReturn(Optional.of(CATALOG_DBO_0))
         whenever(dataServiceRepository.findById(DATA_SERVICE_DBO_0.uri))
-            .thenReturn(Optional.of(DATA_SERVICE_DBO_0.copy(modified = NEW_TEST_HARVEST_DATE.timeInMillis)))
-
-        whenever(turtleService.getDataService(DATASERVICE_ID_0, true))
-            .thenReturn(responseReader.readFile("dataservice_0.ttl"))
+            .thenReturn(Optional.of(DATA_SERVICE_DBO_0))
 
         whenever(turtleService.getCatalog(CATALOG_ID_0, false))
             .thenReturn(responseReader.readFile("harvest_response_catalog_diff.ttl"))
