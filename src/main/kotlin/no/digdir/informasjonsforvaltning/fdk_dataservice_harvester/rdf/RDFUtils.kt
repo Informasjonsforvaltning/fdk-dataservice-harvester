@@ -57,11 +57,10 @@ fun Statement.isResourceProperty(): Boolean =
         false
     }
 
-fun Model.addDefaultPrefixes(): Model {
+fun Model.addMetaPrefixes(): Model {
     setNsPrefix("dct", DCTerms.NS)
     setNsPrefix("dcat", DCAT.NS)
     setNsPrefix("foaf", FOAF.getURI())
-    setNsPrefix("vcard", VCARD4.NS)
     setNsPrefix("xsd", XSD.NS)
 
     return this

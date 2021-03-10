@@ -4,7 +4,7 @@ import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.Fusek
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration.ApplicationProperties
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.CatalogMeta
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.DataServiceMeta
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.addDefaultPrefixes
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.addMetaPrefixes
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.calendarFromTimestamp
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.containsTriple
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.parseRDFResponse
@@ -84,7 +84,7 @@ class UpdateService(
         val fdkUri = "${applicationProperties.catalogUri}/$fdkId"
 
         val metaModel = ModelFactory.createDefaultModel()
-        metaModel.addDefaultPrefixes()
+        metaModel.addMetaPrefixes()
 
         metaModel.createResource(fdkUri)
             .addProperty(RDF.type, DCAT.CatalogRecord)
@@ -100,7 +100,7 @@ class UpdateService(
         val fdkUri = "${applicationProperties.dataserviceUri}/$fdkId"
 
         val metaModel = ModelFactory.createDefaultModel()
-        metaModel.addDefaultPrefixes()
+        metaModel.addMetaPrefixes()
 
         metaModel.createResource(fdkUri)
             .addProperty(RDF.type, DCAT.CatalogRecord)
