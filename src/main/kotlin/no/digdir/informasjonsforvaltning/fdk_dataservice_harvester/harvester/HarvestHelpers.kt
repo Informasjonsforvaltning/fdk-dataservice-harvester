@@ -1,5 +1,6 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.harvester
 
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.containsTriple
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.isResourceProperty
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.parseRDFResponse
 import org.apache.jena.rdf.model.Model
@@ -32,7 +33,7 @@ fun splitCatalogsFromModel(harvested: Model): List<CatalogAndDataServiceModels> 
                 .filter { it.isResourceProperty() }
                 .forEach {
                     if (it.predicate != DCAT.service) {
-                        catalogModelWithoutServices = catalogModelWithoutServices.addNonDataServiceResourceToModel(it.resource)
+                        catalogModelWithoutServices = catalogModelWithoutServices.recursiveAddNonDataServiceResource(it.resource, 5)
                     }
                 }
 
@@ -54,29 +55,38 @@ fun Resource.extractDataService(): DataServiceModel {
     listProperties().toList()
         .filter { it.isResourceProperty() }
         .forEach {
-            serviceModel = serviceModel.addNonDataServiceResourceToModel(it.resource)
+            serviceModel = serviceModel.recursiveAddNonDataServiceResource(it.resource, 5)
         }
 
     return DataServiceModel(resource = this, harvestedService = serviceModel)
 }
 
-private fun Model.addNonDataServiceResourceToModel(resource: Resource): Model {
+private fun Model.recursiveAddNonDataServiceResource(resource: Resource, recursiveCount: Int): Model {
+    val newCount = recursiveCount - 1
+
+    if (resourceShouldBeAdded(resource)) {
+        add(resource.listProperties())
+
+        if (newCount > 0) {
+            resource.listProperties().toList()
+                .filter { it.isResourceProperty() }
+                .forEach { recursiveAddNonDataServiceResource(it.resource, newCount) }
+        }
+    }
+
+    return this
+}
+
+private fun Model.resourceShouldBeAdded(resource: Resource): Boolean {
     val types = resource.listProperties(RDF.type)
         .toList()
         .map { it.`object` }
 
-    if (!types.contains(DCAT.DataService)) {
-
-        add(resource.listProperties())
-
-        resource.listProperties().toList()
-            .filter { it.isResourceProperty() }
-            .forEach {
-                add(it.resource.listProperties())
-            }
+    return when {
+        types.contains(DCAT.DataService) -> false
+        containsTriple("<${resource.uri}>", "a", "?o") -> false
+        else -> true
     }
-
-    return this
 }
 
 data class CatalogAndDataServiceModels (
