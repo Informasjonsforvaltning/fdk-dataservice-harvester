@@ -1,6 +1,5 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service
 
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.FusekiAdapter
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration.ApplicationProperties
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.CatalogMeta
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.DataServiceMeta
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Service
 @Service
 class UpdateService(
     private val applicationProperties: ApplicationProperties,
-    private val fusekiAdapter: FusekiAdapter,
     private val catalogRepository: CatalogRepository,
     private val dataServiceRepository: DataServiceRepository,
     private val turtleService: TurtleService
@@ -38,7 +36,6 @@ class UpdateService(
                     ?.run { catalogUnion = catalogUnion.union(this) }
             }
 
-        fusekiAdapter.storeUnionModel(catalogUnion)
         turtleService.saveAsCatalogUnion(catalogUnion)
     }
 

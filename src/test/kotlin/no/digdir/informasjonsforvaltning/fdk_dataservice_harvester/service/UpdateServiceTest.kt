@@ -1,7 +1,6 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service
 
 import com.nhaarman.mockitokotlin2.*
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.FusekiAdapter
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration.ApplicationProperties
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.CatalogRepository
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.DataServiceRepository
@@ -18,9 +17,8 @@ class UpdateServiceTest {
     private val catalogRepository: CatalogRepository = mock()
     private val dataServiceRepository: DataServiceRepository = mock()
     private val valuesMock: ApplicationProperties = mock()
-    private val fusekiAdapter: FusekiAdapter = mock()
     private val turtleService: TurtleService = mock()
-    private val updateService = UpdateService(valuesMock, fusekiAdapter, catalogRepository, dataServiceRepository, turtleService)
+    private val updateService = UpdateService(valuesMock, catalogRepository, dataServiceRepository, turtleService)
 
     private val responseReader = TestResponseReader()
 
@@ -87,11 +85,6 @@ class UpdateServiceTest {
             updateService.updateUnionModels()
 
             val catalogUnion = responseReader.parseFile("all_catalogs.ttl", "TURTLE")
-
-            argumentCaptor<Model>().apply {
-                verify(fusekiAdapter, times(1)).storeUnionModel(capture())
-                assertTrue(firstValue.isIsomorphicWith(catalogUnion))
-            }
 
             argumentCaptor<Model>().apply {
                 verify(turtleService, times(1)).saveAsCatalogUnion(capture())
