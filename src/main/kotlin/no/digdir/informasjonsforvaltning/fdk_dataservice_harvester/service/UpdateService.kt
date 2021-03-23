@@ -28,15 +28,21 @@ class UpdateService(
 
     fun updateUnionModels() {
         var catalogUnion = ModelFactory.createDefaultModel()
+        var noRecordsUnion = ModelFactory.createDefaultModel()
 
         catalogRepository.findAll()
             .forEach {
                 turtleService.getCatalog(it.fdkId, withRecords = true)
                     ?.let { turtle -> parseRDFResponse(turtle, Lang.TURTLE, null) }
                     ?.run { catalogUnion = catalogUnion.union(this) }
+
+                turtleService.getCatalog(it.fdkId, withRecords = false)
+                    ?.let { turtle -> parseRDFResponse(turtle, Lang.TURTLE, null) }
+                    ?.run { noRecordsUnion = noRecordsUnion.union(this) }
             }
 
-        turtleService.saveAsCatalogUnion(catalogUnion)
+        turtleService.saveAsCatalogUnion(catalogUnion, true)
+        turtleService.saveAsCatalogUnion(noRecordsUnion, false)
     }
 
     fun updateMetaData() {

@@ -21,11 +21,11 @@ private const val DATASERVICE_ID_PREFIX = "dataservice-"
 @Service
 class TurtleService(private val turtleRepository: TurtleRepository) {
 
-    fun saveAsCatalogUnion(model: Model): TurtleDBO =
-        turtleRepository.save(model.createCatalogTurtleDBO(UNION_ID, true))
+    fun saveAsCatalogUnion(model: Model, withRecords: Boolean): TurtleDBO =
+        turtleRepository.save(model.createCatalogTurtleDBO(UNION_ID, withRecords))
 
-    fun getCatalogUnion(): String? =
-        turtleRepository.findByIdOrNull(catalogTurtleID(UNION_ID, true))
+    fun getCatalogUnion(withRecords: Boolean): String? =
+        turtleRepository.findByIdOrNull(catalogTurtleID(UNION_ID, withRecords))
             ?.turtle
             ?.let { ungzip(it) }
 

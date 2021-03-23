@@ -23,14 +23,15 @@ open class DataServicesController(private val dataServiceService: DataServiceSer
     @GetMapping("/{id}")
     fun getDataServiceById(
         @RequestHeader(HttpHeaders.ACCEPT) accept: String?,
-        @PathVariable id: String
+        @PathVariable id: String,
+        @RequestParam(value = "catalogrecords", required = false) catalogRecords: Boolean = false
     ): ResponseEntity<String> {
         LOGGER.info("get DataService with id $id")
         val returnType = jenaTypeFromAcceptHeader(accept)
 
         return if (returnType == Lang.RDFNULL) ResponseEntity(HttpStatus.NOT_ACCEPTABLE)
         else {
-            dataServiceService.getDataServiceById(id, returnType ?: Lang.TURTLE)
+            dataServiceService.getDataServiceById(id, returnType ?: Lang.TURTLE, catalogRecords)
                 ?.let { ResponseEntity(it, HttpStatus.OK) }
                 ?: ResponseEntity(HttpStatus.NOT_FOUND)
         }

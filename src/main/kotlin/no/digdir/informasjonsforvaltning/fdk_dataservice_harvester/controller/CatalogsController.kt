@@ -23,25 +23,29 @@ open class CatalogsController(private val dataServiceService: DataServiceService
     @GetMapping("/{id}")
     fun getCatalogById(
         @RequestHeader(HttpHeaders.ACCEPT) accept: String?,
-        @PathVariable id: String
+        @PathVariable id: String,
+        @RequestParam(value = "catalogrecords", required = false) catalogRecords: Boolean = false
     ): ResponseEntity<String> {
         LOGGER.info("get DataService catalog with id $id")
         val returnType = jenaTypeFromAcceptHeader(accept)
 
         return if (returnType == Lang.RDFNULL) ResponseEntity(HttpStatus.NOT_ACCEPTABLE)
         else {
-            dataServiceService.getCatalogById(id, returnType ?: Lang.TURTLE)
+            dataServiceService.getCatalogById(id, returnType ?: Lang.TURTLE, catalogRecords)
                 ?.let { ResponseEntity(it, HttpStatus.OK) }
                 ?: ResponseEntity(HttpStatus.NOT_FOUND)
         }
     }
 
     @GetMapping
-    fun getCatalogs(@RequestHeader(HttpHeaders.ACCEPT) accept: String?): ResponseEntity<String> {
+    fun getCatalogs(
+        @RequestHeader(HttpHeaders.ACCEPT) accept: String?,
+        @RequestParam(value = "catalogrecords", required = false) catalogRecords: Boolean = false
+    ): ResponseEntity<String> {
         LOGGER.info("get all DataService catalogs")
         val returnType = jenaTypeFromAcceptHeader(accept)
 
         return if (returnType == Lang.RDFNULL) ResponseEntity(HttpStatus.NOT_ACCEPTABLE)
-        else ResponseEntity(dataServiceService.getAll(returnType ?: Lang.TURTLE), HttpStatus.OK)
+        else ResponseEntity(dataServiceService.getAll(returnType ?: Lang.TURTLE, catalogRecords), HttpStatus.OK)
     }
 }
