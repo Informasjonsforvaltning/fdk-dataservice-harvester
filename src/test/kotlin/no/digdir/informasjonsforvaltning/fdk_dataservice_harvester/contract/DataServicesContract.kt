@@ -28,8 +28,19 @@ class DataServicesContract : ApiTestContext() {
         val response = apiGet(port, "/dataservices/$DATASERVICE_ID_0", "application/rdf+json")
         assumeTrue(HttpStatus.OK.value() == response["status"])
 
-        val expected = responseReader.parseFile("dataservice_0.ttl", "TURTLE")
+        val expected = responseReader.parseFile("parsed_dataservice_0.ttl", "TURTLE")
         val responseModel = responseReader.parseResponse(response["body"] as String, "RDF/JSON")
+
+        assertTrue(expected.isIsomorphicWith(responseModel))
+    }
+
+    @Test
+    fun findSpecificWithRecords() {
+        val response = apiGet(port, "/dataservices/$DATASERVICE_ID_0?catalogrecords=true", "application/rdf+xml")
+        assumeTrue(HttpStatus.OK.value() == response["status"])
+
+        val expected = responseReader.parseFile("dataservice_0.ttl", "TURTLE")
+        val responseModel = responseReader.parseResponse(response["body"] as String, "RDFXML")
 
         assertTrue(expected.isIsomorphicWith(responseModel))
     }

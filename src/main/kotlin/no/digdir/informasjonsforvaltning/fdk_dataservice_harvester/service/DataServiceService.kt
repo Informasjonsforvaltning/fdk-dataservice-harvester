@@ -10,23 +10,23 @@ class DataServiceService(
     private val turtleService: TurtleService,
 ) {
 
-    fun getAll(returnType: Lang): String =
-        turtleService.getCatalogUnion()
+    fun getAll(returnType: Lang, withRecords: Boolean): String =
+        turtleService.getCatalogUnion(withRecords)
             ?.let {
                 if (returnType == Lang.TURTLE) it
                 else parseRDFResponse(it, Lang.TURTLE, null)?.createRDFResponse(returnType)
             }
             ?: ModelFactory.createDefaultModel().createRDFResponse(returnType)
 
-    fun getDataServiceById(id: String, returnType: Lang): String? =
-        turtleService.getDataService(id, true)
+    fun getDataServiceById(id: String, returnType: Lang, withRecords: Boolean): String? =
+        turtleService.getDataService(id, withRecords)
             ?.let {
                 if (returnType == Lang.TURTLE) it
                 else parseRDFResponse(it, Lang.TURTLE, null)?.createRDFResponse(returnType)
             }
 
-    fun getCatalogById(id: String, returnType: Lang): String? =
-        turtleService.getCatalog(id, true)
+    fun getCatalogById(id: String, returnType: Lang, withRecords: Boolean): String? =
+        turtleService.getCatalog(id, withRecords)
             ?.let {
                 if (returnType == Lang.TURTLE) it
                 else parseRDFResponse(it, Lang.TURTLE, null)?.createRDFResponse(returnType)
