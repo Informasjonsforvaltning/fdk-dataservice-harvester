@@ -6,8 +6,6 @@ logging:
   level.org.apache.jena.riot: ERROR
 server:
   port: 8080
-fuseki:
-  unionGraphUri: ${FDK_SPARQL_SERVICE_URI:http://fdk-sparql-service:8080}/fuseki/harvested?graph=https://dataservices.fellesdatakatalog.digdir.no
 application:
   dataserviceUri: ${FDK_DATASERVICE_HARVESTER_URI:https://dataservices.staging.fellesdatakatalog.digdir.no}/dataservices
   catalogUri: ${FDK_DATASERVICE_HARVESTER_URI:https://dataservices.staging.fellesdatakatalog.digdir.no}/catalogs
@@ -32,10 +30,6 @@ spring:
     username: admin
     password: admin
   data.mongodb.uri: mongodb://admin:admin@localhost:27017/dataServiceHarvester?authSource=admin&authMechanism=SCRAM-SHA-1
-fuseki:
-  dataserviceUri: http://localhost:3030/fuseki/dataservice-harvest
-  metaUri: http://localhost:3030/fuseki/dataservice-meta
-  unionGraphUri: http://localhost:3030/fuseki/harvested?graph=https://dataservices.fellesdatakatalog.digdir.no
 application:
   dataserviceUri: https://dataservices.staging.fellesdatakatalog.digdir.no/dataservices
   catalogUri: https://dataservices.staging.fellesdatakatalog.digdir.no/catalogs
@@ -56,5 +50,4 @@ application:
   dataserviceUri: http://localhost:5000/dataservices
   catalogUri: http://localhost:5000/catalogs
   harvestAdminRootUrl: http://localhost:5000/api
-fuseki.unionGraphUri: http://localhost:5000/fuseki/harvested?graph=https://dataservices.fellesdatakatalog.digdir.no
 server.port: 5555
