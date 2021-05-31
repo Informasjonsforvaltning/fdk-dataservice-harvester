@@ -16,7 +16,7 @@ tags:
   - name: dcat-ap-no-dataservices
     description: DCAT-AP-NO dataservices
 servers:
-  - url: 'https://dataservice-catalog.fellesdatakatalog.digdir.no/'
+  - url: 'https://dataservices.fellesdatakatalog.digdir.no/'
     description: Produksjonsmiljø
 paths:
   /catalogs:
