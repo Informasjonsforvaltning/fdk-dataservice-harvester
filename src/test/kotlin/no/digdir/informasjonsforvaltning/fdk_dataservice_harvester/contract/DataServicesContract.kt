@@ -4,6 +4,7 @@ import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.ApiTest
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.DATASERVICE_ID_0
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.TestResponseReader
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.apiGet
+import org.apache.jena.riot.Lang
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.Tag
@@ -36,11 +37,11 @@ class DataServicesContract : ApiTestContext() {
 
     @Test
     fun findSpecificWithRecords() {
-        val response = apiGet(port, "/dataservices/$DATASERVICE_ID_0?catalogrecords=true", "application/rdf+xml")
+        val response = apiGet(port, "/dataservices/$DATASERVICE_ID_0?catalogrecords=true", "application/n-quads")
         assumeTrue(HttpStatus.OK.value() == response["status"])
 
         val expected = responseReader.parseFile("dataservice_0.ttl", "TURTLE")
-        val responseModel = responseReader.parseResponse(response["body"] as String, "RDFXML")
+        val responseModel = responseReader.parseResponse(response["body"] as String, Lang.NQUADS.name)
 
         assertTrue(expected.isIsomorphicWith(responseModel))
     }
