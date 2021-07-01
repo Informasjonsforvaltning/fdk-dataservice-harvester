@@ -100,3 +100,5 @@ data class DataServiceModel (
     val resource: Resource,
     val harvestedService: Model
 )
+
+class HarvestException(url: String) : Exception("Harvest failed for $url")
