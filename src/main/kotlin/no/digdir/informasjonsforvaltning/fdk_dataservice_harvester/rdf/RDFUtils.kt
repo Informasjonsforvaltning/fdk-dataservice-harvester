@@ -89,6 +89,8 @@ fun calendarFromTimestamp(timestamp: Long): Calendar {
 fun Model.containsTriple(subj: String, pred: String, obj: String): Boolean {
     val askQuery = "ASK { $subj $pred $obj }"
 
-    val query = QueryFactory.create(askQuery)
-    return QueryExecutionFactory.create(query, this).execAsk()
+    return try {
+        val query = QueryFactory.create(askQuery)
+        return QueryExecutionFactory.create(query, this).execAsk()
+    } catch (ex: Exception) { false }
 }
