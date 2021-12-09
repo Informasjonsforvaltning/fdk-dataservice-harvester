@@ -61,7 +61,7 @@ class HarvesterTest {
 
         argumentCaptor<Model, String, Boolean>().apply {
             verify(turtleService, times(1)).saveAsCatalog(first.capture(), second.capture(), third.capture())
-            assertTrue(first.allValues[0].isIsomorphicWith(responseReader.parseFile("harvest_response.ttl", "TURTLE")))
+            assertTrue(first.allValues[0].isIsomorphicWith(responseReader.parseFile("catalog_0_no_records.ttl", "TURTLE")))
             assertEquals(listOf(CATALOG_ID_0), second.allValues)
             Assertions.assertEquals(listOf(false), third.allValues)
         }
@@ -153,7 +153,7 @@ class HarvesterTest {
 
         argumentCaptor<Model, String, Boolean>().apply {
             verify(turtleService, times(1)).saveAsCatalog(first.capture(), second.capture(), third.capture())
-            assertTrue(first.firstValue.isIsomorphicWith(responseReader.parseFile("harvest_response.ttl", "TURTLE")))
+            assertTrue(first.firstValue.isIsomorphicWith(responseReader.parseFile("catalog_0_no_records.ttl", "TURTLE")))
             assertEquals(listOf(CATALOG_ID_0), second.allValues)
             Assertions.assertEquals(listOf(false), third.allValues)
         }
