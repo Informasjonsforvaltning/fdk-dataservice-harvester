@@ -34,7 +34,7 @@ class UpdateServiceTest {
             whenever(dataServiceRepository.findAllByIsPartOf("http://localhost:5000/catalogs/$CATALOG_ID_0"))
                 .thenReturn(listOf(DATA_SERVICE_DBO_0, DATA_SERVICE_DBO_1))
             whenever(turtleService.getCatalog(CATALOG_ID_0, false))
-                .thenReturn(responseReader.readFile("harvest_response.ttl"))
+                .thenReturn(responseReader.readFile("catalog_0_no_records.ttl"))
             whenever(turtleService.getDataService(DATASERVICE_ID_0, false))
                 .thenReturn(responseReader.readFile("parsed_dataservice_0.ttl"))
             whenever(turtleService.getDataService(DATASERVICE_ID_1, false))

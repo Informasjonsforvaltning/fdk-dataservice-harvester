@@ -16,4 +16,10 @@
         a              dcat:Catalog ;
         dct:publisher  <https://organization-catalogue.fellesdatakatalog.brreg.no/organizations/123456789> ;
         dct:title      "Dataservicekatalog for Testdirektoratet"@nb ;
-        dcat:service   <https://testdirektoratet.no/model/dataservice/0> .
+        dcat:service   <https://testdirektoratet.no/model/dataservice/0> ,
+                       [ a          dcat:DataService ;
+                         dct:title  "Is filtered"@en ] .
+
+[   a           dcat:Catalog ;
+    dct:title   "Is filtered"@en
+] .

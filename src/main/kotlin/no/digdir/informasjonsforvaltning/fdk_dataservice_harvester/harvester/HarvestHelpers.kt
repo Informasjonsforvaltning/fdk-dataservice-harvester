@@ -1,14 +1,19 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.harvester
 
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.Application
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.containsTriple
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.isResourceProperty
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.parseRDFResponse
 import org.apache.jena.rdf.model.Model
+import org.apache.jena.rdf.model.ModelFactory
 import org.apache.jena.rdf.model.Resource
+import org.apache.jena.rdf.model.Statement
 import org.apache.jena.riot.Lang
 import org.apache.jena.vocabulary.DCAT
 import org.apache.jena.vocabulary.RDF
+import org.slf4j.LoggerFactory
 
+private val LOGGER = LoggerFactory.getLogger(Application::class.java)
 
 fun CatalogAndDataServiceModels.harvestDiff(dbNoRecords: String?): Boolean =
     if (dbNoRecords == null) true
@@ -18,24 +23,23 @@ fun DataServiceModel.harvestDiff(dbNoRecords: String?): Boolean =
     if (dbNoRecords == null) true
     else !harvestedService.isIsomorphicWith(parseRDFResponse(dbNoRecords, Lang.TURTLE, null))
 
-fun splitCatalogsFromModel(harvested: Model): List<CatalogAndDataServiceModels> =
+fun splitCatalogsFromModel(harvested: Model, sourceURL: String): List<CatalogAndDataServiceModels> =
     harvested.listResourcesWithProperty(RDF.type, DCAT.Catalog)
         .toList()
+        .filterBlankNodeCatalogsAndServices(sourceURL)
         .map { catalogResource ->
             val catalogServices: List<DataServiceModel> = catalogResource.listProperties(DCAT.service)
                 .toList()
-                .map { dataset -> dataset.resource.extractDataService() }
+                .map { it.resource }
+                .filterBlankNodeCatalogsAndServices(sourceURL)
+                .map { it.extractDataService() }
 
-            var catalogModelWithoutServices = catalogResource.listProperties().toModel()
+            val catalogModelWithoutServices = ModelFactory.createDefaultModel()
             catalogModelWithoutServices.setNsPrefixes(harvested.nsPrefixMap)
 
-            catalogResource.listProperties().toList()
-                .filter { it.isResourceProperty() }
-                .forEach {
-                    if (it.predicate != DCAT.service) {
-                        catalogModelWithoutServices = catalogModelWithoutServices.recursiveAddNonDataServiceResource(it.resource, 5)
-                    }
-                }
+            catalogResource.listProperties()
+                .toList()
+                .forEach { catalogModelWithoutServices.addCatalogProperties(it) }
 
             var catalogModel = catalogModelWithoutServices
             catalogServices.forEach { catalogModel = catalogModel.union(it.harvestedService) }
@@ -47,6 +51,27 @@ fun splitCatalogsFromModel(harvested: Model): List<CatalogAndDataServiceModels> 
                 services = catalogServices
             )
         }
+
+private fun List<Resource>.filterBlankNodeCatalogsAndServices(sourceURL: String): List<Resource> =
+    filter {
+        if (it.isURIResource) true
+        else {
+            LOGGER.error(
+                "Failed harvest of catalog or data service for $sourceURL, unable to harvest blank node catalogs and data services",
+                Exception("unable to harvest blank node catalogs and data services")
+            )
+            false
+        }
+    }
+
+private fun Model.addCatalogProperties(property: Statement): Model =
+    when {
+        property.predicate != DCAT.service && property.isResourceProperty() ->
+            add(property).recursiveAddNonDataServiceResource(property.resource, 5)
+        property.predicate != DCAT.service -> add(property)
+        property.isResourceProperty() && property.resource.isURIResource -> add(property)
+        else -> this
+    }
 
 fun Resource.extractDataService(): DataServiceModel {
     var serviceModel = listProperties().toModel()
@@ -84,6 +109,7 @@ private fun Model.resourceShouldBeAdded(resource: Resource): Boolean {
 
     return when {
         types.contains(DCAT.DataService) -> false
+        !resource.isURIResource -> true
         containsTriple("<${resource.uri}>", "a", "?o") -> false
         else -> true
     }
