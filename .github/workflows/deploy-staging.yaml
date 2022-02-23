@@ -17,8 +17,8 @@ jobs:
       repo: ${{ github.repository }}
       actor: ${{ github.actor }}
       java_version: '15'
-      environment: 'staging'
-      cluster: 'digdir-fdk-dev'
+      environment: staging
+      cluster: digdir-fdk-dev
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GCP_SA_DIGDIR_FDK_GCR_KEY: ${{ secrets.GCP_SA_DIGDIR_FDK_GCR_KEY }}

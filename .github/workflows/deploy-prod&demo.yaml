@@ -1,4 +1,4 @@
-name: Deploy to production
+name: Deploy to production & demo
 
 on:
   push:
@@ -16,8 +16,8 @@ jobs:
       repo: ${{ github.repository }}
       actor: ${{ github.actor }}
       java_version: '15'
-      environment: 'prod'
-      cluster: 'digdir-fdk-prod'
+      environment: prod
+      cluster: digdir-fdk-prod
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GCP_SA_DIGDIR_FDK_GCR_KEY: ${{ secrets.GCP_SA_DIGDIR_FDK_GCR_KEY }}
