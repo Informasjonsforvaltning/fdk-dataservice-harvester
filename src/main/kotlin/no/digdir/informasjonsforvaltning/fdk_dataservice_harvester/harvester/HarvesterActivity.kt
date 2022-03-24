@@ -7,6 +7,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.HarvestAdminAdapter
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.HarvestAdminParameters
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rabbit.RabbitMQPublisher
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.UpdateService
 import org.slf4j.LoggerFactory
@@ -31,13 +32,13 @@ class HarvesterActivity(
     @PostConstruct
     private fun fullHarvestOnStartup() = initiateHarvest(null)
 
-    fun initiateHarvest(params: Map<String, String>?) {
-        if (params == null || params.isEmpty()) LOGGER.debug("starting harvest of all data services")
+    fun initiateHarvest(params: HarvestAdminParameters?) {
+        if (params == null) LOGGER.debug("starting harvest of all data services")
         else LOGGER.debug("starting harvest with parameters $params")
 
         val harvest = launch {
             activitySemaphore.withPermit {
-                harvestAdminAdapter.getDataSources(params)
+                harvestAdminAdapter.getDataSources(params ?: HarvestAdminParameters())
                     .filter { it.dataType == "dataservice" }
                     .filter { it.url != null }
                     .forEach {
@@ -57,7 +58,7 @@ class HarvesterActivity(
         harvest.invokeOnCompletion {
             updateService.updateMetaData()
 
-            if (params == null || params.isEmpty()) LOGGER.debug("completed harvest of all data services")
+            if (params == null) LOGGER.debug("completed harvest of all data services")
             else LOGGER.debug("completed harvest with parameters $params")
 
             publisher.send(HARVEST_ALL_ID)

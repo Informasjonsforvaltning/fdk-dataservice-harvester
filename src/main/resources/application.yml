@@ -9,7 +9,7 @@ server:
 application:
   dataserviceUri: ${FDK_DATASERVICE_HARVESTER_URI:https://dataservices.staging.fellesdatakatalog.digdir.no}/dataservices
   catalogUri: ${FDK_DATASERVICE_HARVESTER_URI:https://dataservices.staging.fellesdatakatalog.digdir.no}/catalogs
-  harvestAdminRootUrl: ${HARVEST_ADMIN_ROOT_URL:http://fdk-harvest-admin:8080/api}
+  harvestAdminRootUrl: ${HARVEST_ADMIN_ROOT_URL:http://new-harvest-admin:8080}
 spring:
   security.oauth2.resourceserver.jwt:
     jwk-set-uri: ${SSO_HOST:https://sso.staging.fellesdatakatalog.digdir.no}/auth/realms/fdk/protocol/openid-connect/certs
@@ -46,7 +46,7 @@ spring:
 application:
   dataserviceUri: https://dataservices.staging.fellesdatakatalog.digdir.no/dataservices
   catalogUri: https://dataservices.staging.fellesdatakatalog.digdir.no/catalogs
-  harvestAdminRootUrl: https://admin-api.staging.fellesdatakatalog.digdir.no/api
+  harvestAdminRootUrl: https://new-admin.staging.fellesdatakatalog.digdir.no
 
 ---
 spring:
@@ -62,5 +62,5 @@ spring:
 application:
   dataserviceUri: http://localhost:5000/dataservices
   catalogUri: http://localhost:5000/catalogs
-  harvestAdminRootUrl: http://localhost:5000/api
+  harvestAdminRootUrl: http://localhost:5000
 server.port: 5555
