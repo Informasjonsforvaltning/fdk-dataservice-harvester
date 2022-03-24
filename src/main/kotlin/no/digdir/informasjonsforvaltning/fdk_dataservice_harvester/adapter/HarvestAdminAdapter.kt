@@ -3,6 +3,7 @@ package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration.ApplicationProperties
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.HarvestAdminParameters
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.HarvestDataSource
 import org.slf4j.LoggerFactory
 import org.springframework.http.*
@@ -16,19 +17,28 @@ private val logger = LoggerFactory.getLogger(HarvestAdminAdapter::class.java)
 @Service
 class HarvestAdminAdapter(private val applicationProperties: ApplicationProperties) {
 
-    fun urlWithParameters(params: Map<String, String>?): URL {
-        val paramString: String = if (params != null && params.isNotEmpty()) {
-            val paramList = mutableListOf<String>()
-            params.forEach { paramList.add("${it.key}=${it.value}") }
+    fun urlWithParameters(params: HarvestAdminParameters): URL {
+        val pathString: String = when {
+            !params.dataSourceId.isNullOrBlank() && !params.publisherId.isNullOrBlank() ->
+                "/organizations/${params.publisherId}/datasources/${params.dataSourceId}"
+            params.publisherId.isNullOrBlank() -> "/datasources"
+            else -> "/organizations/${params.publisherId}/datasources"
+        }
 
-            "?${paramList.joinToString("&")}"
-        } else ""
+        val paramString: String = when {
+            !params.dataType.isNullOrBlank() && !params.dataSourceType.isNullOrBlank() -> {
+                "?dataType=${params.dataType}&dataSourceType=${params.dataSourceType}"
+            }
+            !params.dataType.isNullOrBlank() -> "?dataType=${params.dataType}"
+            !params.dataSourceType.isNullOrBlank() -> "?dataSourceType=${params.dataSourceType}"
+            else -> ""
+        }
 
-        return URL("${applicationProperties.harvestAdminRootUrl}/datasources$paramString")
+        return URL("${applicationProperties.harvestAdminRootUrl}$pathString$paramString")
     }
 
-    fun getDataSources(queryParams: Map<String, String>?): List<HarvestDataSource> {
-        val url = urlWithParameters(queryParams)
+    fun getDataSources(params: HarvestAdminParameters): List<HarvestDataSource> {
+        val url = urlWithParameters(params)
         try {
             with(url.openConnection() as HttpURLConnection) {
                 setRequestProperty("Accept", MediaType.APPLICATION_JSON.toString())
