@@ -25,6 +25,7 @@ val TEST_HARVEST_DATE: Calendar = Calendar.Builder().setTimeZone(TimeZone.getTim
 val NEW_TEST_HARVEST_DATE: Calendar = Calendar.Builder().setTimeZone(TimeZone.getTimeZone("UTC")).setDate(2020, 6, 12).setTimeOfDay(11, 52, 16, 122).build()
 
 val TEST_HARVEST_SOURCE = HarvestDataSource(
+    id = "harvest",
     url = "$WIREMOCK_TEST_URI/harvest",
     acceptHeaderValue = "text/turtle",
     dataType = "dataservice",
@@ -32,6 +33,7 @@ val TEST_HARVEST_SOURCE = HarvestDataSource(
 )
 
 val ERROR_HARVEST_SOURCE = HarvestDataSource(
+    id = "error-harvest",
     url = "$WIREMOCK_TEST_URI/error-harvest",
     acceptHeaderValue = "text/turtle",
     dataType = "dataservice",
