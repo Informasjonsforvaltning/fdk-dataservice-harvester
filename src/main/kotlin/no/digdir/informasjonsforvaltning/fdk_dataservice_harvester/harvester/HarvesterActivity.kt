@@ -1,9 +1,6 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.harvester
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.HarvestAdminAdapter
@@ -27,7 +24,6 @@ class HarvesterActivity(
 ): CoroutineScope by CoroutineScope(Dispatchers.Default) {
 
     private val activitySemaphore = Semaphore(1)
-    private val harvestSemaphore = Semaphore(5)
 
     @PostConstruct
     private fun fullHarvestOnStartup() = initiateHarvest(null)
@@ -36,32 +32,20 @@ class HarvesterActivity(
         if (params == null) LOGGER.debug("starting harvest of all data services")
         else LOGGER.debug("starting harvest with parameters $params")
 
-        val harvest = launch {
+        launch {
             activitySemaphore.withPermit {
                 harvestAdminAdapter.getDataSources(params ?: HarvestAdminParameters())
                     .filter { it.dataType == "dataservice" }
                     .filter { it.url != null }
-                    .forEach {
-                        launch {
-                            harvestSemaphore.withPermit {
-                                try {
-                                    harvester.harvestDataServiceCatalog(it, Calendar.getInstance())
-                                } catch (exception: Exception) {
-                                    LOGGER.error("Harvest of ${it.url} failed", exception)
-                                }
-                            }
-                        }
-                    }
+                    .map { async { harvester.harvestDataServiceCatalog(it, Calendar.getInstance()) } }
+                    .awaitAll()
+                    .filterNotNull()
+                    .also { updateService.updateMetaData() }
+                    .also {
+                        if (params != null) LOGGER.debug("completed harvest with parameters $params")
+                        else LOGGER.debug("completed harvest of all catalogs") }
+                    .run { publisher.send(this) }
             }
-        }
-
-        harvest.invokeOnCompletion {
-            updateService.updateMetaData()
-
-            if (params == null) LOGGER.debug("completed harvest of all data services")
-            else LOGGER.debug("completed harvest with parameters $params")
-
-            publisher.send(HARVEST_ALL_ID)
         }
     }
 }

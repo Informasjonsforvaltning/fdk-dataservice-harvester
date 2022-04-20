@@ -5,6 +5,8 @@ import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter.DataS
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration.ApplicationProperties
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.CatalogMeta
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.DataServiceMeta
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.FdkIdAndUri
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.HarvestReport
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.CatalogRepository
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository.DataServiceRepository
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.TurtleService
@@ -44,7 +46,7 @@ class HarvesterTest {
         whenever(valuesMock.dataserviceUri)
             .thenReturn("http://localhost:5000/dataservices")
 
-        harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE)
+        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE)
 
         argumentCaptor<Model, String>().apply {
             verify(turtleService, times(1)).saveAsHarvestSource(first.capture(), second.capture())
@@ -82,6 +84,19 @@ class HarvesterTest {
             verify(dataServiceRepository, times(1)).save(capture())
             assertEquals(DATA_SERVICE_DBO_0, firstValue)
         }
+
+        val expectedReport = HarvestReport(
+            id="harvest",
+            url="http://localhost:5000/harvest",
+            dataType="dataservice",
+            harvestError=false,
+            startTime = "2020-03-12 12:52:16 +0100",
+            endTime = report!!.endTime,
+            changedCatalogs = listOf(FdkIdAndUri(fdkId="e422e2a7-287f-349f-876a-dc3541676f21", uri="https://testdirektoratet.no/model/dataservice-catalogs/0")),
+            changedResources = listOf(FdkIdAndUri(fdkId="ea51178e-f843-3025-98c5-7d02ce887f90", uri="https://testdirektoratet.no/model/dataservice/0"))
+        )
+
+        assertEquals(expectedReport, report)
     }
 
     @Test
@@ -92,7 +107,7 @@ class HarvesterTest {
         whenever(turtleService.getHarvestSource(TEST_HARVEST_SOURCE.url!!))
             .thenReturn(harvested)
 
-        harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE)
+        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE)
 
         argumentCaptor<Model, String>().apply {
             verify(turtleService, times(0)).saveAsHarvestSource(first.capture(), second.capture())
@@ -110,6 +125,17 @@ class HarvesterTest {
         argumentCaptor<DataServiceMeta>().apply {
             verify(dataServiceRepository, times(0)).save(capture())
         }
+
+        val expectedReport = HarvestReport(
+            id="harvest",
+            url="http://localhost:5000/harvest",
+            dataType="dataservice",
+            harvestError=false,
+            startTime = "2020-03-12 12:52:16 +0100",
+            endTime = report!!.endTime
+        )
+
+        assertEquals(expectedReport, report)
     }
 
     @Test
@@ -134,7 +160,7 @@ class HarvesterTest {
         whenever(turtleService.getDataService(DATASERVICE_ID_0, false))
             .thenReturn(responseReader.readFile("parsed_dataservice_0.ttl"))
 
-        harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, NEW_TEST_HARVEST_DATE)
+        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, NEW_TEST_HARVEST_DATE)
 
         argumentCaptor<Model, String>().apply {
             verify(turtleService, times(1)).saveAsHarvestSource(first.capture(), second.capture())
@@ -161,6 +187,18 @@ class HarvesterTest {
         argumentCaptor<Model, String, Boolean>().apply {
             verify(turtleService, times(0)).saveAsDataService(first.capture(), second.capture(), third.capture())
         }
+
+        val expectedReport = HarvestReport(
+            id="harvest",
+            url="http://localhost:5000/harvest",
+            dataType="dataservice",
+            harvestError=false,
+            startTime = "2020-07-12 13:52:16 +0200",
+            endTime = report!!.endTime,
+            changedCatalogs = listOf(FdkIdAndUri(fdkId="e422e2a7-287f-349f-876a-dc3541676f21", uri="https://testdirektoratet.no/model/dataservice-catalogs/0"))
+        )
+
+        assertEquals(expectedReport, report)
     }
 
     @Test
@@ -168,7 +206,7 @@ class HarvesterTest {
         whenever(adapter.getDataServices(TEST_HARVEST_SOURCE))
             .thenReturn(responseReader.readFile("harvest_response_with_errors.ttl"))
 
-        harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE)
+        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE)
 
         argumentCaptor<Model, String>().apply {
             verify(turtleService, times(0)).saveAsHarvestSource(first.capture(), second.capture())
@@ -186,6 +224,18 @@ class HarvesterTest {
         argumentCaptor<DataServiceMeta>().apply {
             verify(dataServiceRepository, times(0)).save(capture())
         }
+
+        val expectedReport = HarvestReport(
+            id="harvest",
+            url="http://localhost:5000/harvest",
+            dataType="dataservice",
+            harvestError=true,
+            startTime = "2020-03-12 12:52:16 +0100",
+            endTime = report!!.endTime,
+            errorMessage="[line: 11, col: 9 ] Keyword 'a' not legal at this point"
+        )
+
+        assertEquals(expectedReport, report)
     }
 
 }

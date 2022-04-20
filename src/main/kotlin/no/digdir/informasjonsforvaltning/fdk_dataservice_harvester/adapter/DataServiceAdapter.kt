@@ -15,7 +15,7 @@ private const val TEN_MINUTES = 600000
 @Service
 class DataServiceAdapter {
 
-    fun getDataServices(source: HarvestDataSource): String? =
+    fun getDataServices(source: HarvestDataSource): String =
         try {
             val connection = URL(source.url).openConnection() as HttpURLConnection
             connection.setRequestProperty("Accept", source.acceptHeaderValue)
@@ -23,8 +23,9 @@ class DataServiceAdapter {
             connection.readTimeout = TEN_MINUTES
 
             if (connection.responseCode != HttpStatus.OK.value()) {
-                LOGGER.error("${source.url} responded with ${connection.responseCode}, harvest will be aborted", HarvestException(source.url ?: "undefined"))
-                null
+                val exception = HarvestException("${source.url} responded with ${connection.responseCode}, harvest will be aborted")
+                LOGGER.error("${source.url} responded with ${connection.responseCode}, harvest will be aborted", )
+                throw exception
             } else {
                 connection
                     .inputStream
@@ -34,7 +35,7 @@ class DataServiceAdapter {
 
         } catch (ex: Exception) {
             LOGGER.error("Error when harvesting from ${source.url}", ex)
-            null
+            throw ex
         }
 
 }
