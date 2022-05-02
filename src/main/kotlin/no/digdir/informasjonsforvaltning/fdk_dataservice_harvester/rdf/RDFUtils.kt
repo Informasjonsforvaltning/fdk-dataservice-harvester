@@ -1,27 +1,20 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf
 
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.Application
 import org.apache.jena.query.QueryExecutionFactory
 import org.apache.jena.query.QueryFactory
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.rdf.model.ModelFactory
-import org.apache.jena.rdf.model.Property
-import org.apache.jena.rdf.model.Resource
 import org.apache.jena.rdf.model.ResourceRequiredException
 import org.apache.jena.rdf.model.Statement
 import org.apache.jena.riot.Lang
 import org.apache.jena.sparql.vocabulary.FOAF
 import org.apache.jena.vocabulary.DCAT
 import org.apache.jena.vocabulary.DCTerms
-import org.apache.jena.vocabulary.RDF
-import org.apache.jena.vocabulary.VCARD4
 import org.apache.jena.vocabulary.XSD
-import org.slf4j.LoggerFactory
 import java.io.ByteArrayOutputStream
 import java.io.StringReader
 import java.util.*
 
-private val logger = LoggerFactory.getLogger(Application::class.java)
 const val BACKUP_BASE_URI = "http://example.com/"
 
 fun jenaTypeFromAcceptHeader(accept: String?): Lang? =
@@ -42,13 +35,7 @@ fun jenaTypeFromAcceptHeader(accept: String?): Lang? =
 
 fun parseRDFResponse(responseBody: String, rdfLanguage: Lang, rdfSource: String?): Model {
     val responseModel = ModelFactory.createDefaultModel()
-
-    try {
-        responseModel.read(StringReader(responseBody), BACKUP_BASE_URI, rdfLanguage.name)
-    } catch (ex: Exception) {
-        logger.error("Parse from $rdfSource has failed", ex)
-        throw ex
-    }
+    responseModel.read(StringReader(responseBody), BACKUP_BASE_URI, rdfLanguage.name)
 
     return responseModel
 }
