@@ -46,7 +46,7 @@ spring:
 application:
   dataserviceUri: https://dataservices.staging.fellesdatakatalog.digdir.no/dataservices
   catalogUri: https://dataservices.staging.fellesdatakatalog.digdir.no/catalogs
-  harvestAdminRootUrl: https://new-admin.staging.fellesdatakatalog.digdir.no
+  harvestAdminRootUrl: https://admin-api.staging.fellesdatakatalog.digdir.no
 
 ---
 spring:

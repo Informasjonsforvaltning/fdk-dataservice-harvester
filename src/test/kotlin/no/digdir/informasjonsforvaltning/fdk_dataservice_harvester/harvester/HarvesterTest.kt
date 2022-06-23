@@ -46,7 +46,7 @@ class HarvesterTest {
         whenever(valuesMock.dataserviceUri)
             .thenReturn("http://localhost:5000/dataservices")
 
-        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE)
+        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE, false)
 
         argumentCaptor<Model, String>().apply {
             verify(turtleService, times(1)).saveAsHarvestSource(first.capture(), second.capture())
@@ -107,24 +107,13 @@ class HarvesterTest {
         whenever(turtleService.getHarvestSource(TEST_HARVEST_SOURCE.url!!))
             .thenReturn(harvested)
 
-        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE)
+        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE, false)
 
-        argumentCaptor<Model, String>().apply {
-            verify(turtleService, times(0)).saveAsHarvestSource(first.capture(), second.capture())
-        }
-        argumentCaptor<Model, String, Boolean>().apply {
-            verify(turtleService, times(0)).saveAsCatalog(first.capture(), second.capture(), third.capture())
-        }
-        argumentCaptor<Model, String, Boolean>().apply {
-            verify(turtleService, times(0)).saveAsDataService(first.capture(), second.capture(), third.capture())
-        }
-
-        argumentCaptor<CatalogMeta>().apply {
-            verify(catalogRepository, times(0)).save(capture())
-        }
-        argumentCaptor<DataServiceMeta>().apply {
-            verify(dataServiceRepository, times(0)).save(capture())
-        }
+        verify(turtleService, times(0)).saveAsHarvestSource(any(), any())
+        verify(turtleService, times(0)).saveAsCatalog(any(), any(), any())
+        verify(turtleService, times(0)).saveAsDataService(any(), any(), any())
+        verify(catalogRepository, times(0)).save(any())
+        verify(dataServiceRepository, times(0)).save(any())
 
         val expectedReport = HarvestReport(
             id="harvest",
@@ -136,6 +125,23 @@ class HarvesterTest {
         )
 
         assertEquals(expectedReport, report)
+    }
+
+    @Test
+    fun noChangesIgnoredWhenForceUpdateIsTrue() {
+        val harvested = responseReader.readFile("harvest_response.ttl")
+        whenever(adapter.getDataServices(TEST_HARVEST_SOURCE))
+            .thenReturn(harvested)
+        whenever(turtleService.getHarvestSource(TEST_HARVEST_SOURCE.url!!))
+            .thenReturn(harvested)
+
+        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE, true)
+
+        verify(turtleService, times(1)).saveAsHarvestSource(any(), any())
+        verify(turtleService, times(1)).saveAsCatalog(any(), any(), any())
+        verify(turtleService, times(1)).saveAsDataService(any(), any(), any())
+        verify(catalogRepository, times(1)).save(any())
+        verify(dataServiceRepository, times(1)).save(any())
     }
 
     @Test
@@ -160,7 +166,7 @@ class HarvesterTest {
         whenever(turtleService.getDataService(DATASERVICE_ID_0, false))
             .thenReturn(responseReader.readFile("parsed_dataservice_0.ttl"))
 
-        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, NEW_TEST_HARVEST_DATE)
+        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, NEW_TEST_HARVEST_DATE, false)
 
         argumentCaptor<Model, String>().apply {
             verify(turtleService, times(1)).saveAsHarvestSource(first.capture(), second.capture())
@@ -206,24 +212,13 @@ class HarvesterTest {
         whenever(adapter.getDataServices(TEST_HARVEST_SOURCE))
             .thenReturn(responseReader.readFile("harvest_response_with_errors.ttl"))
 
-        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE)
+        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE, false)
 
-        argumentCaptor<Model, String>().apply {
-            verify(turtleService, times(0)).saveAsHarvestSource(first.capture(), second.capture())
-        }
-        argumentCaptor<Model, String, Boolean>().apply {
-            verify(turtleService, times(0)).saveAsCatalog(first.capture(), second.capture(), third.capture())
-        }
-        argumentCaptor<Model, String, Boolean>().apply {
-            verify(turtleService, times(0)).saveAsDataService(first.capture(), second.capture(), third.capture())
-        }
-
-        argumentCaptor<CatalogMeta>().apply {
-            verify(catalogRepository, times(0)).save(capture())
-        }
-        argumentCaptor<DataServiceMeta>().apply {
-            verify(dataServiceRepository, times(0)).save(capture())
-        }
+            verify(turtleService, times(0)).saveAsHarvestSource(any(), any())
+            verify(turtleService, times(0)).saveAsCatalog(any(), any(), any())
+            verify(turtleService, times(0)).saveAsDataService(any(), any(), any())
+            verify(catalogRepository, times(0)).save(any())
+            verify(dataServiceRepository, times(0)).save(any())
 
         val expectedReport = HarvestReport(
             id="harvest",
