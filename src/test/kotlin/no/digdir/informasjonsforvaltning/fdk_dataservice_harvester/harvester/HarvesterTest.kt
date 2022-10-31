@@ -233,4 +233,41 @@ class HarvesterTest {
         assertEquals(expectedReport, report)
     }
 
+    @Test
+    fun removedServiceUpdatedAndAddedToReport() {
+        val harvested = responseReader.readFile("harvest_response_service_removed.ttl")
+        whenever(adapter.getDataServices(TEST_HARVEST_SOURCE))
+            .thenReturn(harvested)
+        whenever(turtleService.getHarvestSource(TEST_HARVEST_SOURCE.url!!))
+            .thenReturn(responseReader.readFile("harvest_response.ttl"))
+        whenever(dataServiceRepository.findAllByIsPartOf("http://localhost:5000/catalogs/$CATALOG_ID_0"))
+            .thenReturn(listOf(DATA_SERVICE_DBO_0))
+
+        whenever(valuesMock.catalogUri)
+            .thenReturn("http://localhost:5000/catalogs")
+        whenever(valuesMock.dataserviceUri)
+            .thenReturn("http://localhost:5000/datasets")
+
+        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE, false)
+
+        argumentCaptor<List<DataServiceMeta>>().apply {
+            verify(dataServiceRepository, times(1)).saveAll(capture())
+            assertEquals(listOf(DATA_SERVICE_DBO_0.copy(removed = true)), firstValue)
+        }
+
+        val expectedReport = HarvestReport(
+            id="harvest",
+            url="http://localhost:5000/harvest",
+            dataType="dataservice",
+            harvestError=false,
+            startTime = "2020-03-12 12:52:16 +0100",
+            endTime = report!!.endTime,
+            changedCatalogs = listOf(FdkIdAndUri(fdkId="e422e2a7-287f-349f-876a-dc3541676f21", uri="https://testdirektoratet.no/model/dataservice-catalogs/0")),
+            changedResources = listOf(FdkIdAndUri(fdkId="9aab7e17-d64d-386f-b8f7-6ff0b66a5b62", uri="https://testdirektoratet.no/model/dataservice/new")),
+            removedResources = listOf(FdkIdAndUri(fdkId="ea51178e-f843-3025-98c5-7d02ce887f90", uri="https://testdirektoratet.no/model/dataservice/0"))
+        )
+
+        assertEquals(expectedReport, report)
+    }
+
 }
