@@ -109,6 +109,7 @@ class DataServiceHarvester(
     private fun updateDB(harvested: Model, harvestDate: Calendar, sourceId: String, sourceURL: String, forceUpdate: Boolean): HarvestReport {
         val updatedCatalogs = mutableListOf<CatalogMeta>()
         val updatedServices = mutableListOf<DataServiceMeta>()
+        val removedServices = mutableListOf<DataServiceMeta>()
         splitCatalogsFromModel(harvested, sourceURL)
             .map { Pair(it, catalogRepository.findByIdOrNull(it.resource.uri)) }
             .filter { forceUpdate || it.first.catalogHasChanges(it.second?.fdkId) }
@@ -129,7 +130,15 @@ class DataServiceHarvester(
                     service.updateDBOs(harvestDate, fdkUri, forceUpdate)
                         ?.let { serviceMeta -> updatedServices.add(serviceMeta) }
                 }
+
+                removedServices.addAll(
+                    getDataServicesRemovedThisHarvest(
+                        fdkUri,
+                        it.first.services.map { service -> service.resource.uri }
+                    )
+                )
             }
+        removedServices.map { it.copy(removed = true) }.run { dataServiceRepository.saveAll(this) }
         LOGGER.debug("Harvest of $sourceURL completed")
         return HarvestReport(
             id = sourceId,
@@ -138,7 +147,8 @@ class DataServiceHarvester(
             startTime = harvestDate.formatWithOsloTimeZone(),
             endTime = formatNowWithOsloTimeZone(),
             changedCatalogs = updatedCatalogs.map { FdkIdAndUri(fdkId = it.fdkId, uri = it.uri) },
-            changedResources = updatedServices.map { FdkIdAndUri(fdkId = it.fdkId, uri = it.uri) }
+            changedResources = updatedServices.map { FdkIdAndUri(fdkId = it.fdkId, uri = it.uri) },
+            removedResources = removedServices.map { FdkIdAndUri(fdkId = it.fdkId, uri = it.uri) }
         )
     }
 
@@ -213,4 +223,8 @@ class DataServiceHarvester(
     private fun Calendar.formatWithOsloTimeZone(): String =
         ZonedDateTime.from(toInstant().atZone(ZoneId.of("Europe/Oslo")))
             .format(DateTimeFormatter.ofPattern(dateFormat))
+
+    private fun getDataServicesRemovedThisHarvest(catalog: String, services: List<String>): List<DataServiceMeta> =
+        dataServiceRepository.findAllByIsPartOf(catalog)
+            .filter { !it.removed && !services.contains(it.uri) }
 }
