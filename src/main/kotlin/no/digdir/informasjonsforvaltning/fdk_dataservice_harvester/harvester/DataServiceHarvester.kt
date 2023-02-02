@@ -85,7 +85,7 @@ class DataServiceHarvester(
         }
 
     private fun updateIfChanged(harvested: Model, sourceId: String, sourceURL: String, harvestDate: Calendar, forceUpdate: Boolean): HarvestReport {
-        val dbId = createIdFromUri(sourceURL)
+        val dbId = createIdFromString(sourceURL)
         val dbData = turtleService.getHarvestSource(sourceURL)
             ?.let { parseRDFResponse(it, Lang.TURTLE, null) }
 
@@ -176,7 +176,7 @@ class DataServiceHarvester(
         dbMeta: CatalogMeta?
     ): CatalogMeta {
         val catalogURI = resource.uri
-        val fdkId = dbMeta?.fdkId ?: createIdFromUri(catalogURI)
+        val fdkId = dbMeta?.fdkId ?: createIdFromString(catalogURI)
         val issued = dbMeta?.issued
             ?.let { timestamp -> calendarFromTimestamp(timestamp) }
             ?: harvestDate
@@ -194,7 +194,7 @@ class DataServiceHarvester(
         catalogURI: String,
         dbMeta: DataServiceMeta?
     ): DataServiceMeta {
-        val fdkId = dbMeta?.fdkId ?: createIdFromUri(resource.uri)
+        val fdkId = dbMeta?.fdkId ?: createIdFromString(resource.uri)
         val issued: Calendar = dbMeta?.issued
             ?.let { timestamp -> calendarFromTimestamp(timestamp) }
             ?: harvestDate

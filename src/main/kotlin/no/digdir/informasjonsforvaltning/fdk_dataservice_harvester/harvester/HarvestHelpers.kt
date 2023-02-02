@@ -2,6 +2,8 @@ package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.harvester
 
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.Application
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.containsTriple
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createIdFromString
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.createRDFResponse
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.isResourceProperty
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.parseRDFResponse
 import org.apache.jena.rdf.model.Model
@@ -9,6 +11,7 @@ import org.apache.jena.rdf.model.ModelFactory
 import org.apache.jena.rdf.model.Resource
 import org.apache.jena.rdf.model.Statement
 import org.apache.jena.riot.Lang
+import org.apache.jena.util.ResourceUtils
 import org.apache.jena.vocabulary.DCAT
 import org.apache.jena.vocabulary.RDF
 import org.slf4j.LoggerFactory
@@ -34,12 +37,8 @@ fun splitCatalogsFromModel(harvested: Model, sourceURL: String): List<CatalogAnd
                 .filterBlankNodeCatalogsAndServices(sourceURL)
                 .map { it.extractDataService() }
 
-            val catalogModelWithoutServices = ModelFactory.createDefaultModel()
-            catalogModelWithoutServices.setNsPrefixes(harvested.nsPrefixMap)
-
-            catalogResource.listProperties()
-                .toList()
-                .forEach { catalogModelWithoutServices.addCatalogProperties(it) }
+            val catalogModelWithoutServices = catalogResource.extractCatalogModel()
+                .recursiveBlankNodeSkolem(catalogResource.uri)
 
             var catalogModel = catalogModelWithoutServices
             catalogServices.forEach { catalogModel = catalogModel.union(it.harvestedService) }
@@ -64,6 +63,15 @@ private fun List<Resource>.filterBlankNodeCatalogsAndServices(sourceURL: String)
         }
     }
 
+fun Resource.extractCatalogModel(): Model {
+    val catalogModelWithoutServices = ModelFactory.createDefaultModel()
+    catalogModelWithoutServices.setNsPrefixes(model.nsPrefixMap)
+    listProperties()
+        .toList()
+        .forEach { catalogModelWithoutServices.addCatalogProperties(it) }
+    return catalogModelWithoutServices
+}
+
 private fun Model.addCatalogProperties(property: Statement): Model =
     when {
         property.predicate != DCAT.service && property.isResourceProperty() ->
@@ -83,7 +91,7 @@ fun Resource.extractDataService(): DataServiceModel {
             serviceModel = serviceModel.recursiveAddNonDataServiceResource(it.resource, 5)
         }
 
-    return DataServiceModel(resource = this, harvestedService = serviceModel)
+    return DataServiceModel(resource = this, harvestedService = serviceModel.recursiveBlankNodeSkolem(uri))
 }
 
 private fun Model.recursiveAddNonDataServiceResource(resource: Resource, recursiveCount: Int): Model {
@@ -126,5 +134,35 @@ data class DataServiceModel (
     val resource: Resource,
     val harvestedService: Model
 )
+
+private fun Model.recursiveBlankNodeSkolem(baseURI: String): Model {
+    val anonSubjects = listSubjects().toList().filter { it.isAnon }
+    return if (anonSubjects.isEmpty()) this
+    else {
+        anonSubjects
+            .filter { it.doesNotContainAnon() }
+            .forEach {
+                ResourceUtils.renameResource(it, "$baseURI/.well-known/skolem/${it.createSkolemID()}")
+            }
+        this.recursiveBlankNodeSkolem(baseURI)
+    }
+}
+
+private fun Resource.doesNotContainAnon(): Boolean =
+    listProperties().toList()
+        .filter { it.isResourceProperty() }
+        .map { it.resource }
+        .filter { it.listProperties().toList().size > 0 }
+        .none { it.isAnon }
+
+private fun Resource.createSkolemID(): String =
+    createIdFromString(
+        listProperties().toModel()
+            .createRDFResponse(Lang.N3)
+            .replace("\\s".toRegex(), "")
+            .toCharArray()
+            .sorted()
+            .toString()
+    )
 
 class HarvestException(url: String) : Exception("Harvest failed for $url")
