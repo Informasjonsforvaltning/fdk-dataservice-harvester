@@ -8,8 +8,10 @@
         a                         dcat:DataService ;
         dct:description           "Description of service 0"@nb ;
         dct:title                 "Test Service 0"@nb ;
-        dcat:contactPoint         [ a                          vcard:Organization ;
-                                    vcard:hasOrganizationName  "Testdirektoratet"@nb ;
-                                    vcard:hasURL               <https://testdirektoratet.no>
-                                  ] ;
+        dcat:contactPoint         <https://testdirektoratet.no/model/dataservice/0/.well-known/skolem/1342edac-e739-327d-a48f-23dad61eb032> ;
         dcat:endpointDescription  <https://testdirektoratet.no/openapi/dataservice/0.yaml> .
+
+<https://testdirektoratet.no/model/dataservice/0/.well-known/skolem/1342edac-e739-327d-a48f-23dad61eb032>
+        a                          vcard:Organization ;
+        vcard:hasOrganizationName  "Testdirektoratet"@nb ;
+        vcard:hasURL               <https://testdirektoratet.no> .

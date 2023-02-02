@@ -8,11 +8,13 @@
         a                         dcat:DataService ;
         dct:description           "Description of service 0"@nb ;
         dct:title                 "Test Service 0"@nb ;
-        dcat:contactPoint         [ a                          vcard:Organization ;
-                                    vcard:hasOrganizationName  "Testdirektoratet"@nb ;
-                                    vcard:hasURL               <https://testdirektoratet.no>
-                                  ] ;
+        dcat:contactPoint         <https://testdirektoratet.no/model/dataservice/0/.well-known/skolem/1342edac-e739-327d-a48f-23dad61eb032> ;
         dcat:endpointDescription  <https://testdirektoratet.no/openapi/dataservice/0.yaml> .
+
+<https://testdirektoratet.no/model/dataservice/0/.well-known/skolem/1342edac-e739-327d-a48f-23dad61eb032>
+        a                          vcard:Organization ;
+        vcard:hasOrganizationName  "Testdirektoratet"@nb ;
+        vcard:hasURL               <https://testdirektoratet.no> .
 
 <http://localhost:5000/dataservices/ea51178e-f843-3025-98c5-7d02ce887f90>
         a                  dcat:CatalogRecord ;
@@ -45,11 +47,13 @@
         a                         dcat:DataService ;
         dct:description           "Description of service 1"@nb ;
         dct:title                 "Test Service 1"@nb ;
-        dcat:contactPoint         [ a                          vcard:Organization ;
-                                    vcard:hasOrganizationName  "Testdirektoratet"@nb ;
-                                    vcard:hasURL               <https://testdirektoratet.no>
-                                  ] ;
+        dcat:contactPoint         <https://testdirektoratet.no/model/dataservice/1/.well-known/skolem/1342edac-e739-327d-a48f-23dad61eb032> ;
         dcat:endpointDescription  <https://testdirektoratet.no/openapi/dataservice/1.yaml> .
+
+<https://testdirektoratet.no/model/dataservice/1/.well-known/skolem/1342edac-e739-327d-a48f-23dad61eb032>
+        a                          vcard:Organization ;
+        vcard:hasOrganizationName  "Testdirektoratet"@nb ;
+        vcard:hasURL               <https://testdirektoratet.no> .
 
 <http://localhost:5000/catalogs/e422e2a7-287f-349f-876a-dc3541676f21>
         a                  dcat:CatalogRecord ;

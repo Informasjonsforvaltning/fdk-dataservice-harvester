@@ -15,10 +15,10 @@ class RDFUtils {
 
     @Test
     fun createId() {
-        assertEquals(DATASERVICE_ID_0, createIdFromUri("https://testdirektoratet.no/model/dataservice/0"))
-        assertEquals(DATASERVICE_ID_1, createIdFromUri("https://testdirektoratet.no/model/dataservice/1"))
-        assertEquals(CATALOG_ID_0, createIdFromUri("https://testdirektoratet.no/model/dataservice-catalogs/0"))
-        assertEquals(CATALOG_ID_1, createIdFromUri("https://testdirektoratet.no/model/dataservice-catalogs/1"))
+        assertEquals(DATASERVICE_ID_0, createIdFromString("https://testdirektoratet.no/model/dataservice/0"))
+        assertEquals(DATASERVICE_ID_1, createIdFromString("https://testdirektoratet.no/model/dataservice/1"))
+        assertEquals(CATALOG_ID_0, createIdFromString("https://testdirektoratet.no/model/dataservice-catalogs/0"))
+        assertEquals(CATALOG_ID_1, createIdFromString("https://testdirektoratet.no/model/dataservice-catalogs/1"))
     }
 
 }
