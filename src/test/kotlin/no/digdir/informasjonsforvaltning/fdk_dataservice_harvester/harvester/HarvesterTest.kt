@@ -134,14 +134,22 @@ class HarvesterTest {
             .thenReturn(harvested)
         whenever(turtleService.getHarvestSource(TEST_HARVEST_SOURCE.url!!))
             .thenReturn(harvested)
+        whenever(catalogRepository.findById(CATALOG_DBO_0.uri))
+            .thenReturn(Optional.of(CATALOG_DBO_0))
+        whenever(dataServiceRepository.findById(DATA_SERVICE_DBO_0.uri))
+            .thenReturn(Optional.of(DATA_SERVICE_DBO_0))
+        whenever(turtleService.getCatalog(CATALOG_ID_0, false))
+            .thenReturn(responseReader.readFile("catalog_0_no_records.ttl"))
+        whenever(turtleService.getDataService(DATASERVICE_ID_0, false))
+            .thenReturn(responseReader.readFile("parsed_dataservice_0.ttl"))
 
         val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE, true)
 
         verify(turtleService, times(1)).saveAsHarvestSource(any(), any())
         verify(turtleService, times(1)).saveAsCatalog(any(), any(), any())
         verify(turtleService, times(1)).saveAsDataService(any(), any(), any())
-        verify(catalogRepository, times(1)).save(any())
-        verify(dataServiceRepository, times(1)).save(any())
+        verify(catalogRepository, times(0)).save(any())
+        verify(dataServiceRepository, times(0)).save(any())
     }
 
     @Test
