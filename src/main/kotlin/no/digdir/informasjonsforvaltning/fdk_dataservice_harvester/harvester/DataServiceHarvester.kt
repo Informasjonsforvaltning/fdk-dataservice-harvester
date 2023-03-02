@@ -85,7 +85,6 @@ class DataServiceHarvester(
         }
 
     private fun updateIfChanged(harvested: Model, sourceId: String, sourceURL: String, harvestDate: Calendar, forceUpdate: Boolean): HarvestReport {
-        val dbId = createIdFromString(sourceURL)
         val dbData = turtleService.getHarvestSource(sourceURL)
             ?.let { parseRDFResponse(it, Lang.TURTLE, null) }
 
@@ -99,7 +98,7 @@ class DataServiceHarvester(
                 endTime = formatNowWithOsloTimeZone()
             )
         } else {
-            LOGGER.info("Changes detected, saving data from $sourceURL on graph $dbId, and updating FDK meta data")
+            LOGGER.info("Changes detected, saving data from $sourceURL")
             turtleService.saveAsHarvestSource(harvested, sourceURL)
 
             updateDB(harvested, harvestDate, sourceId, sourceURL, forceUpdate)
@@ -114,17 +113,21 @@ class DataServiceHarvester(
             .map { Pair(it, catalogRepository.findByIdOrNull(it.resource.uri)) }
             .filter { forceUpdate || it.first.catalogHasChanges(it.second?.fdkId) }
             .forEach {
-                val updatedCatalogMeta = it.first.mapToCatalogMeta(harvestDate, it.second)
-                catalogRepository.save(updatedCatalogMeta)
-                updatedCatalogs.add(updatedCatalogMeta)
+                val dbMeta = it.second
+                val catalogMeta = if (dbMeta == null || it.first.catalogHasChanges(dbMeta.fdkId)) {
+                    it.first.mapToCatalogMeta(harvestDate, it.second)
+                        .also { updatedMeta -> catalogRepository.save(updatedMeta) }
+                } else dbMeta
+
+                updatedCatalogs.add(catalogMeta)
 
                 turtleService.saveAsCatalog(
                     model = it.first.harvestedCatalog,
-                    fdkId = updatedCatalogMeta.fdkId,
+                    fdkId = catalogMeta.fdkId,
                     withRecords = false
                 )
 
-                val fdkUri = "${applicationProperties.catalogUri}/${updatedCatalogMeta.fdkId}"
+                val fdkUri = "${applicationProperties.catalogUri}/${catalogMeta.fdkId}"
 
                 it.first.services.forEach { service ->
                     service.updateDBOs(harvestDate, fdkUri, forceUpdate)
@@ -159,8 +162,11 @@ class DataServiceHarvester(
     ): DataServiceMeta? {
         val dbMeta = dataServiceRepository.findByIdOrNull(resource.uri)
         if (forceUpdate || serviceHasChanges(dbMeta?.fdkId)) {
-            val modelMeta = mapToMetaDBO(harvestDate, fdkCatalogURI, dbMeta)
-            dataServiceRepository.save(modelMeta)
+
+            val modelMeta = if (dbMeta == null || serviceHasChanges(dbMeta.fdkId)) {
+                mapToMetaDBO(harvestDate, fdkCatalogURI, dbMeta)
+                    .also { updatedMeta -> dataServiceRepository.save(updatedMeta) }
+            } else dbMeta
 
             turtleService.saveAsDataService(
                 model = harvestedService,
