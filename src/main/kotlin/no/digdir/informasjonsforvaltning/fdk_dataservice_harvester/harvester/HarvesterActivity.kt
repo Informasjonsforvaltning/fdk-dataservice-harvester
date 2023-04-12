@@ -12,9 +12,10 @@ import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.Harvest
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rabbit.RabbitMQPublisher
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.UpdateService
 import org.slf4j.LoggerFactory
+import org.springframework.boot.context.event.ApplicationReadyEvent
+import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
 import java.util.Calendar
-import javax.annotation.PostConstruct
 
 private val LOGGER = LoggerFactory.getLogger(HarvesterActivity::class.java)
 
@@ -28,8 +29,9 @@ class HarvesterActivity(
 
     private val activitySemaphore = Semaphore(1)
 
-    @PostConstruct
-    private fun fullHarvestOnStartup() = initiateHarvest(HarvestAdminParameters(null, null, null), false)
+    @EventListener
+    private fun fullHarvestOnStartup(event: ApplicationReadyEvent) =
+        initiateHarvest(HarvestAdminParameters(null, null, null), false)
 
     fun initiateHarvest(params: HarvestAdminParameters, forceUpdate: Boolean) {
         if (params.harvestAllDataServices()) LOGGER.debug("starting harvest of all data services, force update: $forceUpdate")
