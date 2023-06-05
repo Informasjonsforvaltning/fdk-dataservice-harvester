@@ -12,9 +12,6 @@ jobs:
     uses: Informasjonsforvaltning/workflows/.github/workflows/build-deploy-maven.yaml@main
     with:
       app_name: fdk-dataservice-harvester
-      caller_sha: ${{ github.sha }}
-      repo: ${{ github.repository }}
-      actor: ${{ github.actor }}
       java_version: '17'
       coverage_file_path: ./target/site/jacoco/jacoco.xml
       environment: prod
@@ -31,11 +28,8 @@ jobs:
     uses: Informasjonsforvaltning/workflows/.github/workflows/deploy.yaml@main
     with:
       app_name: fdk-dataservice-harvester
-      caller_sha: ${{ github.sha }}
-      repo: ${{ github.repository }}
-      actor: ${{ github.actor }}
-      environment: 'demo'
-      cluster: 'digdir-fdk-dev'
+      environment: demo
+      cluster: digdir-fdk-dev
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       DIGDIR_FDK_AUTODEPLOY: ${{ secrets.DIGDIR_FDK_DEV_AUTODEPLOY }}
