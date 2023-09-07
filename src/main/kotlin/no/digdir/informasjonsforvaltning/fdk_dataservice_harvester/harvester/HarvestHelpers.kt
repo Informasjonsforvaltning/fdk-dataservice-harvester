@@ -40,12 +40,12 @@ fun splitCatalogsFromModel(harvested: Model, sourceURL: String): List<CatalogAnd
             val catalogModelWithoutServices = catalogResource.extractCatalogModel()
                 .recursiveBlankNodeSkolem(catalogResource.uri)
 
-            var catalogModel = catalogModelWithoutServices
-            catalogServices.forEach { catalogModel = catalogModel.union(it.harvestedService) }
+            val catalogModel = ModelFactory.createDefaultModel()
+            catalogServices.forEach { catalogModel.add(it.harvestedService) }
 
             CatalogAndDataServiceModels(
                 resource = catalogResource,
-                harvestedCatalog = catalogModel,
+                harvestedCatalog = catalogModel.union(catalogModelWithoutServices),
                 harvestedCatalogWithoutDatasets = catalogModelWithoutServices,
                 services = catalogServices
             )
@@ -82,13 +82,13 @@ private fun Model.addCatalogProperties(property: Statement): Model =
     }
 
 fun Resource.extractDataService(): DataServiceModel {
-    var serviceModel = listProperties().toModel()
+    val serviceModel = listProperties().toModel()
     serviceModel.setNsPrefixes(model.nsPrefixMap)
 
     listProperties().toList()
         .filter { it.isResourceProperty() }
         .forEach {
-            serviceModel = serviceModel.recursiveAddNonDataServiceResource(it.resource, 5)
+            serviceModel.recursiveAddNonDataServiceResource(it.resource, 5)
         }
 
     return DataServiceModel(resource = this, harvestedService = serviceModel.recursiveBlankNodeSkolem(uri))
