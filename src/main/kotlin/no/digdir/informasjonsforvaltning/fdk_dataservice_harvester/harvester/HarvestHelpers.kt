@@ -75,7 +75,7 @@ fun Resource.extractCatalogModel(): Model {
 private fun Model.addCatalogProperties(property: Statement): Model =
     when {
         property.predicate != DCAT.service && property.isResourceProperty() ->
-            add(property).recursiveAddNonDataServiceResource(property.resource, 5)
+            add(property).recursiveAddNonDataServiceResource(property.resource)
         property.predicate != DCAT.service -> add(property)
         property.isResourceProperty() && property.resource.isURIResource -> add(property)
         else -> this
@@ -88,23 +88,19 @@ fun Resource.extractDataService(): DataServiceModel {
     listProperties().toList()
         .filter { it.isResourceProperty() }
         .forEach {
-            serviceModel.recursiveAddNonDataServiceResource(it.resource, 5)
+            serviceModel.recursiveAddNonDataServiceResource(it.resource)
         }
 
     return DataServiceModel(resource = this, harvestedService = serviceModel.recursiveBlankNodeSkolem(uri))
 }
 
-private fun Model.recursiveAddNonDataServiceResource(resource: Resource, recursiveCount: Int): Model {
-    val newCount = recursiveCount - 1
-
+private fun Model.recursiveAddNonDataServiceResource(resource: Resource): Model {
     if (resourceShouldBeAdded(resource)) {
         add(resource.listProperties())
 
-        if (newCount > 0) {
-            resource.listProperties().toList()
-                .filter { it.isResourceProperty() }
-                .forEach { recursiveAddNonDataServiceResource(it.resource, newCount) }
-        }
+        resource.listProperties().toList()
+            .filter { it.isResourceProperty() }
+            .forEach { recursiveAddNonDataServiceResource(it.resource) }
     }
 
     return this
