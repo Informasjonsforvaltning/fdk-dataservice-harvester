@@ -14,7 +14,7 @@
     <parent>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-parent</artifactId>
-      <version>3.1.3</version>
+      <version>3.2.2</version>
       <relativePath/>
     </parent>
 
@@ -29,9 +29,9 @@
         <maven.exec.skip>false</maven.exec.skip>
         <!--end standard properties-->
 
-        <kotlin.version>1.9.10</kotlin.version>
-        <testcontainers.version>1.19.0</testcontainers.version>
-        <jena.version>4.9.0</jena.version>
+        <kotlin.version>1.9.22</kotlin.version>
+        <testcontainers.version>1.19.4</testcontainers.version>
+        <jena.version>4.10.0</jena.version>
     </properties>
 
     <dependencies>
@@ -122,13 +122,13 @@
         <dependency>
             <groupId>org.mockito.kotlin</groupId>
             <artifactId>mockito-kotlin</artifactId>
-            <version>5.1.0</version>
+            <version>5.2.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.wiremock</groupId>
-            <artifactId>wiremock</artifactId>
-            <version>3.0.2</version>
+            <artifactId>wiremock-standalone</artifactId>
+            <version>3.3.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -182,7 +182,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.4.0</version>
+                <version>3.5.0</version>
                 <executions>
                     <execution>
                         <id>add-source</id>
@@ -230,7 +230,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.10</version>
+                <version>0.8.11</version>
                 <executions>
                     <execution>
                         <id>before-unit-test-execution</id>
@@ -288,7 +288,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>3.2.5</version>
                 <configuration>
                     <useSystemClassLoader>false</useSystemClassLoader>
                     <argLine>${surefire.jacoco.args}</argLine>
@@ -302,7 +302,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>3.2.5</version>
                 <configuration>
                     <argLine>${failsafe.jacoco.args}</argLine>
                     <groups>contract</groups>
