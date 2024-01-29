@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator
 import org.springframework.security.oauth2.jwt.*
 import org.springframework.security.oauth2.jwt.JwtClaimNames.AUD
@@ -15,14 +16,17 @@ open class SecurityConfig {
 
     @Bean
     open fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        http.csrf().disable()
-            .cors().and()
-            .authorizeHttpRequests{ authorize ->
-                authorize.requestMatchers(HttpMethod.OPTIONS).permitAll()
-                    .requestMatchers(HttpMethod.POST, "/update/meta").authenticated()
-                    .requestMatchers(HttpMethod.GET).permitAll()
-                    .anyRequest().authenticated() }
-            .oauth2ResourceServer { resourceServer -> resourceServer.jwt() }
+        http {
+            cors { }
+            csrf { disable() }
+            authorizeHttpRequests {
+                authorize(HttpMethod.OPTIONS, "/**", permitAll)
+                authorize(HttpMethod.POST, "/update/meta", authenticated)
+                authorize(HttpMethod.GET, "/**", permitAll)
+                authorize(anyRequest, authenticated)
+            }
+            oauth2ResourceServer { jwt { } }
+        }
         return http.build()
     }
 
