@@ -23,9 +23,11 @@ spring:
 management:
   endpoints:
     web:
+      base-path: /
+      path-mapping:
+        info: ping
+        health: ready
       exposure:
-        path-mapping:
-          info: ping
         include: health, info, prometheus
     tags:
       application: fdk-dataservice-harvester
