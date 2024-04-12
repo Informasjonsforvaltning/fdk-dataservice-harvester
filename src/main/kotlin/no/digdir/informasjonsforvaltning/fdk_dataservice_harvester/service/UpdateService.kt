@@ -46,16 +46,6 @@ class UpdateService(
     }
 
     fun updateMetaData() {
-        dataServiceRepository.findAll()
-            .forEach { dataService ->
-                val dataServiceMeta = dataService.createMetaModel()
-
-                turtleService.getDataService(dataService.fdkId, withRecords = false)
-                    ?.let { conceptNoRecords -> parseRDFResponse(conceptNoRecords, Lang.TURTLE, null) }
-                    ?.let { conceptModelNoRecords -> dataServiceMeta.union(conceptModelNoRecords) }
-                    ?.run { turtleService.saveAsDataService(this, fdkId = dataService.fdkId, withRecords = true) }
-            }
-
         catalogRepository.findAll()
             .forEach { catalog ->
                 val catalogNoRecords = turtleService.getCatalog(catalog.fdkId, withRecords = false)
@@ -70,7 +60,12 @@ class UpdateService(
                         .forEach { dataService ->
                             val serviceMetaModel = dataService.createMetaModel()
                             catalogMeta.add(serviceMetaModel)
-                        }
+
+                            turtleService.getDataService(dataService.fdkId, withRecords = false)
+                                ?.let { conceptNoRecords -> parseRDFResponse(conceptNoRecords, Lang.TURTLE, null) }
+                                ?.let { conceptModelNoRecords -> serviceMetaModel.union(conceptModelNoRecords) }
+                                ?.run { turtleService.saveAsDataService(this, fdkId = dataService.fdkId, withRecords = true) }
+                            }
 
                     turtleService.saveAsCatalog(
                         catalogMeta.union(catalogNoRecords),
