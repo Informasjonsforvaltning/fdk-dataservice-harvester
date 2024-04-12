@@ -32,13 +32,15 @@ class UpdateServiceTest {
         @Test
         fun catalogRecordsIsRecreatedFromMetaDBO() {
             whenever(catalogRepository.findAll())
-                .thenReturn(listOf(CATALOG_DBO_0))
-            whenever(dataServiceRepository.findAll())
-                .thenReturn(listOf(DATA_SERVICE_DBO_0, DATA_SERVICE_DBO_1))
+                .thenReturn(listOf(CATALOG_DBO_0, CATALOG_DBO_1))
             whenever(dataServiceRepository.findAllByIsPartOf("http://localhost:5050/catalogs/$CATALOG_ID_0"))
-                .thenReturn(listOf(DATA_SERVICE_DBO_0, DATA_SERVICE_DBO_1))
+                .thenReturn(listOf(DATA_SERVICE_DBO_0))
+            whenever(dataServiceRepository.findAllByIsPartOf("http://localhost:5050/catalogs/$CATALOG_ID_1"))
+                .thenReturn(listOf(DATA_SERVICE_DBO_1))
             whenever(turtleService.getCatalog(CATALOG_ID_0, false))
                 .thenReturn(responseReader.readFile("catalog_0_no_records.ttl"))
+            whenever(turtleService.getCatalog(CATALOG_ID_1, false))
+                .thenReturn(responseReader.readFile("catalog_1_no_records.ttl"))
             whenever(turtleService.getDataService(DATASERVICE_ID_0, false))
                 .thenReturn(responseReader.readFile("parsed_dataservice_0.ttl"))
             whenever(turtleService.getDataService(DATASERVICE_ID_1, false))
@@ -51,7 +53,8 @@ class UpdateServiceTest {
 
             updateService.updateMetaData()
 
-            val expectedCatalog = responseReader.parseFile("catalog_0.ttl", "TURTLE")
+            val expectedCatalog0 = responseReader.parseFile("catalog_0.ttl", "TURTLE")
+            val expectedCatalog1 = responseReader.parseFile("catalog_1.ttl", "TURTLE")
             val expectedDataService0 = responseReader.parseFile("dataservice_0.ttl", "TURTLE")
             val expectedDataService1 = responseReader.parseFile("dataservice_1.ttl", "TURTLE")
 
@@ -64,10 +67,12 @@ class UpdateServiceTest {
             }
 
             argumentCaptor<Model, String, Boolean>().apply {
-                verify(turtleService, times(1)).saveAsCatalog(first.capture(), second.capture(), third.capture())
-                assertTrue(first.firstValue.isIsomorphicWith(expectedCatalog))
+                verify(turtleService, times(2)).saveAsCatalog(first.capture(), second.capture(), third.capture())
+                assertTrue(first.firstValue.isIsomorphicWith(expectedCatalog0))
+                assertTrue(first.secondValue.isIsomorphicWith(expectedCatalog1))
                 assertEquals(CATALOG_ID_0, second.firstValue)
-                assertEquals(listOf(true), third.allValues)
+                assertEquals(CATALOG_ID_1, second.secondValue)
+                assertEquals(listOf(true, true), third.allValues)
             }
         }
 
