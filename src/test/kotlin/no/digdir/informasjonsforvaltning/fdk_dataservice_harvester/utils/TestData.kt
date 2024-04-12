@@ -4,7 +4,7 @@ import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.Harvest
 import org.testcontainers.shaded.com.google.common.collect.ImmutableMap
 import java.util.*
 
-const val LOCAL_SERVER_PORT = 5000
+const val LOCAL_SERVER_PORT = 5050
 const val WIREMOCK_TEST_URI = "http://localhost:$LOCAL_SERVER_PORT"
 
 const val MONGO_USER = "testuser"

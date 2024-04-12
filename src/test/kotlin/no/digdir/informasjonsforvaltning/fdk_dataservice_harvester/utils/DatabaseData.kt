@@ -19,7 +19,7 @@ val CATALOG_DBO_0 = CatalogMeta(
 val DATA_SERVICE_DBO_0 = DataServiceMeta(
     uri = "https://testdirektoratet.no/model/dataservice/0",
     fdkId = DATASERVICE_ID_0,
-    isPartOf = "http://localhost:5000/catalogs/$CATALOG_ID_0",
+    isPartOf = "http://localhost:5050/catalogs/$CATALOG_ID_0",
     issued = TEST_HARVEST_DATE.timeInMillis,
     modified = TEST_HARVEST_DATE.timeInMillis
 )
@@ -33,7 +33,7 @@ val CATALOG_DBO_1 = CatalogMeta(
 val DATA_SERVICE_DBO_1 = DataServiceMeta(
     uri = "https://testdirektoratet.no/model/dataservice/1",
     fdkId = DATASERVICE_ID_1,
-    isPartOf = "http://localhost:5000/catalogs/$CATALOG_ID_1",
+    isPartOf = "http://localhost:5050/catalogs/$CATALOG_ID_1",
     issued = TEST_HARVEST_DATE.timeInMillis,
     modified = TEST_HARVEST_DATE.timeInMillis
 )
