@@ -35,7 +35,7 @@ class UpdateServiceTest {
                 .thenReturn(listOf(CATALOG_DBO_0))
             whenever(dataServiceRepository.findAll())
                 .thenReturn(listOf(DATA_SERVICE_DBO_0, DATA_SERVICE_DBO_1))
-            whenever(dataServiceRepository.findAllByIsPartOf("http://localhost:5000/catalogs/$CATALOG_ID_0"))
+            whenever(dataServiceRepository.findAllByIsPartOf("http://localhost:5050/catalogs/$CATALOG_ID_0"))
                 .thenReturn(listOf(DATA_SERVICE_DBO_0, DATA_SERVICE_DBO_1))
             whenever(turtleService.getCatalog(CATALOG_ID_0, false))
                 .thenReturn(responseReader.readFile("catalog_0_no_records.ttl"))
@@ -45,9 +45,9 @@ class UpdateServiceTest {
                 .thenReturn(responseReader.readFile("parsed_dataservice_1.ttl"))
 
             whenever(valuesMock.catalogUri)
-                .thenReturn("http://localhost:5000/catalogs")
+                .thenReturn("http://localhost:5050/catalogs")
             whenever(valuesMock.dataserviceUri)
-                .thenReturn("http://localhost:5000/dataservices")
+                .thenReturn("http://localhost:5050/dataservices")
 
             updateService.updateMetaData()
 

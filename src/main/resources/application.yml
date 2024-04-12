@@ -49,15 +49,15 @@ application:
 spring:
   config.activate.on-profile: contract-test
   security.oauth2.resourceserver.jwt:
-    jwk-set-uri: http://localhost:5000/auth/realms/fdk/protocol/openid-connect/certs
-    issuer-uri: http://localhost:5000/auth/realms/fdk
+    jwk-set-uri: http://localhost:5050/auth/realms/fdk/protocol/openid-connect/certs
+    issuer-uri: http://localhost:5050/auth/realms/fdk
   rabbitmq:
     host: localhost
-    port: 5000
+    port: 5050
     username: admin
     password: admin
 application:
-  dataserviceUri: http://localhost:5000/dataservices
-  catalogUri: http://localhost:5000/catalogs
-  harvestAdminRootUrl: http://localhost:5000
+  dataserviceUri: http://localhost:5050/dataservices
+  catalogUri: http://localhost:5050/catalogs
+  harvestAdminRootUrl: http://localhost:5050
 server.port: 5555

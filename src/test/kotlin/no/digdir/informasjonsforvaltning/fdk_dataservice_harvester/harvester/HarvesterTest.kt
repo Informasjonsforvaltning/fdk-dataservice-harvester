@@ -47,9 +47,9 @@ class HarvesterTest {
             .thenReturn(Optional.of(DATA_SERVICE_DBO_0))
 
         whenever(valuesMock.catalogUri)
-            .thenReturn("http://localhost:5000/catalogs")
+            .thenReturn("http://localhost:5050/catalogs")
         whenever(valuesMock.dataserviceUri)
-            .thenReturn("http://localhost:5000/dataservices")
+            .thenReturn("http://localhost:5050/dataservices")
 
         val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE, false)
 
@@ -92,7 +92,7 @@ class HarvesterTest {
 
         val expectedReport = HarvestReport(
             id="harvest",
-            url="http://localhost:5000/harvest",
+            url="http://localhost:5050/harvest",
             dataType="dataservice",
             harvestError=false,
             startTime = "2020-03-12 12:52:16 +0100",
@@ -122,7 +122,7 @@ class HarvesterTest {
 
         val expectedReport = HarvestReport(
             id="harvest",
-            url="http://localhost:5000/harvest",
+            url="http://localhost:5050/harvest",
             dataType="dataservice",
             harvestError=false,
             startTime = "2020-03-12 12:52:16 +0100",
@@ -165,9 +165,9 @@ class HarvesterTest {
             .thenReturn(responseReader.readFile("harvest_response_catalog_diff.ttl"))
 
         whenever(valuesMock.catalogUri)
-            .thenReturn("http://localhost:5000/catalogs")
+            .thenReturn("http://localhost:5050/catalogs")
         whenever(valuesMock.dataserviceUri)
-            .thenReturn("http://localhost:5000/dataservices")
+            .thenReturn("http://localhost:5050/dataservices")
 
         whenever(catalogRepository.findById(CATALOG_DBO_0.uri))
             .thenReturn(Optional.of(CATALOG_DBO_0))
@@ -209,7 +209,7 @@ class HarvesterTest {
 
         val expectedReport = HarvestReport(
             id="harvest",
-            url="http://localhost:5000/harvest",
+            url="http://localhost:5050/harvest",
             dataType="dataservice",
             harvestError=false,
             startTime = "2020-07-12 13:52:16 +0200",
@@ -235,7 +235,7 @@ class HarvesterTest {
 
         val expectedReport = HarvestReport(
             id="harvest",
-            url="http://localhost:5000/harvest",
+            url="http://localhost:5050/harvest",
             dataType="dataservice",
             harvestError=true,
             startTime = "2020-03-12 12:52:16 +0100",
@@ -253,13 +253,13 @@ class HarvesterTest {
             .thenReturn(harvested)
         whenever(turtleService.getHarvestSource(TEST_HARVEST_SOURCE.url!!))
             .thenReturn(responseReader.readFile("harvest_response.ttl"))
-        whenever(dataServiceRepository.findAllByIsPartOf("http://localhost:5000/catalogs/$CATALOG_ID_0"))
+        whenever(dataServiceRepository.findAllByIsPartOf("http://localhost:5050/catalogs/$CATALOG_ID_0"))
             .thenReturn(listOf(DATA_SERVICE_DBO_0))
 
         whenever(valuesMock.catalogUri)
-            .thenReturn("http://localhost:5000/catalogs")
+            .thenReturn("http://localhost:5050/catalogs")
         whenever(valuesMock.dataserviceUri)
-            .thenReturn("http://localhost:5000/datasets")
+            .thenReturn("http://localhost:5050/datasets")
 
         val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE, false)
 
@@ -270,7 +270,7 @@ class HarvesterTest {
 
         val expectedReport = HarvestReport(
             id="harvest",
-            url="http://localhost:5000/harvest",
+            url="http://localhost:5050/harvest",
             dataType="dataservice",
             harvestError=false,
             startTime = "2020-03-12 12:52:16 +0100",
