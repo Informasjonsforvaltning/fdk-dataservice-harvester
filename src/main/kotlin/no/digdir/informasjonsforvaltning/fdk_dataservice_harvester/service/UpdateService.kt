@@ -1,6 +1,7 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service
 
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.configuration.ApplicationProperties
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.harvester.extractCatalogModel
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.CatalogMeta
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.DataServiceMeta
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.addMetaPrefixes
@@ -48,27 +49,36 @@ class UpdateService(
     fun updateMetaData() {
         catalogRepository.findAll()
             .forEach { catalog ->
+                val catalogMeta = catalog.createMetaModel()
+                val completeMetaModel = ModelFactory.createDefaultModel()
+                completeMetaModel.add(catalogMeta)
+
                 val catalogNoRecords = turtleService.getCatalog(catalog.fdkId, withRecords = false)
                     ?.let { parseRDFResponse(it, Lang.TURTLE, null) }
 
                 if (catalogNoRecords != null) {
                     val catalogURI = "${applicationProperties.catalogUri}/${catalog.fdkId}"
-                    val catalogMeta = catalog.createMetaModel()
+                    val catalogTriples = catalogNoRecords.getResource(catalog.uri)
+                        ?.extractCatalogModel()
+                    catalogTriples?.add(catalogMeta)
 
                     dataServiceRepository.findAllByIsPartOf(catalogURI)
                         .filter { it.modelContainsDataService(catalogNoRecords) }
                         .forEach { dataService ->
                             val serviceMetaModel = dataService.createMetaModel()
-                            catalogMeta.add(serviceMetaModel)
+                            completeMetaModel.add(serviceMetaModel)
 
                             turtleService.getDataService(dataService.fdkId, withRecords = false)
-                                ?.let { conceptNoRecords -> parseRDFResponse(conceptNoRecords, Lang.TURTLE, null) }
-                                ?.let { conceptModelNoRecords -> serviceMetaModel.union(conceptModelNoRecords) }
+                                ?.let { dataServiceNoRecords -> parseRDFResponse(dataServiceNoRecords, Lang.TURTLE, null) }
+                                ?.let { dataServiceModelNoRecords -> serviceMetaModel
+                                    .union(dataServiceModelNoRecords)
+                                    .union(catalogTriples)
+                                }
                                 ?.run { turtleService.saveAsDataService(this, fdkId = dataService.fdkId, withRecords = true) }
                             }
 
                     turtleService.saveAsCatalog(
-                        catalogMeta.union(catalogNoRecords),
+                        completeMetaModel.union(catalogNoRecords),
                         fdkId = catalog.fdkId,
                         withRecords = true
                     )

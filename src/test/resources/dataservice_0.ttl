@@ -12,6 +12,19 @@
         dct:isPartOf       <http://localhost:5050/catalogs/e422e2a7-287f-349f-876a-dc3541676f21> ;
         foaf:primaryTopic  <https://testdirektoratet.no/model/dataservice/0> .
 
+<http://localhost:5050/catalogs/e422e2a7-287f-349f-876a-dc3541676f21>
+        a                  dcat:CatalogRecord;
+        dct:identifier     "e422e2a7-287f-349f-876a-dc3541676f21";
+        dct:issued         "2020-03-12T11:52:16.122Z"^^xsd:dateTime;
+        dct:modified       "2020-03-12T11:52:16.122Z"^^xsd:dateTime;
+        foaf:primaryTopic  <https://testdirektoratet.no/model/dataservice-catalogs/0> .
+
+<https://testdirektoratet.no/model/dataservice-catalogs/0>
+        a              dcat:Catalog;
+        dct:publisher  <https://organization-catalogue.fellesdatakatalog.brreg.no/organizations/123456789>;
+        dct:title      "Dataservicekatalog for Testdirektoratet"@nb;
+        dcat:service   <https://testdirektoratet.no/model/dataservice/0> .
+
 <https://testdirektoratet.no/model/dataservice/0>
         a                         dcat:DataService ;
         dct:description           "Description of service 0"@nb ;
