@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.io.BufferedReader
 import java.net.HttpURLConnection
+import java.net.URI
 import java.net.URL
 
 private const val TEN_MINUTES = 600000
@@ -14,7 +15,7 @@ private const val TEN_MINUTES = 600000
 class DataServiceAdapter {
 
     fun getDataServices(source: HarvestDataSource): String {
-        val connection = URL(source.url).openConnection() as HttpURLConnection
+        val connection = URI(source.url).toURL().openConnection() as HttpURLConnection
         connection.setRequestProperty("Accept", source.acceptHeaderValue)
         connection.connectTimeout = TEN_MINUTES
         connection.readTimeout = TEN_MINUTES
