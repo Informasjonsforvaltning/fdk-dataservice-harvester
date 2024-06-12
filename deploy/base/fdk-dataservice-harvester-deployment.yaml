@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    fdk.service: fdk-dataservice-harvester
+  name: fdk-dataservice-harvester
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      fdk.service: fdk-dataservice-harvester
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        fdk.service: fdk-dataservice-harvester
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/prometheus"  
+    spec:
+      containers:
+        - name: fdk-dataservice-harvester
+          image: fdk-dataservice-harvester
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "650Mi"
+              cpu: "20m"
+            limits:
+              memory: "650Mi"
+      restartPolicy: Always
+status: {}
