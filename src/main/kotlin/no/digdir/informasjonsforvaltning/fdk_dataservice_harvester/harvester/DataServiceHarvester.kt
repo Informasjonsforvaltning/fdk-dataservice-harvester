@@ -161,20 +161,29 @@ class DataServiceHarvester(
         forceUpdate: Boolean
     ): DataServiceMeta? {
         val dbMeta = dataServiceRepository.findByIdOrNull(resource.uri)
-        if (forceUpdate || serviceHasChanges(dbMeta?.fdkId)) {
+        return when {
+            dbMeta == null || dbMeta.removed || serviceHasChanges(dbMeta.fdkId) -> {
+                val updatedMeta = mapToMetaDBO(harvestDate, fdkCatalogURI, dbMeta)
+                dataServiceRepository.save(updatedMeta)
 
-            val modelMeta = if (dbMeta == null || serviceHasChanges(dbMeta.fdkId)) {
-                mapToMetaDBO(harvestDate, fdkCatalogURI, dbMeta)
-                    .also { updatedMeta -> dataServiceRepository.save(updatedMeta) }
-            } else dbMeta
 
-            turtleService.saveAsDataService(
-                model = harvestedService,
-                fdkId = modelMeta.fdkId,
-                withRecords = false
-            )
-            return modelMeta
-        } else return null
+                turtleService.saveAsDataService(
+                    model = harvestedService,
+                    fdkId = updatedMeta.fdkId,
+                    withRecords = false
+                )
+                updatedMeta
+            }
+            forceUpdate -> {
+                turtleService.saveAsDataService(
+                    model = harvestedService,
+                    fdkId = dbMeta.fdkId,
+                    withRecords = false
+                )
+                dbMeta
+            }
+            else -> null
+        }
     }
 
     private fun CatalogAndDataServiceModels.mapToCatalogMeta(
