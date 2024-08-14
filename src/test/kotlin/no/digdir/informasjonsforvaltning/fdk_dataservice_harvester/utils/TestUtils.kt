@@ -9,16 +9,16 @@ import org.bson.codecs.configuration.CodecRegistries
 import org.bson.codecs.pojo.PojoCodecProvider
 import org.slf4j.LoggerFactory
 import java.io.BufferedReader
-import java.net.URL
 import org.springframework.http.HttpStatus
 import java.net.HttpURLConnection
+import java.net.URI
 
 private val logger = LoggerFactory.getLogger(ApiTestContext::class.java)
 
 fun apiGet(port: Int, endpoint: String, acceptHeader: String?): Map<String,Any> {
 
     return try {
-        val connection = URL("http://localhost:$port$endpoint").openConnection() as HttpURLConnection
+        val connection = URI("http://localhost:$port$endpoint").toURL().openConnection() as HttpURLConnection
         if(acceptHeader != null) connection.setRequestProperty("Accept", acceptHeader)
         connection.connect()
 
@@ -44,14 +44,14 @@ fun apiGet(port: Int, endpoint: String, acceptHeader: String?): Map<String,Any> 
     }
 }
 
-fun authorizedPost(port: Int, endpoint: String, token: String?, headers: Map<String, String>): Map<String,Any> {
+fun authorizedRequest(port: Int, endpoint: String, token: String?, method: String = "POST", headers: Map<String, String> = emptyMap()): Map<String,Any> {
 
     return try {
-        val connection = URL("http://localhost:$port$endpoint").openConnection() as HttpURLConnection
+        val connection = URI("http://localhost:$port$endpoint").toURL().openConnection() as HttpURLConnection
         headers.forEach { (key, value) -> connection.setRequestProperty(key, value) }
         if(!token.isNullOrEmpty()) connection.setRequestProperty("Authorization", "Bearer $token")
 
-        connection.requestMethod = "POST"
+        connection.requestMethod = method
         connection.connect()
 
         if(isOK(connection.responseCode)) {

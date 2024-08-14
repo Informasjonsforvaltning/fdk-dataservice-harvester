@@ -18,7 +18,6 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 private val LOGGER = LoggerFactory.getLogger(DataServiceHarvester::class.java)
-private const val dateFormat: String = "yyyy-MM-dd HH:mm:ss Z"
 
 @Service
 class DataServiceHarvester(
@@ -230,14 +229,6 @@ class DataServiceHarvester(
     private fun DataServiceModel.serviceHasChanges(fdkId: String?): Boolean =
         if (fdkId == null) true
         else harvestDiff(turtleService.getDataService(fdkId, withRecords = false))
-
-    private fun formatNowWithOsloTimeZone(): String =
-        ZonedDateTime.now(ZoneId.of("Europe/Oslo"))
-            .format(DateTimeFormatter.ofPattern(dateFormat))
-
-    private fun Calendar.formatWithOsloTimeZone(): String =
-        ZonedDateTime.from(toInstant().atZone(ZoneId.of("Europe/Oslo")))
-            .format(DateTimeFormatter.ofPattern(dateFormat))
 
     private fun getDataServicesRemovedThisHarvest(catalog: String, services: List<String>): List<DataServiceMeta> =
         dataServiceRepository.findAllByIsPartOf(catalog)
