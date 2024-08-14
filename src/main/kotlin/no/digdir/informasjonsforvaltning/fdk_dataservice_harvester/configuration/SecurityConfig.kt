@@ -21,7 +21,6 @@ open class SecurityConfig {
             csrf { disable() }
             authorizeHttpRequests {
                 authorize(HttpMethod.OPTIONS, "/**", permitAll)
-                authorize(HttpMethod.POST, "/update/meta", authenticated)
                 authorize(HttpMethod.GET, "/**", permitAll)
                 authorize(anyRequest, authenticated)
             }

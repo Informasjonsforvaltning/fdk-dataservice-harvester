@@ -2,11 +2,14 @@ package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.controller
 
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.jenaTypeFromAcceptHeader
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.DataServiceService
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.EndpointPermissions
 import org.apache.jena.riot.Lang
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 
@@ -19,7 +22,10 @@ private val LOGGER = LoggerFactory.getLogger(DataServicesController::class.java)
     produces = ["text/turtle", "text/n3", "application/rdf+json", "application/ld+json", "application/rdf+xml",
         "application/n-triples", "application/n-quads", "application/trig", "application/trix"]
 )
-open class DataServicesController(private val dataServiceService: DataServiceService) {
+open class DataServicesController(
+    private val dataServiceService: DataServiceService,
+    private val endpointPermissions: EndpointPermissions
+) {
 
     @GetMapping("/{id}")
     fun getDataServiceById(
@@ -37,5 +43,15 @@ open class DataServicesController(private val dataServiceService: DataServiceSer
                 ?: ResponseEntity(HttpStatus.NOT_FOUND)
         }
     }
+
+    @DeleteMapping("/{id}")
+    fun removeDataServiceById(
+        @AuthenticationPrincipal jwt: Jwt,
+        @PathVariable id: String
+    ): ResponseEntity<Void> =
+        if (endpointPermissions.hasAdminPermission(jwt)) {
+            dataServiceService.removeDataService(id)
+            ResponseEntity(HttpStatus.NO_CONTENT)
+        } else ResponseEntity(HttpStatus.FORBIDDEN)
 
 }

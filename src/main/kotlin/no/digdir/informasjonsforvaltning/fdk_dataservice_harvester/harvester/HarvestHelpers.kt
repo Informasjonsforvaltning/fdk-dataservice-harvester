@@ -15,8 +15,13 @@ import org.apache.jena.util.ResourceUtils
 import org.apache.jena.vocabulary.DCAT
 import org.apache.jena.vocabulary.RDF
 import org.slf4j.LoggerFactory
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 private val LOGGER = LoggerFactory.getLogger(Application::class.java)
+private const val dateFormat: String = "yyyy-MM-dd HH:mm:ss Z"
 
 fun CatalogAndDataServiceModels.harvestDiff(dbNoRecords: String?): Boolean =
     if (dbNoRecords == null) true
@@ -143,6 +148,14 @@ private fun Model.recursiveBlankNodeSkolem(baseURI: String): Model {
         this.recursiveBlankNodeSkolem(baseURI)
     }
 }
+
+fun formatNowWithOsloTimeZone(): String =
+    ZonedDateTime.now(ZoneId.of("Europe/Oslo"))
+        .format(DateTimeFormatter.ofPattern(dateFormat))
+
+fun Calendar.formatWithOsloTimeZone(): String =
+    ZonedDateTime.from(toInstant().atZone(ZoneId.of("Europe/Oslo")))
+        .format(DateTimeFormatter.ofPattern(dateFormat))
 
 private fun Resource.doesNotContainAnon(): Boolean =
     listProperties().toList()
