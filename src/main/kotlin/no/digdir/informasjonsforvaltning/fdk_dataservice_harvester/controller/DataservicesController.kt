@@ -1,5 +1,6 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.controller
 
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.DuplicateIRI
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.rdf.jenaTypeFromAcceptHeader
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.DataServiceService
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.EndpointPermissions
@@ -52,6 +53,16 @@ open class DataServicesController(
         if (endpointPermissions.hasAdminPermission(jwt)) {
             dataServiceService.removeDataService(id)
             ResponseEntity(HttpStatus.NO_CONTENT)
+        } else ResponseEntity(HttpStatus.FORBIDDEN)
+
+    @PostMapping("/duplicates")
+    fun removeDuplicates(
+        @AuthenticationPrincipal jwt: Jwt,
+        @RequestBody duplicates: List<DuplicateIRI>
+    ): ResponseEntity<Void> =
+        if (endpointPermissions.hasAdminPermission(jwt)) {
+            dataServiceService.removeDuplicates(duplicates)
+            ResponseEntity(HttpStatus.OK)
         } else ResponseEntity(HttpStatus.FORBIDDEN)
 
 }

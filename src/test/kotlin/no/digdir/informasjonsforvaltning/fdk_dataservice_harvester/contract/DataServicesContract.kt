@@ -1,7 +1,11 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.contract
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.DuplicateIRI
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.ApiTestContext
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.DATASERVICE_ID_0
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.DATA_SERVICE_DBO_0
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.DATA_SERVICE_DBO_1
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.TestResponseReader
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.apiGet
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.authorizedRequest
@@ -15,6 +19,7 @@ import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.ContextConfiguration
 import kotlin.test.assertTrue
@@ -22,11 +27,13 @@ import kotlin.test.assertTrue
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(
     properties = ["spring.profiles.active=contract-test"],
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
+)
 @ContextConfiguration(initializers = [ApiTestContext.Initializer::class])
 @Tag("contract")
 class DataServicesContract : ApiTestContext() {
     private val responseReader = TestResponseReader()
+    private val mapper = jacksonObjectMapper()
 
     @Test
     fun findSpecific() {
@@ -61,7 +68,12 @@ class DataServicesContract : ApiTestContext() {
 
         @Test
         fun unauthorizedForNoToken() {
-            val response = authorizedRequest(port, "/dataservices/$DATASERVICE_ID_0", null, "DELETE")
+            val response = authorizedRequest(
+                port,
+                "/dataservices/$DATASERVICE_ID_0",
+                null,
+                HttpMethod.DELETE
+            )
             assertEquals(HttpStatus.UNAUTHORIZED.value(), response["status"])
         }
 
@@ -71,15 +83,19 @@ class DataServicesContract : ApiTestContext() {
                 port,
                 "/dataservices/$DATASERVICE_ID_0",
                 JwtToken(Access.ORG_WRITE).toString(),
-                "DELETE"
+                HttpMethod.DELETE
             )
             assertEquals(HttpStatus.FORBIDDEN.value(), response["status"])
         }
 
         @Test
         fun notFoundWhenIdNotInDB() {
-            val response =
-                authorizedRequest(port, "/dataservices/123", JwtToken(Access.ROOT).toString(), "DELETE")
+            val response = authorizedRequest(
+                port,
+                "/dataservices/123",
+                JwtToken(Access.ROOT).toString(),
+                HttpMethod.DELETE
+            )
             assertEquals(HttpStatus.NOT_FOUND.value(), response["status"])
         }
 
@@ -89,9 +105,66 @@ class DataServicesContract : ApiTestContext() {
                 port,
                 "/dataservices/$DATASERVICE_ID_0",
                 JwtToken(Access.ROOT).toString(),
-                "DELETE"
+                HttpMethod.DELETE
             )
             assertEquals(HttpStatus.NO_CONTENT.value(), response["status"])
+        }
+    }
+
+    @Nested
+    internal inner class RemoveDuplicates {
+
+        @Test
+        fun unauthorizedForNoToken() {
+            val body = listOf(DuplicateIRI(iriToRemove = DATA_SERVICE_DBO_0.uri, iriToRetain = DATA_SERVICE_DBO_1.uri))
+            val response = authorizedRequest(
+                port,
+                "/dataservices/duplicates",
+                null,
+                HttpMethod.POST,
+                mapper.writeValueAsString(body)
+            )
+            assertEquals(HttpStatus.UNAUTHORIZED.value(), response["status"])
+        }
+
+        @Test
+        fun forbiddenWithNonSysAdminRole() {
+            val body = listOf(DuplicateIRI(iriToRemove = DATA_SERVICE_DBO_0.uri, iriToRetain = DATA_SERVICE_DBO_1.uri))
+            val response = authorizedRequest(
+                port,
+                "/dataservices/duplicates",
+                JwtToken(Access.ORG_WRITE).toString(),
+                HttpMethod.POST,
+                mapper.writeValueAsString(body)
+            )
+            assertEquals(HttpStatus.FORBIDDEN.value(), response["status"])
+        }
+
+        @Test
+        fun badRequestWhenRemoveIRINotInDB() {
+            val body = listOf(DuplicateIRI(iriToRemove = "https://123.no", iriToRetain = DATA_SERVICE_DBO_1.uri))
+            val response =
+                authorizedRequest(
+                    port,
+                    "/dataservices/duplicates",
+                    JwtToken(Access.ROOT).toString(),
+                    HttpMethod.POST,
+                    mapper.writeValueAsString(body)
+                )
+            assertEquals(HttpStatus.BAD_REQUEST.value(), response["status"])
+        }
+
+        @Test
+        fun okWithSysAdminRole() {
+            val body = listOf(DuplicateIRI(iriToRemove = DATA_SERVICE_DBO_0.uri, iriToRetain = DATA_SERVICE_DBO_1.uri))
+            val response = authorizedRequest(
+                port,
+                "/dataservices/duplicates",
+                JwtToken(Access.ROOT).toString(),
+                HttpMethod.POST,
+                mapper.writeValueAsString(body)
+            )
+            assertEquals(HttpStatus.OK.value(), response["status"])
         }
     }
 
