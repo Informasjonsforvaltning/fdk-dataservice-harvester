@@ -108,4 +108,13 @@ class DataServiceService(
         }
     }
 
+    // Purges everything associated with a removed fdkID
+    fun purgeByFdkId(fdkId: String) {
+        dataServiceRepository.findAllByFdkId(fdkId)
+            .also { dataServices -> if (dataServices.any { !it.removed }) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Unable to purge files, data service with id $fdkId has not been removed") }
+            .run { dataServiceRepository.deleteAll(this) }
+
+        turtleService.deleteTurtleFiles(fdkId)
+    }
+
 }

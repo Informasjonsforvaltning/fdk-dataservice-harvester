@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.DuplicateIRI
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.ApiTestContext
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.DATASERVICE_ID_0
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.DATASERVICE_ID_1
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.DATA_SERVICE_DBO_0
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.DATA_SERVICE_DBO_1
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils.TestResponseReader
@@ -166,6 +167,56 @@ class DataServicesContract : ApiTestContext() {
             )
             assertEquals(HttpStatus.OK.value(), response["status"])
         }
+    }
+
+    @Nested
+    internal inner class PurgeById {
+
+        @Test
+        fun unauthorizedForNoToken() {
+            val response = authorizedRequest(port, "/dataservices/removed", null, HttpMethod.DELETE)
+            assertEquals(HttpStatus.UNAUTHORIZED.value(), response["status"])
+        }
+
+        @Test
+        fun forbiddenWithNonSysAdminRole() {
+            val response = authorizedRequest(
+                port,
+                "/dataservices/removed",
+                JwtToken(Access.ORG_WRITE).toString(),
+                HttpMethod.DELETE
+            )
+            assertEquals(HttpStatus.FORBIDDEN.value(), response["status"])
+        }
+
+        @Test
+        fun badRequestWhenNotAlreadyRemoved() {
+            val response = authorizedRequest(
+                port,
+                "/dataservices/$DATASERVICE_ID_1",
+                JwtToken(Access.ROOT).toString(),
+                HttpMethod.DELETE
+            )
+            assertEquals(HttpStatus.BAD_REQUEST.value(), response["status"])
+        }
+
+        @Test
+        fun purgingStopsDeepLinking() {
+            val pre = apiGet(port, "/dataservices/removed", "text/turtle")
+            assertEquals(HttpStatus.OK.value(), pre["status"])
+
+            val response = authorizedRequest(
+                port,
+                "/dataservices/removed",
+                JwtToken(Access.ROOT).toString(),
+                HttpMethod.DELETE
+            )
+            assertEquals(HttpStatus.NO_CONTENT.value(), response["status"])
+
+            val post = apiGet(port, "/dataservices/removed", "text/turtle")
+            assertEquals(HttpStatus.NOT_FOUND.value(), post["status"])
+        }
+
     }
 
 }
