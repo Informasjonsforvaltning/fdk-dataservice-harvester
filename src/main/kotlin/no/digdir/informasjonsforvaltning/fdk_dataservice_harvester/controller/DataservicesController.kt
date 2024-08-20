@@ -45,14 +45,14 @@ open class DataServicesController(
         }
     }
 
-    @DeleteMapping("/{id}")
+    @PostMapping("/{id}/remove")
     fun removeDataServiceById(
         @AuthenticationPrincipal jwt: Jwt,
         @PathVariable id: String
     ): ResponseEntity<Void> =
         if (endpointPermissions.hasAdminPermission(jwt)) {
             dataServiceService.removeDataService(id)
-            ResponseEntity(HttpStatus.NO_CONTENT)
+            ResponseEntity(HttpStatus.OK)
         } else ResponseEntity(HttpStatus.FORBIDDEN)
 
     @PostMapping("/duplicates")
