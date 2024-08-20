@@ -37,6 +37,14 @@ val DATA_SERVICE_DBO_1 = DataServiceMeta(
     issued = TEST_HARVEST_DATE.timeInMillis,
     modified = TEST_HARVEST_DATE.timeInMillis
 )
+val REMOVED_DATA_SERVICE_DBO = DataServiceMeta(
+    uri = "https://testdirektoratet.no/model/dataservice/removed",
+    fdkId = "removed",
+    isPartOf = "http://localhost:5050/catalogs/$CATALOG_ID_1",
+    removed = true,
+    issued = TEST_HARVEST_DATE.timeInMillis,
+    modified = TEST_HARVEST_DATE.timeInMillis
+)
 
 val UNION_DATA = TurtleDBO(
     id = catalogTurtleID(UNION_ID, true),
@@ -93,11 +101,21 @@ val DATA_SERVICE_TURTLE_1_NO_RECORDS = TurtleDBO(
     turtle = gzip(responseReader.readFile("parsed_dataservice_1.ttl"))
 )
 
+val REMOVED_DATA_SERVICE_TURTLE = TurtleDBO(
+    id = dataServiceTurtleID("removed", true),
+    turtle = gzip(responseReader.readFile("dataservice_1.ttl"))
+)
+
+val REMOVED_DATA_SERVICE_TURTLE_NO_RECORDS = TurtleDBO(
+    id = dataServiceTurtleID("removed", false),
+    turtle = gzip(responseReader.readFile("parsed_dataservice_1.ttl"))
+)
+
 fun turtleDBPopulation(): List<Document> =
     listOf(
         UNION_DATA, HARVEST_DBO_0, HARVEST_DBO_1, CATALOG_TURTLE_0, CATALOG_TURTLE_0_NO_RECORDS,
         CATALOG_TURTLE_1, CATALOG_TURTLE_1_NO_RECORDS, DATA_SERVICE_TURTLE_0, DATA_SERVICE_TURTLE_0_NO_RECORDS,
-        DATA_SERVICE_TURTLE_1, DATA_SERVICE_TURTLE_1_NO_RECORDS
+        DATA_SERVICE_TURTLE_1, DATA_SERVICE_TURTLE_1_NO_RECORDS, REMOVED_DATA_SERVICE_TURTLE, REMOVED_DATA_SERVICE_TURTLE_NO_RECORDS
     )
         .map { it.mapDBO() }
 
@@ -121,6 +139,7 @@ private fun DataServiceMeta.mapDBO(): Document =
         .append("_id", uri)
         .append("fdkId", fdkId)
         .append("isPartOf", isPartOf)
+        .append("removed", removed)
         .append("issued", issued)
         .append("modified", modified)
 
