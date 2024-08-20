@@ -119,7 +119,7 @@ class DataServicesContract : ApiTestContext() {
             val body = listOf(DuplicateIRI(iriToRemove = DATA_SERVICE_DBO_0.uri, iriToRetain = DATA_SERVICE_DBO_1.uri))
             val response = authorizedRequest(
                 port,
-                "/dataservices/duplicates",
+                "/dataservices/remove-duplicates",
                 null,
                 HttpMethod.POST,
                 mapper.writeValueAsString(body)
@@ -132,7 +132,7 @@ class DataServicesContract : ApiTestContext() {
             val body = listOf(DuplicateIRI(iriToRemove = DATA_SERVICE_DBO_0.uri, iriToRetain = DATA_SERVICE_DBO_1.uri))
             val response = authorizedRequest(
                 port,
-                "/dataservices/duplicates",
+                "/dataservices/remove-duplicates",
                 JwtToken(Access.ORG_WRITE).toString(),
                 HttpMethod.POST,
                 mapper.writeValueAsString(body)
@@ -146,7 +146,7 @@ class DataServicesContract : ApiTestContext() {
             val response =
                 authorizedRequest(
                     port,
-                    "/dataservices/duplicates",
+                    "/dataservices/remove-duplicates",
                     JwtToken(Access.ROOT).toString(),
                     HttpMethod.POST,
                     mapper.writeValueAsString(body)
@@ -159,7 +159,7 @@ class DataServicesContract : ApiTestContext() {
             val body = listOf(DuplicateIRI(iriToRemove = DATA_SERVICE_DBO_0.uri, iriToRetain = DATA_SERVICE_DBO_1.uri))
             val response = authorizedRequest(
                 port,
-                "/dataservices/duplicates",
+                "/dataservices/remove-duplicates",
                 JwtToken(Access.ROOT).toString(),
                 HttpMethod.POST,
                 mapper.writeValueAsString(body)
