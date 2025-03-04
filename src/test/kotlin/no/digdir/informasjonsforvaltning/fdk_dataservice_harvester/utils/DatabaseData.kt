@@ -48,7 +48,12 @@ val REMOVED_DATA_SERVICE_DBO = DataServiceMeta(
 
 val UNION_DATA = TurtleDBO(
     id = catalogTurtleID(UNION_ID, true),
-    turtle = gzip(responseReader.readFile("catalog_0.ttl"))
+    turtle = gzip(responseReader.readFile("all_catalogs.ttl"))
+)
+
+val UNION_DATA_NO_RECORDS = TurtleDBO(
+    id = catalogTurtleID(UNION_ID, false),
+    turtle = gzip(responseReader.readFile("all_catalogs_no_records.ttl"))
 )
 
 val HARVEST_DBO_0 = TurtleDBO(
@@ -113,7 +118,7 @@ val REMOVED_DATA_SERVICE_TURTLE_NO_RECORDS = TurtleDBO(
 
 fun turtleDBPopulation(): List<Document> =
     listOf(
-        UNION_DATA, HARVEST_DBO_0, HARVEST_DBO_1, CATALOG_TURTLE_0, CATALOG_TURTLE_0_NO_RECORDS,
+        UNION_DATA, UNION_DATA_NO_RECORDS, HARVEST_DBO_0, HARVEST_DBO_1, CATALOG_TURTLE_0, CATALOG_TURTLE_0_NO_RECORDS,
         CATALOG_TURTLE_1, CATALOG_TURTLE_1_NO_RECORDS, DATA_SERVICE_TURTLE_0, DATA_SERVICE_TURTLE_0_NO_RECORDS,
         DATA_SERVICE_TURTLE_1, DATA_SERVICE_TURTLE_1_NO_RECORDS, REMOVED_DATA_SERVICE_TURTLE, REMOVED_DATA_SERVICE_TURTLE_NO_RECORDS
     )

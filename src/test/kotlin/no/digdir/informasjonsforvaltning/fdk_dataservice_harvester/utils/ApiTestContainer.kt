@@ -1,5 +1,6 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils
 
+import org.junit.jupiter.api.BeforeEach
 import org.slf4j.LoggerFactory
 import org.springframework.boot.test.util.TestPropertyValues
 import org.springframework.boot.test.web.server.LocalServerPort
@@ -15,6 +16,11 @@ abstract class ApiTestContext {
 
     @LocalServerPort
     var port: Int = 0
+
+    @BeforeEach
+    fun resetDatabase() {
+        resetDB()
+    }
 
     internal class Initializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
         override fun initialize(configurableApplicationContext: ConfigurableApplicationContext) {
@@ -39,8 +45,6 @@ abstract class ApiTestContext {
                 .waitingFor(Wait.forListeningPort())
 
             mongoContainer.start()
-
-            populateDB()
 
             try {
                 val con = URL("http://localhost:5050/ping").openConnection() as HttpURLConnection
