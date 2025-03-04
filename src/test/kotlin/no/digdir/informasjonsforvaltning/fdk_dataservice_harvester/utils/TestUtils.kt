@@ -92,7 +92,7 @@ private fun isOK(response: Int?): Boolean =
     if (response == null) false
     else HttpStatus.resolve(response)?.is2xxSuccessful == true
 
-fun populateDB() {
+fun resetDB() {
     val connectionString =
         ConnectionString("mongodb://${MONGO_USER}:${MONGO_PASSWORD}@localhost:${mongoContainer.getMappedPort(MONGO_PORT)}/dataServiceHarvester?authSource=admin&authMechanism=SCRAM-SHA-1")
     val pojoCodecRegistry = CodecRegistries.fromRegistries(
@@ -104,12 +104,15 @@ fun populateDB() {
     val mongoDatabase = client.getDatabase("dataServiceHarvester").withCodecRegistry(pojoCodecRegistry)
 
     val miscCollection = mongoDatabase.getCollection("turtle")
+    miscCollection.deleteMany(org.bson.Document())
     miscCollection.insertMany(turtleDBPopulation())
 
     val catalogCollection = mongoDatabase.getCollection("catalogMeta")
+    catalogCollection.deleteMany(org.bson.Document())
     catalogCollection.insertMany(catalogDBPopulation())
 
     val serviceCollection = mongoDatabase.getCollection("dataserviceMeta")
+    serviceCollection.deleteMany(org.bson.Document())
     serviceCollection.insertMany(serviceDBPopulation())
 
     client.close()
