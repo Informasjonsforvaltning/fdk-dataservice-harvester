@@ -34,7 +34,6 @@ open class SecurityConfig(
                     config
                 }
             }
-            csrf { disable() }
             authorizeHttpRequests {
                 authorize(HttpMethod.OPTIONS, "/**", permitAll)
                 authorize(HttpMethod.GET, "/**", permitAll)
