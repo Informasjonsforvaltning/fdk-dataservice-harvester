@@ -1,4 +1,10 @@
-# fdk-dataservice-harvester
+# FDK Data Service Harvester
+
+This application provides an API for data services harvested from different sources.
+
+For a broader understanding of the system’s context, refer to
+the [architecture documentation](https://github.com/Informasjonsforvaltning/architecture-documentation) wiki. For more
+specific context on this application, see the **Harvesting** subsystem secti
 
 The harvest process is triggered by messages from RabbitMQ with the routing key `dataservice.*.HarvestTrigger`, a message will call the method `initiateHarvest` in the class `HarvesterActivity`. The actual harvest will start when `activitySemaphore` has an available permit, when there are no available permits all messages will be queued by the semaphore.
 
@@ -26,26 +32,41 @@ When all sources from the trigger has been processed a new rabbit message will b
 
 When the rabbit message has been published the semaphore permit is released and a new harvest trigger can be processed.
 
-## Requirements
-- maven
-- java 17
-- docker
-- docker-compose
+## Getting Started
 
-## Run tests
-Make sure you have an updated docker image with the tag "eu.gcr.io/digdir-fdk-infra/fdk-dataset-harvester:latest"
+These instructions will give you a copy of the project up and running on your local machine for development and testing
+purposes.
+
+### Prerequisites
+
+Ensure you have the following installed:
+
+- Java 17
+- Maven
+- Docker
+
+### Running locally
+
+#### Clone the repository
+
+```sh
+git clone https://github.com/Informasjonsforvaltning/fdk-dataservice-harvester.git
+cd fdk-dataservice-harvester
 ```
+
+Start MongoDB, RabbitMQ and the application (either through your IDE using the dev profile, or via CLI):
+
+```sh
+docker compose up -d
+mvn spring-boot:run -Dspring-boot.run.profiles=develop
+```
+
+### API Documentation (OpenAPI)
+
+The API documentation is available at ```resources/specification```.
+
+### Running tests
+
+```sh
 mvn verify
-```
-
-## Run locally
-```
-docker-compose up -d
-mvn spring-boot:run -Dspring.profiles.active=develop
-```
-
-Then in another terminal e.g.
-```
-% curl http://localhost:8081/catalogs
-% curl http://localhost:8081/dataservices
 ```
