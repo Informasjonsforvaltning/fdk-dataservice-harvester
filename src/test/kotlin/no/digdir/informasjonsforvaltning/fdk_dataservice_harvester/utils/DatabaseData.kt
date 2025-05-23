@@ -2,8 +2,6 @@ package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils
 
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.*
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.UNION_ID
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.catalogTurtleID
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.dataServiceTurtleID
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.gzip
 import org.bson.Document
 
@@ -46,82 +44,94 @@ val REMOVED_DATA_SERVICE_DBO = DataServiceMeta(
     modified = TEST_HARVEST_DATE.timeInMillis
 )
 
-val UNION_DATA = TurtleDBO(
-    id = catalogTurtleID(UNION_ID, true),
+val UNION_DATA = FDKCatalogTurtle(
+    id = UNION_ID,
     turtle = gzip(responseReader.readFile("all_catalogs.ttl"))
 )
 
-val UNION_DATA_NO_RECORDS = TurtleDBO(
-    id = catalogTurtleID(UNION_ID, false),
+val UNION_DATA_NO_RECORDS = CatalogTurtle(
+    id = UNION_ID,
     turtle = gzip(responseReader.readFile("all_catalogs_no_records.ttl"))
 )
 
-val HARVEST_DBO_0 = TurtleDBO(
+val HARVEST_DBO_0 = HarvestSourceTurtle(
     id = TEST_HARVEST_SOURCE.url!!,
     turtle = gzip(responseReader.readFile("harvest_response.ttl"))
 )
 
-val HARVEST_DBO_1 = TurtleDBO(
+val HARVEST_DBO_1 = HarvestSourceTurtle(
     id = "$WIREMOCK_TEST_URI/harvest1",
     turtle = gzip(responseReader.readFile("harvest_response_1.ttl"))
 )
 
-val CATALOG_TURTLE_0 = TurtleDBO(
-    id = catalogTurtleID(CATALOG_ID_0, true),
+val CATALOG_TURTLE_0 = FDKCatalogTurtle(
+    id = CATALOG_ID_0,
     turtle = gzip(responseReader.readFile("catalog_0.ttl"))
 )
 
-val CATALOG_TURTLE_0_NO_RECORDS = TurtleDBO(
-    id = catalogTurtleID(CATALOG_ID_0, false),
+val CATALOG_TURTLE_0_NO_RECORDS = CatalogTurtle(
+    id = CATALOG_ID_0,
     turtle = gzip(responseReader.readFile("catalog_0_no_records.ttl"))
 )
 
-val DATA_SERVICE_TURTLE_0 = TurtleDBO(
-    id = dataServiceTurtleID(DATASERVICE_ID_0, true),
+val DATA_SERVICE_TURTLE_0 = FDKDataServiceTurtle(
+    id = DATASERVICE_ID_0,
     turtle = gzip(responseReader.readFile("dataservice_0.ttl"))
 )
 
-val DATA_SERVICE_TURTLE_0_NO_RECORDS = TurtleDBO(
-    id = dataServiceTurtleID(DATASERVICE_ID_0, false),
+val DATA_SERVICE_TURTLE_0_NO_RECORDS = DataServiceTurtle(
+    id = DATASERVICE_ID_0,
     turtle = gzip(responseReader.readFile("parsed_dataservice_0.ttl"))
 )
 
-val CATALOG_TURTLE_1 = TurtleDBO(
-    id = catalogTurtleID(CATALOG_ID_1, true),
+val CATALOG_TURTLE_1 = FDKCatalogTurtle(
+    id = CATALOG_ID_1,
     turtle = gzip(responseReader.readFile("catalog_1.ttl"))
 )
 
-val CATALOG_TURTLE_1_NO_RECORDS = TurtleDBO(
-    id = catalogTurtleID(CATALOG_ID_1, false),
+val CATALOG_TURTLE_1_NO_RECORDS = CatalogTurtle(
+    id = CATALOG_ID_1,
     turtle = gzip(responseReader.readFile("catalog_1_no_records.ttl"))
 )
 
-val DATA_SERVICE_TURTLE_1 = TurtleDBO(
-    id = dataServiceTurtleID(DATASERVICE_ID_1, true),
+val DATA_SERVICE_TURTLE_1 = FDKDataServiceTurtle(
+    id = DATASERVICE_ID_1,
     turtle = gzip(responseReader.readFile("dataservice_1.ttl"))
 )
 
-val DATA_SERVICE_TURTLE_1_NO_RECORDS = TurtleDBO(
-    id = dataServiceTurtleID(DATASERVICE_ID_1, false),
+val DATA_SERVICE_TURTLE_1_NO_RECORDS = DataServiceTurtle(
+    id = DATASERVICE_ID_1,
     turtle = gzip(responseReader.readFile("parsed_dataservice_1.ttl"))
 )
 
-val REMOVED_DATA_SERVICE_TURTLE = TurtleDBO(
-    id = dataServiceTurtleID("removed", true),
+val REMOVED_DATA_SERVICE_TURTLE = FDKDataServiceTurtle(
+    id = "removed",
     turtle = gzip(responseReader.readFile("dataservice_1.ttl"))
 )
 
-val REMOVED_DATA_SERVICE_TURTLE_NO_RECORDS = TurtleDBO(
-    id = dataServiceTurtleID("removed", false),
+val REMOVED_DATA_SERVICE_TURTLE_NO_RECORDS = DataServiceTurtle(
+    id = "removed",
     turtle = gzip(responseReader.readFile("parsed_dataservice_1.ttl"))
 )
 
-fun turtleDBPopulation(): List<Document> =
-    listOf(
-        UNION_DATA, UNION_DATA_NO_RECORDS, HARVEST_DBO_0, HARVEST_DBO_1, CATALOG_TURTLE_0, CATALOG_TURTLE_0_NO_RECORDS,
-        CATALOG_TURTLE_1, CATALOG_TURTLE_1_NO_RECORDS, DATA_SERVICE_TURTLE_0, DATA_SERVICE_TURTLE_0_NO_RECORDS,
-        DATA_SERVICE_TURTLE_1, DATA_SERVICE_TURTLE_1_NO_RECORDS, REMOVED_DATA_SERVICE_TURTLE, REMOVED_DATA_SERVICE_TURTLE_NO_RECORDS
-    )
+fun sourceTurtlePopulation(): List<Document> =
+    listOf(HARVEST_DBO_0, HARVEST_DBO_1)
+        .map { it.mapDBO() }
+
+fun fdkCatalogTurtlePopulation(): List<Document> =
+    listOf(UNION_DATA, CATALOG_TURTLE_0, CATALOG_TURTLE_1)
+        .map { it.mapDBO() }
+
+fun catalogTurtlePopulation(): List<Document> =
+    listOf(UNION_DATA_NO_RECORDS, CATALOG_TURTLE_0_NO_RECORDS, CATALOG_TURTLE_1_NO_RECORDS)
+        .map { it.mapDBO() }
+
+fun fdkDataServiceTurtlePopulation(): List<Document> =
+    listOf(DATA_SERVICE_TURTLE_0, DATA_SERVICE_TURTLE_1, REMOVED_DATA_SERVICE_TURTLE)
+        .map { it.mapDBO() }
+
+fun dataServiceTurtlePopulation(): List<Document> =
+    listOf(DATA_SERVICE_TURTLE_0_NO_RECORDS, DATA_SERVICE_TURTLE_1_NO_RECORDS, REMOVED_DATA_SERVICE_TURTLE_NO_RECORDS)
         .map { it.mapDBO() }
 
 fun catalogDBPopulation(): List<Document> =
