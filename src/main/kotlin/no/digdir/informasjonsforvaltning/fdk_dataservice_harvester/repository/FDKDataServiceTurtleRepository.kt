@@ -1,0 +1,8 @@
+package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.repository
+
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.FDKDataServiceTurtle
+import org.springframework.data.mongodb.repository.MongoRepository
+import org.springframework.stereotype.Repository
+
+@Repository
+interface FDKDataServiceTurtleRepository : MongoRepository<FDKDataServiceTurtle, String>
