@@ -21,7 +21,15 @@ spring:
     port: 5672
     username: ${RABBIT_USERNAME}
     password: ${RABBIT_PASSWORD}
-  data.mongodb.uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongodb:27017/dataServiceHarvester?authSource=admin&authMechanism=SCRAM-SHA-1
+  data.mongodb:
+    host: ${MONGODB_HOST}
+    username: ${MONGODB_USER}
+    password: ${MONGODB_PASSWORD}
+    authentication-database: ${MONGODB_AUTH}
+    replica-set-name: ${MONGODB_REPLICASET}
+    port: 27017
+    database: dataServiceHarvester
+    auto-index-creation: true
 management:
   endpoints:
     web:
@@ -41,7 +49,12 @@ spring:
     port: 5672
     username: admin
     password: admin
-  data.mongodb.uri: mongodb://admin:admin@localhost:27017/dataServiceHarvester?authSource=admin&authMechanism=SCRAM-SHA-1
+  data.mongodb:
+    host: localhost
+    username: admin
+    password: admin
+    authentication-database: admin
+    replica-set-name: null
 application:
   dataserviceUri: https://dataservices.staging.fellesdatakatalog.digdir.no/dataservices
   catalogUri: https://dataservices.staging.fellesdatakatalog.digdir.no/catalogs
@@ -60,6 +73,12 @@ spring:
     port: 5050
     username: admin
     password: admin
+  data.mongodb:
+    host: localhost
+    username: testuser
+    password: testpassword
+    authentication-database: admin
+    replica-set-name: null
 application:
   dataserviceUri: http://localhost:5050/dataservices
   catalogUri: http://localhost:5050/catalogs
