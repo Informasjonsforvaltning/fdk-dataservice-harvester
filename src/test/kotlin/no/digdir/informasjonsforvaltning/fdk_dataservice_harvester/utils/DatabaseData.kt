@@ -1,7 +1,6 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils
 
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.*
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.UNION_ID
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.service.gzip
 import org.bson.Document
 
@@ -42,16 +41,6 @@ val REMOVED_DATA_SERVICE_DBO = DataServiceMeta(
     removed = true,
     issued = TEST_HARVEST_DATE.timeInMillis,
     modified = TEST_HARVEST_DATE.timeInMillis
-)
-
-val UNION_DATA = FDKCatalogTurtle(
-    id = UNION_ID,
-    turtle = gzip(responseReader.readFile("all_catalogs.ttl"))
-)
-
-val UNION_DATA_NO_RECORDS = CatalogTurtle(
-    id = UNION_ID,
-    turtle = gzip(responseReader.readFile("all_catalogs_no_records.ttl"))
 )
 
 val HARVEST_DBO_0 = HarvestSourceTurtle(
@@ -119,11 +108,11 @@ fun sourceTurtlePopulation(): List<Document> =
         .map { it.mapDBO() }
 
 fun fdkCatalogTurtlePopulation(): List<Document> =
-    listOf(UNION_DATA, CATALOG_TURTLE_0, CATALOG_TURTLE_1)
+    listOf(CATALOG_TURTLE_0, CATALOG_TURTLE_1)
         .map { it.mapDBO() }
 
 fun catalogTurtlePopulation(): List<Document> =
-    listOf(UNION_DATA_NO_RECORDS, CATALOG_TURTLE_0_NO_RECORDS, CATALOG_TURTLE_1_NO_RECORDS)
+    listOf(CATALOG_TURTLE_0_NO_RECORDS, CATALOG_TURTLE_1_NO_RECORDS)
         .map { it.mapDBO() }
 
 fun fdkDataServiceTurtlePopulation(): List<Document> =

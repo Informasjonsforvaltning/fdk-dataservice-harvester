@@ -42,11 +42,6 @@ open class CatalogsController(private val dataServiceService: DataServiceService
     fun getCatalogs(
         @RequestHeader(HttpHeaders.ACCEPT) accept: String?,
         @RequestParam(value = "catalogrecords", required = false) catalogRecords: Boolean = false
-    ): ResponseEntity<String> {
-        LOGGER.info("get all DataService catalogs")
-        val returnType = jenaTypeFromAcceptHeader(accept)
-
-        return if (returnType == Lang.RDFNULL) ResponseEntity(HttpStatus.NOT_ACCEPTABLE)
-        else ResponseEntity(dataServiceService.getAll(returnType ?: Lang.TURTLE, catalogRecords), HttpStatus.OK)
-    }
+    ): ResponseEntity<String> =
+        ResponseEntity(HttpStatus.MOVED_PERMANENTLY)
 }

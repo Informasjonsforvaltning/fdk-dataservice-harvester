@@ -27,25 +27,6 @@ class UpdateService(
     private val turtleService: TurtleService
 ) {
 
-    fun updateUnionModels() {
-        val catalogUnion = ModelFactory.createDefaultModel()
-        val noRecordsUnion = ModelFactory.createDefaultModel()
-
-        catalogRepository.findAll()
-            .forEach {
-                turtleService.getCatalog(it.fdkId, withRecords = true)
-                    ?.let { turtle -> parseRDFResponse(turtle, Lang.TURTLE, null) }
-                    ?.run { catalogUnion.add(this) }
-
-                turtleService.getCatalog(it.fdkId, withRecords = false)
-                    ?.let { turtle -> parseRDFResponse(turtle, Lang.TURTLE, null) }
-                    ?.run { noRecordsUnion.add(this) }
-            }
-
-        turtleService.saveAsCatalogUnion(catalogUnion, true)
-        turtleService.saveAsCatalogUnion(noRecordsUnion, false)
-    }
-
     fun updateMetaData() {
         catalogRepository.findAll()
             .forEach { catalog ->
@@ -84,8 +65,6 @@ class UpdateService(
                     )
                 }
             }
-
-        updateUnionModels()
     }
 
     private fun CatalogMeta.createMetaModel(): Model {

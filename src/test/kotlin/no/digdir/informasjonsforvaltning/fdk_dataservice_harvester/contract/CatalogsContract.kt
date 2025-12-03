@@ -52,26 +52,4 @@ class CatalogsContract : ApiTestContext() {
         assertEquals(HttpStatus.NOT_FOUND.value(), response["status"])
     }
 
-    @Test
-    fun findAll() {
-        val response = apiGet(port, "/catalogs", "application/trig")
-        assumeTrue(HttpStatus.OK.value() == response["status"])
-
-        val expected = responseReader.parseFile("all_catalogs_no_records.ttl", "TURTLE")
-        val responseModel = responseReader.parseResponse(response["body"] as String, Lang.TRIG.name)
-
-        assertTrue(expected.isIsomorphicWith(responseModel))
-    }
-
-    @Test
-    fun findAllWithRecords() {
-        val response = apiGet(port, "/catalogs?catalogrecords=true", "text/turtle")
-        assumeTrue(HttpStatus.OK.value() == response["status"])
-
-        val expected = responseReader.parseFile("all_catalogs.ttl", "TURTLE")
-        val responseModel = responseReader.parseResponse(response["body"] as String, "TURTLE")
-
-        assertTrue(expected.isIsomorphicWith(responseModel))
-    }
-
 }

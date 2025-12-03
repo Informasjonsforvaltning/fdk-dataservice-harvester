@@ -77,36 +77,4 @@ class UpdateServiceTest {
         }
 
     }
-
-    @Nested
-    internal inner class UpdateUnionModel {
-
-        @Test
-        fun updateUnionModel() {
-            whenever(catalogRepository.findAll())
-                .thenReturn(listOf(CATALOG_DBO_0, CATALOG_DBO_1))
-
-            whenever(turtleService.getCatalog(CATALOG_ID_0, true))
-                .thenReturn(responseReader.readFile("catalog_0.ttl"))
-            whenever(turtleService.getCatalog(CATALOG_ID_1, true))
-                .thenReturn(responseReader.readFile("catalog_1.ttl"))
-
-            whenever(turtleService.getCatalog(CATALOG_ID_0, false))
-                .thenReturn(responseReader.readFile("catalog_0_no_records.ttl"))
-            whenever(turtleService.getCatalog(CATALOG_ID_1, false))
-                .thenReturn(responseReader.readFile("catalog_1_no_records.ttl"))
-
-            updateService.updateUnionModels()
-
-            val catalogUnion = responseReader.parseFile("all_catalogs.ttl", "TURTLE")
-            val noRecordsUnion = responseReader.parseFile("all_catalogs_no_records.ttl", "TURTLE")
-
-            argumentCaptor<Model, Boolean>().apply {
-                verify(turtleService, times(2)).saveAsCatalogUnion(first.capture(), second.capture())
-                assertTrue(first.firstValue.isIsomorphicWith(catalogUnion))
-                assertTrue(first.secondValue.isIsomorphicWith(noRecordsUnion))
-                assertEquals(listOf(true, false), second.allValues)
-            }
-        }
-    }
 }

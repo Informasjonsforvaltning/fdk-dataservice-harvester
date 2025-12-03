@@ -34,44 +34,6 @@ class DatasetServiceTest {
     private val responseReader = TestResponseReader()
 
     @Nested
-    internal inner class AllCatalogs {
-
-        @Test
-        fun responseIsometricWithEmptyModelForEmptyDB() {
-            whenever(turtleService.getCatalogUnion(true))
-                .thenReturn(null)
-
-            val expected = responseReader.parseResponse("", "TURTLE")
-
-            val responseTurtle = dataServiceService.getAll(Lang.TURTLE, true)
-            val responseJsonLD = dataServiceService.getAll(Lang.JSONLD, true)
-
-            assertTrue(expected.isIsomorphicWith(responseReader.parseResponse(responseTurtle, "TURTLE")))
-            assertTrue(expected.isIsomorphicWith(responseReader.parseResponse(responseJsonLD, "JSON-LD")))
-        }
-
-        @Test
-        fun getAllHandlesTurtleAndOtherRDF() {
-            whenever(turtleService.getCatalogUnion(true))
-                .thenReturn(javaClass.classLoader.getResource("all_catalogs.ttl")!!.readText())
-            whenever(turtleService.getCatalogUnion(false))
-                .thenReturn(javaClass.classLoader.getResource("all_catalogs_no_records.ttl")!!.readText())
-
-            val expected = responseReader.parseFile("all_catalogs.ttl", "TURTLE")
-            val expectedNoRecords = responseReader.parseFile("all_catalogs_no_records.ttl", "TURTLE")
-
-            val responseTurtle = dataServiceService.getAll(Lang.TURTLE, true)
-            val responseN3 = dataServiceService.getAll(Lang.N3, true)
-            val responseNTriples = dataServiceService.getAll(Lang.NTRIPLES, false)
-
-            assertTrue(expected.isIsomorphicWith(responseReader.parseResponse(responseTurtle, "TURTLE")))
-            assertTrue(expected.isIsomorphicWith(responseReader.parseResponse(responseN3, "N3")))
-            assertTrue(expectedNoRecords.isIsomorphicWith(responseReader.parseResponse(responseNTriples, "N-TRIPLES")))
-        }
-
-    }
-
-    @Nested
     internal inner class CatalogById {
 
         @Test
