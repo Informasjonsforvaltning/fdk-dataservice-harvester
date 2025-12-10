@@ -1,7 +1,4 @@
 name: Deploy to production & demo
-permissions:
-  contents: read
-  packages: write
 
 permissions:
   contents: read

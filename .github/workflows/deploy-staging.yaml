@@ -1,7 +1,4 @@
 name: Deploy to staging
-permissions:
-  contents: read
-  packages: write
 
 permissions:
   contents: read
