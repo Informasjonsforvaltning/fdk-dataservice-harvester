@@ -47,6 +47,8 @@ class DataServiceService(
             val uri = meta.first().uri
             rabbitPublisher.send(listOf(
                 HarvestReport(
+                    dataSourceId = "manual-delete-$id",
+                    dataSourceUrl = uri,
                     id = "manual-delete-$id",
                     url = uri,
                     harvestError = false,
@@ -88,6 +90,8 @@ class DataServiceService(
         if (reportAsRemoved.isNotEmpty()) {
             rabbitPublisher.send(listOf(
                 HarvestReport(
+                    dataSourceId = "duplicate-delete",
+                    dataSourceUrl = "https://fellesdatakatalog.digdir.no/duplicates",
                     id = "duplicate-delete",
                     url = "https://fellesdatakatalog.digdir.no/duplicates",
                     harvestError = false,

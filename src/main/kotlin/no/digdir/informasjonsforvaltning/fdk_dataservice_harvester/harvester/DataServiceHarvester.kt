@@ -25,7 +25,7 @@ class DataServiceHarvester(
     private val applicationProperties: ApplicationProperties
 ) {
 
-    fun harvestDataServiceCatalog(source: HarvestDataSource, harvestDate: Calendar, forceUpdate: Boolean): HarvestReport? =
+    fun harvestDataServiceCatalog(source: HarvestDataSource, harvestDate: Calendar, forceUpdate: Boolean, runId: String? = null): HarvestReport? =
         if (source.id != null && source.url != null) {
             try {
                 LOGGER.debug("Starting harvest of ${source.url}")
@@ -37,6 +37,9 @@ class DataServiceHarvester(
                             HarvestException(source.url)
                         )
                         HarvestReport(
+                            runId = runId,
+                            dataSourceId = source.id,
+                            dataSourceUrl = source.url,
                             id = source.id,
                             url = source.url,
                             harvestError = true,
@@ -51,6 +54,9 @@ class DataServiceHarvester(
                             HarvestException(source.url)
                         )
                         HarvestReport(
+                            runId = runId,
+                            dataSourceId = source.id,
+                            dataSourceUrl = source.url,
                             id = source.id,
                             url = source.url,
                             harvestError = true,
@@ -61,12 +67,15 @@ class DataServiceHarvester(
                     }
                     else -> updateIfChanged(
                         parseRDFResponse(adapter.getDataServices(source), jenaWriterType, source.url),
-                        source.id, source.url, harvestDate, forceUpdate
+                        runId, source.id, source.url, harvestDate, forceUpdate
                     )
                 }
             } catch (ex: Exception) {
                 LOGGER.error("Harvest of ${source.url} failed", ex)
                 HarvestReport(
+                    runId = runId,
+                    dataSourceId = source.id,
+                    dataSourceUrl = source.url,
                     id = source.id,
                     url = source.url,
                     harvestError = true,
@@ -80,13 +89,16 @@ class DataServiceHarvester(
             null
         }
 
-    private fun updateIfChanged(harvested: Model, sourceId: String, sourceURL: String, harvestDate: Calendar, forceUpdate: Boolean): HarvestReport {
+    private fun updateIfChanged(harvested: Model, runId: String?, sourceId: String, sourceURL: String, harvestDate: Calendar, forceUpdate: Boolean): HarvestReport {
         val dbData = turtleService.getHarvestSource(sourceURL)
             ?.let { parseRDFResponse(it, Lang.TURTLE, null) }
 
         return if (!forceUpdate && dbData != null && harvested.isIsomorphicWith(dbData)) {
             LOGGER.info("No changes from last harvest of $sourceURL")
             HarvestReport(
+                runId = runId,
+                dataSourceId = sourceId,
+                dataSourceUrl = sourceURL,
                 id = sourceId,
                 url = sourceURL,
                 harvestError = false,
@@ -97,11 +109,11 @@ class DataServiceHarvester(
             LOGGER.info("Changes detected, saving data from $sourceURL")
             turtleService.saveAsHarvestSource(harvested, sourceURL)
 
-            updateDB(harvested, harvestDate, sourceId, sourceURL, forceUpdate)
+            updateDB(harvested, harvestDate, runId, sourceId, sourceURL, forceUpdate)
         }
     }
 
-    private fun updateDB(harvested: Model, harvestDate: Calendar, sourceId: String, sourceURL: String, forceUpdate: Boolean): HarvestReport {
+    private fun updateDB(harvested: Model, harvestDate: Calendar, runId: String?, sourceId: String, sourceURL: String, forceUpdate: Boolean): HarvestReport {
         val updatedCatalogs = mutableListOf<CatalogMeta>()
         val updatedServices = mutableListOf<DataServiceMeta>()
         val removedServices = mutableListOf<DataServiceMeta>()
@@ -140,6 +152,9 @@ class DataServiceHarvester(
         removedServices.map { it.copy(removed = true) }.run { dataServiceRepository.saveAll(this) }
         LOGGER.debug("Harvest of $sourceURL completed")
         return HarvestReport(
+            runId = runId,
+            dataSourceId = sourceId,
+            dataSourceUrl = sourceURL,
             id = sourceId,
             url = sourceURL,
             harvestError = false,

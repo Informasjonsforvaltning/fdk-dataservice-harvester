@@ -91,6 +91,8 @@ class HarvesterTest {
         }
 
         val expectedReport = HarvestReport(
+            dataSourceId="harvest",
+            dataSourceUrl="http://localhost:5050/harvest",
             id="harvest",
             url="http://localhost:5050/harvest",
             dataType="dataservice",
@@ -121,6 +123,8 @@ class HarvesterTest {
         verify(dataServiceRepository, times(0)).save(any())
 
         val expectedReport = HarvestReport(
+            dataSourceId="harvest",
+            dataSourceUrl="http://localhost:5050/harvest",
             id="harvest",
             url="http://localhost:5050/harvest",
             dataType="dataservice",
@@ -208,6 +212,8 @@ class HarvesterTest {
         }
 
         val expectedReport = HarvestReport(
+            dataSourceId="harvest",
+            dataSourceUrl="http://localhost:5050/harvest",
             id="harvest",
             url="http://localhost:5050/harvest",
             dataType="dataservice",
@@ -234,6 +240,8 @@ class HarvesterTest {
             verify(dataServiceRepository, times(0)).save(any())
 
         val expectedReport = HarvestReport(
+            dataSourceId="harvest",
+            dataSourceUrl="http://localhost:5050/harvest",
             id="harvest",
             url="http://localhost:5050/harvest",
             dataType="dataservice",
@@ -269,6 +277,8 @@ class HarvesterTest {
         }
 
         val expectedReport = HarvestReport(
+            dataSourceId="harvest",
+            dataSourceUrl="http://localhost:5050/harvest",
             id="harvest",
             url="http://localhost:5050/harvest",
             dataType="dataservice",
@@ -310,6 +320,8 @@ class HarvesterTest {
         }
 
         val expectedReport = HarvestReport(
+            dataSourceId="harvest",
+            dataSourceUrl="http://localhost:5050/harvest",
             id="harvest",
             url="http://localhost:5050/harvest",
             dataType="dataservice",

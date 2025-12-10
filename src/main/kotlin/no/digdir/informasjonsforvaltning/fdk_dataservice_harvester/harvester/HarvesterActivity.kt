@@ -41,7 +41,7 @@ class HarvesterActivity(
     fun scheduledHarvest() =
         initiateHarvest(HarvestAdminParameters(null, null, null), false)
 
-    fun initiateHarvest(params: HarvestAdminParameters, forceUpdate: Boolean) {
+    fun initiateHarvest(params: HarvestAdminParameters, forceUpdate: Boolean, runId: String? = null) {
         if (params.harvestAllDataServices()) LOGGER.debug("starting harvest of all data services, force update: $forceUpdate")
         else LOGGER.debug("starting harvest with parameters $params, force update: $forceUpdate")
 
@@ -53,7 +53,7 @@ class HarvesterActivity(
                         .filter { it.url != null }
                         .map { async {
                             val (report, timeElapsed) = measureTimedValue {
-                                harvester.harvestDataServiceCatalog(it, Calendar.getInstance(), forceUpdate)
+                                harvester.harvestDataServiceCatalog(it, Calendar.getInstance(), forceUpdate, runId)
                             }
                             Metrics.counter("harvest_count",
                                     "status", if (report?.harvestError == false) { "success" }  else { "error" },
