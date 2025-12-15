@@ -33,14 +33,6 @@ class HarvesterActivity(
 
     private val activitySemaphore = Semaphore(1)
 
-    @EventListener
-    private fun fullHarvestOnStartup(event: ApplicationReadyEvent) =
-        initiateHarvest(HarvestAdminParameters(null, null, null), false)
-
-    @Scheduled(cron = "0 15 * * * *")
-    fun scheduledHarvest() =
-        initiateHarvest(HarvestAdminParameters(null, null, null), false)
-
     fun initiateHarvest(params: HarvestAdminParameters, forceUpdate: Boolean, runId: String? = null) {
         if (params.harvestAllDataServices()) LOGGER.debug("starting harvest of all data services, force update: $forceUpdate")
         else LOGGER.debug("starting harvest with parameters $params, force update: $forceUpdate")
