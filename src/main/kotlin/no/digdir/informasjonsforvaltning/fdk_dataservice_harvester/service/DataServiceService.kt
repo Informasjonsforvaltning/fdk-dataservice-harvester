@@ -24,14 +24,14 @@ class DataServiceService(
         turtleService.getDataService(id, withRecords)
             ?.let {
                 if (returnType == Lang.TURTLE) it
-                else parseRDFResponse(it, Lang.TURTLE, null)?.createRDFResponse(returnType)
+                else parseRDFResponse(it, Lang.TURTLE, null).createRDFResponse(returnType)
             }
 
     fun getCatalogById(id: String, returnType: Lang, withRecords: Boolean): String? =
         turtleService.getCatalog(id, withRecords)
             ?.let {
                 if (returnType == Lang.TURTLE) it
-                else parseRDFResponse(it, Lang.TURTLE, null)?.createRDFResponse(returnType)
+                else parseRDFResponse(it, Lang.TURTLE, null).createRDFResponse(returnType)
             }
 
     fun removeDataService(id: String) {
@@ -49,8 +49,6 @@ class DataServiceService(
                 HarvestReport(
                     dataSourceId = "manual-delete-$id",
                     dataSourceUrl = uri,
-                    id = "manual-delete-$id",
-                    url = uri,
                     harvestError = false,
                     startTime = start,
                     endTime = formatNowWithOsloTimeZone(),
@@ -92,8 +90,6 @@ class DataServiceService(
                 HarvestReport(
                     dataSourceId = "duplicate-delete",
                     dataSourceUrl = "https://fellesdatakatalog.digdir.no/duplicates",
-                    id = "duplicate-delete",
-                    url = "https://fellesdatakatalog.digdir.no/duplicates",
                     harvestError = false,
                     startTime = start,
                     endTime = formatNowWithOsloTimeZone(),

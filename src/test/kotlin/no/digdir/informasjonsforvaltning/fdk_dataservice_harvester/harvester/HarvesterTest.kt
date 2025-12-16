@@ -41,7 +41,7 @@ class HarvesterTest {
 
     @Test
     fun harvestDataSourceSavedWhenDBIsEmpty() {
-        whenever(adapter.getDataServices(TEST_HARVEST_SOURCE))
+        whenever(adapter.getDataServices(TEST_HARVEST_SOURCE.dataSourceUrl!!, TEST_HARVEST_SOURCE.acceptHeader!!))
             .thenReturn(responseReader.readFile("harvest_response.ttl"))
         whenever(dataServiceRepository.findById(DATASERVICE_ID_0))
             .thenReturn(Optional.of(DATA_SERVICE_DBO_0))
@@ -51,7 +51,7 @@ class HarvesterTest {
         whenever(valuesMock.dataserviceUri)
             .thenReturn("http://localhost:5050/dataservices")
 
-        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE, false)
+        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE)
 
         argumentCaptor<Model, String>().apply {
             verify(turtleService, times(1)).saveAsHarvestSource(first.capture(), second.capture())
@@ -63,7 +63,7 @@ class HarvesterTest {
                     )
                 )
             )
-            Assertions.assertEquals(TEST_HARVEST_SOURCE.url, second.firstValue)
+            Assertions.assertEquals(TEST_HARVEST_SOURCE.dataSourceUrl, second.firstValue)
         }
 
         argumentCaptor<Model, String, Boolean>().apply {
@@ -91,10 +91,9 @@ class HarvesterTest {
         }
 
         val expectedReport = HarvestReport(
+            runId = "run0",
             dataSourceId="harvest",
             dataSourceUrl="http://localhost:5050/harvest",
-            id="harvest",
-            url="http://localhost:5050/harvest",
             dataType="dataservice",
             harvestError=false,
             startTime = "2020-03-12 12:52:16 +0100",
@@ -109,12 +108,12 @@ class HarvesterTest {
     @Test
     fun harvestDataSourceNotPersistedWhenNoChangesFromDB() {
         val harvested = responseReader.readFile("harvest_response.ttl")
-        whenever(adapter.getDataServices(TEST_HARVEST_SOURCE))
+        whenever(adapter.getDataServices(TEST_HARVEST_SOURCE.dataSourceUrl!!, TEST_HARVEST_SOURCE.acceptHeader!!))
             .thenReturn(harvested)
-        whenever(turtleService.getHarvestSource(TEST_HARVEST_SOURCE.url!!))
+        whenever(turtleService.getHarvestSource(TEST_HARVEST_SOURCE.dataSourceUrl))
             .thenReturn(harvested)
 
-        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE, false)
+        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE)
 
         verify(turtleService, times(0)).saveAsHarvestSource(any(), any())
         verify(turtleService, times(0)).saveAsCatalog(any(), any(), any())
@@ -123,10 +122,9 @@ class HarvesterTest {
         verify(dataServiceRepository, times(0)).save(any())
 
         val expectedReport = HarvestReport(
+            runId = "run0",
             dataSourceId="harvest",
             dataSourceUrl="http://localhost:5050/harvest",
-            id="harvest",
-            url="http://localhost:5050/harvest",
             dataType="dataservice",
             harvestError=false,
             startTime = "2020-03-12 12:52:16 +0100",
@@ -139,9 +137,9 @@ class HarvesterTest {
     @Test
     fun noChangesIgnoredWhenForceUpdateIsTrue() {
         val harvested = responseReader.readFile("harvest_response.ttl")
-        whenever(adapter.getDataServices(TEST_HARVEST_SOURCE))
+        whenever(adapter.getDataServices(TEST_HARVEST_SOURCE.dataSourceUrl!!, TEST_HARVEST_SOURCE.acceptHeader!!))
             .thenReturn(harvested)
-        whenever(turtleService.getHarvestSource(TEST_HARVEST_SOURCE.url!!))
+        whenever(turtleService.getHarvestSource(TEST_HARVEST_SOURCE.dataSourceUrl))
             .thenReturn(harvested)
         whenever(catalogRepository.findById(CATALOG_DBO_0.uri))
             .thenReturn(Optional.of(CATALOG_DBO_0))
@@ -152,7 +150,7 @@ class HarvesterTest {
         whenever(turtleService.getDataService(DATASERVICE_ID_0, false))
             .thenReturn(responseReader.readFile("parsed_dataservice_0.ttl"))
 
-        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE, true)
+        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE.copy(forceUpdate = true), TEST_HARVEST_DATE)
 
         verify(turtleService, times(1)).saveAsHarvestSource(any(), any())
         verify(turtleService, times(1)).saveAsCatalog(any(), any(), any())
@@ -163,9 +161,9 @@ class HarvesterTest {
 
     @Test
     fun onlyCatalogMetaUpdatedWhenOnlyCatalogDataChangedFromDB() {
-        whenever(adapter.getDataServices(TEST_HARVEST_SOURCE))
+        whenever(adapter.getDataServices(TEST_HARVEST_SOURCE.dataSourceUrl!!, TEST_HARVEST_SOURCE.acceptHeader!!))
             .thenReturn(responseReader.readFile("harvest_response.ttl"))
-        whenever(turtleService.getHarvestSource(TEST_HARVEST_SOURCE.url!!))
+        whenever(turtleService.getHarvestSource(TEST_HARVEST_SOURCE.dataSourceUrl))
             .thenReturn(responseReader.readFile("harvest_response_catalog_diff.ttl"))
 
         whenever(valuesMock.catalogUri)
@@ -183,12 +181,12 @@ class HarvesterTest {
         whenever(turtleService.getDataService(DATASERVICE_ID_0, false))
             .thenReturn(responseReader.readFile("parsed_dataservice_0.ttl"))
 
-        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, NEW_TEST_HARVEST_DATE, false)
+        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, NEW_TEST_HARVEST_DATE)
 
         argumentCaptor<Model, String>().apply {
             verify(turtleService, times(1)).saveAsHarvestSource(first.capture(), second.capture())
             assertTrue(first.firstValue.isIsomorphicWith(responseReader.parseFile("harvest_response.ttl", "TURTLE")))
-            Assertions.assertEquals(TEST_HARVEST_SOURCE.url, second.firstValue)
+            Assertions.assertEquals(TEST_HARVEST_SOURCE.dataSourceUrl, second.firstValue)
         }
 
         argumentCaptor<CatalogMeta>().apply {
@@ -212,10 +210,9 @@ class HarvesterTest {
         }
 
         val expectedReport = HarvestReport(
+            runId = "run0",
             dataSourceId="harvest",
             dataSourceUrl="http://localhost:5050/harvest",
-            id="harvest",
-            url="http://localhost:5050/harvest",
             dataType="dataservice",
             harvestError=false,
             startTime = "2020-07-12 13:52:16 +0200",
@@ -228,10 +225,10 @@ class HarvesterTest {
 
     @Test
     fun harvestWithErrorsIsNotPersisted() {
-        whenever(adapter.getDataServices(TEST_HARVEST_SOURCE))
+        whenever(adapter.getDataServices(TEST_HARVEST_SOURCE.dataSourceUrl!!, TEST_HARVEST_SOURCE.acceptHeader!!))
             .thenReturn(responseReader.readFile("harvest_response_with_errors.ttl"))
 
-        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE, false)
+        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE)
 
             verify(turtleService, times(0)).saveAsHarvestSource(any(), any())
             verify(turtleService, times(0)).saveAsCatalog(any(), any(), any())
@@ -240,10 +237,9 @@ class HarvesterTest {
             verify(dataServiceRepository, times(0)).save(any())
 
         val expectedReport = HarvestReport(
+            runId = "run0",
             dataSourceId="harvest",
             dataSourceUrl="http://localhost:5050/harvest",
-            id="harvest",
-            url="http://localhost:5050/harvest",
             dataType="dataservice",
             harvestError=true,
             startTime = "2020-03-12 12:52:16 +0100",
@@ -257,9 +253,9 @@ class HarvesterTest {
     @Test
     fun removedServiceUpdatedAndAddedToReport() {
         val harvested = responseReader.readFile("harvest_response_service_removed.ttl")
-        whenever(adapter.getDataServices(TEST_HARVEST_SOURCE))
+        whenever(adapter.getDataServices(TEST_HARVEST_SOURCE.dataSourceUrl!!, TEST_HARVEST_SOURCE.acceptHeader!!))
             .thenReturn(harvested)
-        whenever(turtleService.getHarvestSource(TEST_HARVEST_SOURCE.url!!))
+        whenever(turtleService.getHarvestSource(TEST_HARVEST_SOURCE.dataSourceUrl))
             .thenReturn(responseReader.readFile("harvest_response.ttl"))
         whenever(dataServiceRepository.findAllByIsPartOf("http://localhost:5050/catalogs/$CATALOG_ID_0"))
             .thenReturn(listOf(DATA_SERVICE_DBO_0))
@@ -269,7 +265,7 @@ class HarvesterTest {
         whenever(valuesMock.dataserviceUri)
             .thenReturn("http://localhost:5050/dataservices")
 
-        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE, false)
+        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE)
 
         argumentCaptor<List<DataServiceMeta>>().apply {
             verify(dataServiceRepository, times(1)).saveAll(capture())
@@ -277,10 +273,9 @@ class HarvesterTest {
         }
 
         val expectedReport = HarvestReport(
+            runId = "run0",
             dataSourceId="harvest",
             dataSourceUrl="http://localhost:5050/harvest",
-            id="harvest",
-            url="http://localhost:5050/harvest",
             dataType="dataservice",
             harvestError=false,
             startTime = "2020-03-12 12:52:16 +0100",
@@ -296,9 +291,9 @@ class HarvesterTest {
     @Test
     fun earlierRemovedServiceWithNoChangesAddedToReport() {
         val harvested = responseReader.readFile("harvest_response.ttl")
-        whenever(adapter.getDataServices(TEST_HARVEST_SOURCE))
+        whenever(adapter.getDataServices(TEST_HARVEST_SOURCE.dataSourceUrl!!, TEST_HARVEST_SOURCE.acceptHeader!!))
             .thenReturn(harvested)
-        whenever(turtleService.getHarvestSource(TEST_HARVEST_SOURCE.url!!))
+        whenever(turtleService.getHarvestSource(TEST_HARVEST_SOURCE.dataSourceUrl))
             .thenReturn(responseReader.readFile("harvest_response_service_removed.ttl"))
         whenever(dataServiceRepository.findById("https://testdirektoratet.no/model/dataservice/0"))
             .thenReturn(Optional.of(DATA_SERVICE_DBO_0.copy(removed = true)))
@@ -312,7 +307,7 @@ class HarvesterTest {
         whenever(valuesMock.dataserviceUri)
             .thenReturn("http://localhost:5050/dataservices")
 
-        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE, false)
+        val report = harvester.harvestDataServiceCatalog(TEST_HARVEST_SOURCE, TEST_HARVEST_DATE)
 
         argumentCaptor<DataServiceMeta>().apply {
             verify(dataServiceRepository, times(1)).save(capture())
@@ -320,10 +315,9 @@ class HarvesterTest {
         }
 
         val expectedReport = HarvestReport(
+            runId = "run0",
             dataSourceId="harvest",
             dataSourceUrl="http://localhost:5050/harvest",
-            id="harvest",
-            url="http://localhost:5050/harvest",
             dataType="dataservice",
             harvestError=false,
             startTime = "2020-03-12 12:52:16 +0100",

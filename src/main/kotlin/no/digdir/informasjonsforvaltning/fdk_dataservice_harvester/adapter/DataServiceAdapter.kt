@@ -1,7 +1,6 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.adapter
 
 import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.harvester.HarvestException
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.HarvestDataSource
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.io.BufferedReader
@@ -13,14 +12,14 @@ private const val TEN_MINUTES = 600000
 @Service
 class DataServiceAdapter {
 
-    fun getDataServices(source: HarvestDataSource): String {
-        val connection = URI(source.url).toURL().openConnection() as HttpURLConnection
-        connection.setRequestProperty("Accept", source.acceptHeaderValue)
+    fun getDataServices(url: String, acceptHeader: String): String {
+        val connection = URI(url).toURL().openConnection() as HttpURLConnection
+        connection.setRequestProperty("Accept", acceptHeader)
         connection.connectTimeout = TEN_MINUTES
         connection.readTimeout = TEN_MINUTES
 
         return if (connection.responseCode != HttpStatus.OK.value()) {
-            throw HarvestException("${source.url} responded with ${connection.responseCode}, harvest will be aborted")
+            throw HarvestException("$url responded with ${connection.responseCode}, harvest will be aborted")
         } else {
             connection
                 .inputStream

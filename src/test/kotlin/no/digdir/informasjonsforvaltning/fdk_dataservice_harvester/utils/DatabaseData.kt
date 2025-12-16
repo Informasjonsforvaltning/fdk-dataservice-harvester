@@ -44,7 +44,7 @@ val REMOVED_DATA_SERVICE_DBO = DataServiceMeta(
 )
 
 val HARVEST_DBO_0 = HarvestSourceTurtle(
-    id = TEST_HARVEST_SOURCE.url!!,
+    id = TEST_HARVEST_SOURCE.dataSourceUrl!!,
     turtle = gzip(responseReader.readFile("harvest_response.ttl"))
 )
 

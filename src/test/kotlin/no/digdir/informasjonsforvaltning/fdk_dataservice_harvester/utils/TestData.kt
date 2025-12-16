@@ -1,6 +1,6 @@
 package no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.utils
 
-import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.HarvestDataSource
+import no.digdir.informasjonsforvaltning.fdk_dataservice_harvester.model.HarvestTrigger
 import org.testcontainers.shaded.com.google.common.collect.ImmutableMap
 import java.util.*
 
@@ -24,18 +24,20 @@ const val CATALOG_ID_1 = "65555cdb-6809-3cc4-bff1-aaa6d9426311"
 val TEST_HARVEST_DATE: Calendar = Calendar.Builder().setTimeZone(TimeZone.getTimeZone("UTC")).setDate(2020, 2, 12).setTimeOfDay(11, 52, 16, 122).build()
 val NEW_TEST_HARVEST_DATE: Calendar = Calendar.Builder().setTimeZone(TimeZone.getTimeZone("UTC")).setDate(2020, 6, 12).setTimeOfDay(11, 52, 16, 122).build()
 
-val TEST_HARVEST_SOURCE = HarvestDataSource(
-    id = "harvest",
-    url = "$WIREMOCK_TEST_URI/harvest",
-    acceptHeaderValue = "text/turtle",
+val TEST_HARVEST_SOURCE = HarvestTrigger(
+    runId = "run0",
+    dataSourceId = "harvest",
+    dataSourceUrl = "$WIREMOCK_TEST_URI/harvest",
+    acceptHeader = "text/turtle",
     dataType = "dataservice",
     dataSourceType = "DCAT-AP-NO"
 )
 
-val ERROR_HARVEST_SOURCE = HarvestDataSource(
-    id = "error-harvest",
-    url = "$WIREMOCK_TEST_URI/error-harvest",
-    acceptHeaderValue = "text/turtle",
+val ERROR_HARVEST_SOURCE = HarvestTrigger(
+    runId = "run-error",
+    dataSourceId = "error-harvest",
+    dataSourceUrl = "$WIREMOCK_TEST_URI/error-harvest",
+    acceptHeader = "text/turtle",
     dataType = "dataservice",
     dataSourceType = "DCAT-AP-NO"
 )

@@ -131,8 +131,6 @@ class DatasetServiceTest {
             val expectedReport = HarvestReport(
                 dataSourceId = "manual-delete-$DATASERVICE_ID_0",
                 dataSourceUrl = DATA_SERVICE_DBO_0.uri,
-                id = "manual-delete-$DATASERVICE_ID_0",
-                url = DATA_SERVICE_DBO_0.uri,
                 harvestError = false,
                 startTime = "startTime",
                 endTime = "endTime",
@@ -215,8 +213,6 @@ class DatasetServiceTest {
             val expectedReport = HarvestReport(
                 dataSourceId = "duplicate-delete",
                 dataSourceUrl = "https://fellesdatakatalog.digdir.no/duplicates",
-                id = "duplicate-delete",
-                url = "https://fellesdatakatalog.digdir.no/duplicates",
                 harvestError = false,
                 startTime = "startTime",
                 endTime = "endTime",
@@ -260,8 +256,6 @@ class DatasetServiceTest {
             val expectedReport = HarvestReport(
                 dataSourceId = "duplicate-delete",
                 dataSourceUrl = "https://fellesdatakatalog.digdir.no/duplicates",
-                id = "duplicate-delete",
-                url = "https://fellesdatakatalog.digdir.no/duplicates",
                 harvestError = false,
                 startTime = "startTime",
                 endTime = "endTime",
