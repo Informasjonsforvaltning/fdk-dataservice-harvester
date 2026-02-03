@@ -15,6 +15,9 @@ jobs:
   codeql:
     name: Run codeql scan
     if: github.event.pull_request.draft == false
+    permissions:
+      contents: read
+      security-events: write
     uses: Informasjonsforvaltning/workflows/.github/workflows/codeql.yaml@main
     with:
       language: java
